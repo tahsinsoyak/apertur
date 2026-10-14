@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Recorder Studio - Interactive Playground</title>
+  <style>
+    :root {
+      --bg: #07090e;
+      --card: rgba(18, 22, 34, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --accent-gold: #f59e0b;
+      --accent-cyan: #06b6d4;
+      --accent-violet: #a855f7;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 48px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    /* Subtle background ambient lights */
+    .bg-aura-1 {
+      position: fixed;
+      top: -100px;
+      left: 15%;
+      width: 500px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-aura-2 {
+      position: fixed;
+      bottom: -100px;
+      right: 15%;
+      width: 500px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container {
+      max-width: 860px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    p.lead {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    .glass-card {
+      background: var(--card);
+      backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 26px 28px;
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.05) inset;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .badge-live {
+      background: rgba(245, 158, 11, 0.14);
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    /* Steps layout */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .step-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #60a5fa;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+    .step-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .step-text {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    /* Interactive test box */
+    .interactive-stage {
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, rgba(20, 25, 38, 0.8), rgba(10, 13, 20, 0.9));
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: crosshair;
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+    .interactive-stage:hover {
+      border-color: rgba(245, 158, 11, 0.6);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+    }
+    .stage-prompt {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .stage-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    /* Buttons */
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .pro-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .pro-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-1px);
+    }
+    .pro-btn.primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+    .pro-btn.gold {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+    }
+    .pro-btn.danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    }
+    /* Audio section */
+    .audio-test-strip {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .audio-meta h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .audio-meta span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-aura-1"></div>
+  <div class="bg-aura-2"></div>
+
+  <div class="container">
+    <header>
+      <div class="badge-pill">
+        <span>✦</span>
+        <span>STUDIO PRESENTATION SUITE</span>
+      </div>
+      <h1>Screen Studio Playground</h1>
+      <p class="lead">Test 1080p Full HD tab recording with cinematic cursor halos, animated shockwaves, and draggable floating controls.</p>
+    </header>
+
+    <!-- 3-Step Walkthrough -->
+    <div class="glass-card">
+      <div class="card-title">
+        <span>How To Test In 30 Seconds</span>
+      </div>
+      <div class="steps-grid">
+        <div class="step-box">
+          <div class="step-num">1</div>
+          <span class="step-title">Open Extension</span>
+          <span class="step-text">Click the Tab Recorder HD icon in your Chrome toolbar.</span>
+        </div>
+        <div class="step-box">
+          <div class="step-num">2</div>
+          <span class="step-title">Click Record</span>
+          <span class="step-text">Choose your theme (Amber, Cyan, Violet) & start 1080p recording.</span>
+        </div>
+        <div class="step-box">
+          <div class="step-num">3</div>
+          <span class="step-title">Interact & Export</span>
+          <span class="step-text">Move mouse, click around, and stop via the floating in-tab dock!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Cursor & Click Arena -->
+    <div class="glass-card">
+      <div class="card-title">
+        <span>🖱️ Cursor Spotlight & Shockwave Arena</span>
+        <span class="badge-live">Live Interactive</span>
+      </div>
+
+      <div class="interactive-stage" id="testStage">
+        <span class="stage-prompt">🎯 Move your mouse & click inside this test arena</span>
+        <span class="stage-sub">Watch the luminous spotlight track and shockwave rings bloom on click</span>
+      </div>
+
+      <div class="button-group">
+        <button class="pro-btn primary" id="btnCount">
+          <span>Clicks Registered:</span>
+          <strong id="counter">0</strong>
+        </button>
+        <button class="pro-btn gold" id="btnColorShift">
+          <span>Shift Atmosphere Color</span>
+        </button>
+        <button class="pro-btn" id="btnRightClick" oncontextmenu="event.preventDefault(); alert('Right click triggered with distinct shockwave!');">
+          <span>Right-Click Me</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Audio Test Strip -->
+    <div class="glass-card">
+      <div class="card-title">
+        <span>🔊 Tab Audio Passthrough & Recording Test</span>
+      </div>
+      <p style="color: var(--muted); font-size: 13px; margin-bottom: 12px; line-height: 1.5;">
+        Verify that tab sound is captured clearly in your 1080p recording while still playing smoothly through your speakers.
+      </p>
+
+      <div class="audio-test-strip">
+        <div class="audio-meta">
+          <h4>Synthesizer Sound Test</h4>
+          <span id="toneStatus">Status: Ready to play 440Hz -> 880Hz harmonic</span>
+        </div>
+        <button class="pro-btn danger" id="btnPlaySound">
+          <span>▶ Play Test Tone</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Counter
+    let clicks = 0;
+    const btnCount = document.getElementById('btnCount');
+    const counter = document.getElementById('counter');
+    btnCount.addEventListener('click', () => {
+      clicks++;
+      counter.textContent = clicks;
+    });
+
+    // Background color shifting
+    const moods = ['#07090e', '#0b1120', '#100c1e', '#051814', '#180a0a'];
+    let moodIdx = 0;
+    document.getElementById('btnColorShift').addEventListener('click', () => {
+      moodIdx = (moodIdx + 1) % moods.length;
+      document.body.style.backgroundColor = moods[moodIdx];
+    });
+
+    // Audio harmonic tone
+    const btnPlaySound = document.getElementById('btnPlaySound');
+    const toneStatus = document.getElementById('toneStatus');
+    btnPlaySound.addEventListener('click', () => {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.35);
+
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.6);
+
+      toneStatus.textContent = 'Status: Playing harmonic tone ♪';
+      setTimeout(() => {
+        toneStatus.textContent = 'Status: Tone completed';
+      }, 700);
+    });
+  </script>
+</body>
+</html>

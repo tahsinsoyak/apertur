@@ -1,0 +1,19 @@
+{
+  "name": "tab-recorder-studio",
+  "version": "1.0.0",
+  "description": "1080p Tab Screen Recorder with glowing cursor spotlight and animated click ripples",
+  "main": "background/background.js",
+  "scripts": {
+    "build": "node build.js",
+    "test-server": "node test-server.js"
+  },
+  "keywords": [
+    "chrome-extension",
+    "screen-recorder",
+    "1080p",
+    "cursor-highlight",
+    "screencast"
+  ],
+  "author": "",
+  "license": "MIT"
+}
