@@ -1,5 +1,5 @@
 /**
- * Popup Controller for Tab Recorder HD
+ * Studio Controller for Tab Recorder HD Popup
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -19,12 +19,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const recordingMeta = document.getElementById('recordingMeta');
   const btnHistory = document.getElementById('btnHistory');
 
-  const pillButtons = document.querySelectorAll('.pill-option');
+  const qualityCards = document.querySelectorAll('.quality-card');
   const checkTabAudio = document.getElementById('checkTabAudio');
   const checkMic = document.getElementById('checkMic');
   const checkHalo = document.getElementById('checkHalo');
   const checkClickRipple = document.getElementById('checkClickRipple');
-  const themeBubbles = document.querySelectorAll('.theme-bubble');
+  const checkFloatingDock = document.getElementById('checkFloatingDock');
+  const themeButtons = document.querySelectorAll('.theme-btn');
   const testClickArea = document.getElementById('testClickArea');
 
   // State
@@ -32,102 +33,108 @@ document.addEventListener('DOMContentLoaded', async () => {
   let selectedQuality = '1080p60';
   let selectedTheme = 'yellow';
 
-  // Load saved preferences
+  // Load preferences
   const saved = await chrome.storage.local.get([
     'prefQuality',
     'prefTabAudio',
     'prefMic',
     'prefHalo',
     'prefClickRipple',
+    'prefFloatingDock',
     'prefTheme'
   ]);
 
   if (saved.prefQuality) {
     selectedQuality = saved.prefQuality;
-    pillButtons.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.quality === selectedQuality);
-    });
+    qualityCards.forEach(card => card.classList.toggle('active', card.dataset.quality === selectedQuality));
   }
   if (saved.prefTabAudio !== undefined) checkTabAudio.checked = saved.prefTabAudio;
   if (saved.prefMic !== undefined) checkMic.checked = saved.prefMic;
   if (saved.prefHalo !== undefined) checkHalo.checked = saved.prefHalo;
   if (saved.prefClickRipple !== undefined) checkClickRipple.checked = saved.prefClickRipple;
+  if (saved.prefFloatingDock !== undefined && checkFloatingDock) checkFloatingDock.checked = saved.prefFloatingDock;
   if (saved.prefTheme) {
     selectedTheme = saved.prefTheme;
-    themeBubbles.forEach(b => {
-      b.classList.toggle('active', b.dataset.theme === selectedTheme);
-    });
+    themeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === selectedTheme));
   }
 
-  // Quality selector clicks
-  pillButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      pillButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedQuality = btn.dataset.quality;
+  // Quality Cards Event
+  qualityCards.forEach(card => {
+    card.addEventListener('click', () => {
+      qualityCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      selectedQuality = card.dataset.quality;
       chrome.storage.local.set({ prefQuality: selectedQuality });
-      updateStartButtonLabel();
+      updateButtonSpec();
     });
   });
 
-  // Theme selection
-  themeBubbles.forEach(btn => {
+  function updateButtonSpec() {
+    const subtext = btnStart.querySelector('.btn-subtext');
+    if (selectedQuality === '1080p60') subtext.textContent = '1920 × 1080 • 60 FPS';
+    else if (selectedQuality === '1080p30') subtext.textContent = '1920 × 1080 • 30 FPS';
+    else if (selectedQuality === '720p60') subtext.textContent = '1280 × 720 • 60 FPS';
+  }
+  updateButtonSpec();
+
+  // Themes Event
+  themeButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      themeBubbles.forEach(b => b.classList.remove('active'));
+      themeButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       selectedTheme = btn.dataset.theme;
       chrome.storage.local.set({ prefTheme: selectedTheme });
     });
   });
 
-  // Settings change persist
+  // Toggles Persist
   checkTabAudio.addEventListener('change', () => chrome.storage.local.set({ prefTabAudio: checkTabAudio.checked }));
   checkMic.addEventListener('change', () => chrome.storage.local.set({ prefMic: checkMic.checked }));
   checkHalo.addEventListener('change', () => chrome.storage.local.set({ prefHalo: checkHalo.checked }));
   checkClickRipple.addEventListener('change', () => chrome.storage.local.set({ prefClickRipple: checkClickRipple.checked }));
+  if (checkFloatingDock) {
+    checkFloatingDock.addEventListener('change', () => chrome.storage.local.set({ prefFloatingDock: checkFloatingDock.checked }));
+  }
 
-  // Interactive Test Box Demo
+  // Interactive Sandbox Demo
+  const themeColors = {
+    yellow: { ring: '#f59e0b', bloom: 'rgba(245, 158, 11, 0.4)' },
+    cyan:   { ring: '#06b6d4', bloom: 'rgba(6, 182, 212, 0.4)' },
+    violet: { ring: '#a855f7', bloom: 'rgba(168, 85, 247, 0.4)' },
+    red:    { ring: '#ef4444', bloom: 'rgba(239, 68, 68, 0.4)' },
+    green:  { ring: '#22c55e', bloom: 'rgba(34, 197, 94, 0.4)' }
+  };
+
   testClickArea.addEventListener('pointerdown', (e) => {
     const rect = testClickArea.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+    const color = themeColors[selectedTheme] || themeColors.yellow;
 
-    const ripple = document.createElement('div');
-    ripple.style.position = 'absolute';
-    ripple.style.left = `${x}px`;
-    ripple.style.top = `${y}px`;
-    ripple.style.width = '12px';
-    ripple.style.height = '12px';
-    ripple.style.borderRadius = '50%';
-    ripple.style.pointerEvents = 'none';
-    ripple.style.transform = 'translate(-50%, -50%)';
+    // Outer shockwave
+    const shock = document.createElement('div');
+    shock.style.position = 'absolute';
+    shock.style.left = `${x}px`;
+    shock.style.top = `${y}px`;
+    shock.style.width = '10px';
+    shock.style.height = '10px';
+    shock.style.borderRadius = '50%';
+    shock.style.border = `2px solid ${color.ring}`;
+    shock.style.background = color.bloom;
+    shock.style.boxShadow = `0 0 14px ${color.ring}`;
+    shock.style.pointerEvents = 'none';
+    shock.style.transform = 'translate(-50%, -50%) scale(0.2)';
+    shock.style.transition = 'all 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
 
-    const colors = {
-      yellow: 'rgba(245, 158, 11, 0.7)',
-      cyan: 'rgba(6, 182, 212, 0.7)',
-      red: 'rgba(239, 68, 68, 0.7)',
-      green: 'rgba(34, 197, 94, 0.7)'
-    };
-    ripple.style.background = colors[selectedTheme] || colors.yellow;
-    ripple.style.boxShadow = `0 0 12px ${colors[selectedTheme] || colors.yellow}`;
-    ripple.style.transition = 'all 0.4s ease-out';
-
-    testClickArea.appendChild(ripple);
+    testClickArea.appendChild(shock);
 
     requestAnimationFrame(() => {
-      ripple.style.transform = 'translate(-50%, -50%) scale(4.5)';
-      ripple.style.opacity = '0';
+      shock.style.transform = 'translate(-50%, -50%) scale(4.8)';
+      shock.style.opacity = '0';
     });
 
-    setTimeout(() => ripple.remove(), 400);
+    setTimeout(() => shock.remove(), 450);
   });
-
-  function updateStartButtonLabel() {
-    const is1080 = selectedQuality.startsWith('1080');
-    btnStart.querySelector('span:last-child').textContent = is1080
-      ? 'Start 1080p Recording'
-      : 'Start 720p Recording';
-  }
 
   function showError(msg) {
     errorMessage.textContent = msg;
@@ -138,12 +145,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     errorBanner.classList.add('hidden');
   });
 
-  // History button
+  // History / Library Launcher
   btnHistory.addEventListener('click', () => {
     chrome.tabs.create({ url: chrome.runtime.getURL('preview/preview.html') });
   });
 
-  // Check current recording status
+  // Status check
   chrome.runtime.sendMessage({ action: 'GET_STATUS_REQUEST' }, (state) => {
     if (state && state.isRecording) {
       showRecordingView(state);
@@ -168,7 +175,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const res = state.options?.resolution || '1080p';
     const fps = state.options?.fps || 60;
-    recordingMeta.textContent = `${res} @ ${fps} FPS`;
+    const width = res === '720p' ? '1280 × 720' : '1920 × 1080';
+    const bitrate = (res === '1080p' && fps >= 60) ? '12 Mbps' : '8 Mbps';
+
+    recordingMeta.innerHTML = `
+      <span class="spec-pill">${width}</span>
+      <span class="spec-pill">${fps} FPS</span>
+      <span class="spec-pill accent">${bitrate}</span>
+    `;
 
     updatePauseResumeButton(state.isPaused);
     startTimer(state.startTime || Date.now());
@@ -194,32 +208,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       const mins = Math.floor((totalSec % 3600) / 60);
       const secs = totalSec % 60;
 
-      const fmt = [
+      recordingTimer.textContent = [
         hrs.toString().padStart(2, '0'),
         mins.toString().padStart(2, '0'),
         secs.toString().padStart(2, '0')
       ].join(':');
-
-      recordingTimer.textContent = fmt;
     }
 
     tick();
     timerInterval = setInterval(tick, 1000);
   }
 
-  // Handle Start Recording
+  // Start Action
   btnStart.addEventListener('click', async () => {
     btnStart.disabled = true;
     errorBanner.classList.add('hidden');
 
     let resolution = '1080p';
     let fps = 60;
-    if (selectedQuality === '1080p30') {
-      fps = 30;
-    } else if (selectedQuality === '720p60') {
-      resolution = '720p';
-      fps = 60;
-    }
+    if (selectedQuality === '1080p30') fps = 30;
+    else if (selectedQuality === '720p60') { resolution = '720p'; fps = 60; }
 
     const options = {
       resolution,
@@ -228,6 +236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       includeMic: checkMic.checked,
       enableHalo: checkHalo.checked,
       enableClickRipple: checkClickRipple.checked,
+      showFloatingDock: checkFloatingDock ? checkFloatingDock.checked : true,
       cursorTheme: selectedTheme
     };
 
@@ -249,30 +258,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Handle Stop Recording
+  // Stop Action
   btnStop.addEventListener('click', () => {
     btnStop.disabled = true;
-    chrome.runtime.sendMessage({ action: 'STOP_RECORDING_REQUEST' }, (response) => {
+    chrome.runtime.sendMessage({ action: 'STOP_RECORDING_REQUEST' }, () => {
       btnStop.disabled = false;
       showConfigView();
-      // Close popup automatically as preview tab will be opened
       window.close();
     });
   });
 
-  // Handle Pause / Resume
+  // Pause / Resume Action
   btnPauseResume.addEventListener('click', () => {
     chrome.runtime.sendMessage({ action: 'GET_STATUS_REQUEST' }, (state) => {
       if (!state || !state.isRecording) return;
-
       if (state.isPaused) {
-        chrome.runtime.sendMessage({ action: 'RESUME_RECORDING_REQUEST' }, () => {
-          updatePauseResumeButton(false);
-        });
+        chrome.runtime.sendMessage({ action: 'RESUME_RECORDING_REQUEST' }, () => updatePauseResumeButton(false));
       } else {
-        chrome.runtime.sendMessage({ action: 'PAUSE_RECORDING_REQUEST' }, () => {
-          updatePauseResumeButton(true);
-        });
+        chrome.runtime.sendMessage({ action: 'PAUSE_RECORDING_REQUEST' }, () => updatePauseResumeButton(true));
       }
     });
   });
