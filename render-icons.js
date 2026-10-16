@@ -1,0 +1,170 @@
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+const ICONS_DIR = path.join(__dirname, 'icons');
+const DIST_ICONS_DIR = path.join(__dirname, 'dist', 'icons');
+
+if (!fs.existsSync(ICONS_DIR)) fs.mkdirSync(ICONS_DIR, { recursive: true });
+if (!fs.existsSync(DIST_ICONS_DIR)) fs.mkdirSync(DIST_ICONS_DIR, { recursive: true });
+
+// Master Ultra-Luxury Cinema Aperture SVG (Leica / Apple Pro / Screen Studio Standard)
+const SVG_CONTENT = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Obsidian Chassis Gradient -->
+    <linearGradient id="opt_chassis" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181c2e" />
+      <stop offset="45%" stop-color="#0e101b" />
+      <stop offset="100%" stop-color="#040508" />
+    </linearGradient>
+
+    <!-- Specular Chamfer Top Edge -->
+    <linearGradient id="opt_rim" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4" />
+      <stop offset="20%" stop-color="#ffffff" stop-opacity="0.12" />
+      <stop offset="60%" stop-color="#ffffff" stop-opacity="0.0" />
+    </linearGradient>
+
+    <!-- Deep Ambient Ruby & Violet Dispersion Bloom -->
+    <radialGradient id="opt_bloom" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff2453" stop-opacity="0.75" />
+      <stop offset="42%" stop-color="#e11d48" stop-opacity="0.45" />
+      <stop offset="72%" stop-color="#7c3aed" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.0" />
+    </radialGradient>
+
+    <!-- Cinema Barrel Outer Titanium Stepped Ring -->
+    <linearGradient id="opt_barrelOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#323b52" />
+      <stop offset="50%" stop-color="#181c28" />
+      <stop offset="100%" stop-color="#0a0c14" />
+    </linearGradient>
+
+    <!-- Chromatic Anti-Reflective Coating Sheen (Zeiss / Leica Signature) -->
+    <linearGradient id="opt_coating" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.6" />
+      <stop offset="45%" stop-color="#a855f7" stop-opacity="0.4" />
+      <stop offset="80%" stop-color="#f43f5e" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.4" />
+    </linearGradient>
+
+    <!-- Radiant Cinema Ruby Lens Core (Volumetric 3D Shading) -->
+    <radialGradient id="opt_ruby" cx="34%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#ffa8ba" />
+      <stop offset="16%" stop-color="#ff2b58" />
+      <stop offset="52%" stop-color="#e11d48" />
+      <stop offset="82%" stop-color="#881337" />
+      <stop offset="100%" stop-color="#400312" />
+    </radialGradient>
+
+    <!-- Glass Specular Crescent (Upper Lens Glare) -->
+    <linearGradient id="opt_crescent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.88" />
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+    </linearGradient>
+
+    <!-- Soft Drop Shadow -->
+    <filter id="opt_shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="24" stdDeviation="32" flood-color="#000000" flood-opacity="0.75" />
+    </filter>
+
+    <!-- Neon Lens Glow Filter -->
+    <filter id="opt_glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- 1. Obsidian Titanium Squircle Chassis -->
+  <rect x="24" y="20" width="464" height="464" rx="116" fill="url(#opt_chassis)" filter="url(#opt_shadow)" />
+  <rect x="24" y="20" width="464" height="464" rx="116" fill="none" stroke="url(#opt_rim)" stroke-width="2.5" />
+
+  <!-- 2. Ambient Ruby & Ultraviolet Bloom -->
+  <circle cx="256" cy="252" r="195" fill="url(#opt_bloom)" />
+
+  <!-- 3. Outer Stepped Cinema Barrel (Diamond Cut) -->
+  <circle cx="256" cy="252" r="168" fill="url(#opt_barrelOuter)" stroke="rgba(255, 255, 255, 0.14)" stroke-width="2.5" />
+  <circle cx="256" cy="252" r="168" fill="none" stroke="url(#opt_rim)" stroke-width="1.5" />
+
+  <!-- 4. Chromatic Optical Lens Track -->
+  <circle cx="256" cy="252" r="150" fill="#0d1018" stroke="url(#opt_coating)" stroke-width="2.5" opacity="0.85" />
+
+  <!-- 5. Concentric Precision Aperture Ribs -->
+  <circle cx="256" cy="252" r="134" fill="#08090e" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+  <circle cx="256" cy="252" r="120" fill="none" stroke="rgba(255, 255, 255, 0.18)" stroke-width="1" />
+
+  <!-- 6. Inner Machined Titanium Bevel -->
+  <circle cx="256" cy="252" r="108" fill="#151926" stroke="rgba(255, 255, 255, 0.22)" stroke-width="2.5" />
+  <circle cx="256" cy="252" r="98" fill="#05060a" />
+
+  <!-- 7. Radiant Cinema Ruby Lens Core -->
+  <circle cx="256" cy="252" r="90" fill="url(#opt_ruby)" filter="url(#opt_glow)" />
+  <circle cx="256" cy="252" r="90" fill="none" stroke="rgba(255, 255, 255, 0.4)" stroke-width="2" />
+
+  <!-- 8. Curved Glass Specular Crescent (Leica Signature Glare) -->
+  <path d="M 172 234 A 90 90 0 0 1 340 234 Q 256 274 172 234 Z" fill="url(#opt_crescent)" />
+
+  <!-- 9. Secondary Bottom Flare (Internal Lens Caustic) -->
+  <ellipse cx="256" cy="322" rx="46" ry="8" fill="#ffffff" opacity="0.22" />
+
+  <!-- 10. Center Precision Optical Pupil -->
+  <circle cx="256" cy="252" r="40" fill="none" stroke="rgba(255, 255, 255, 0.55)" stroke-width="2" />
+  <circle cx="256" cy="252" r="20" fill="#ffffff" />
+  <circle cx="256" cy="252" r="20" fill="none" stroke="rgba(255, 255, 255, 0.95)" stroke-width="2.5" />
+  <circle cx="252" cy="248" r="7" fill="#ffffff" opacity="0.95" />
+</svg>`;
+
+// Write master SVG to icons/ and dist/icons/
+const svgPath = path.join(ICONS_DIR, 'icon.svg');
+fs.writeFileSync(svgPath, SVG_CONTENT);
+console.log('✓ Master icon.svg generated at:', svgPath);
+fs.writeFileSync(path.join(DIST_ICONS_DIR, 'icon.svg'), SVG_CONTENT);
+
+// Generate crisp PNGs using Chrome headless
+const SIZES = [16, 32, 48, 128];
+const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+
+if (fs.existsSync(chromePath)) {
+  console.log('\n🎨 Rendering ultra-crisp PNG icons using Chrome Headless...');
+  
+  for (const size of SIZES) {
+    const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; width: ${size}px; height: ${size}px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    svg { width: ${size}px; height: ${size}px; display: block; }
+  </style>
+</head>
+<body>
+  ${SVG_CONTENT}
+</body>
+</html>`;
+
+    const tempHtml = path.join(ICONS_DIR, `temp_${size}.html`);
+    const outPng = path.join(ICONS_DIR, `icon${size}.png`);
+    const distPng = path.join(DIST_ICONS_DIR, `icon${size}.png`);
+
+    fs.writeFileSync(tempHtml, htmlContent);
+
+    try {
+      const cmd = `"${chromePath}" --headless --disable-gpu --default-background-color=00000000 --window-size=${size},${size} --screenshot="${outPng}" "${tempHtml}"`;
+      execSync(cmd, { stdio: 'pipe' });
+
+      if (fs.existsSync(outPng)) {
+        fs.copyFileSync(outPng, distPng);
+        console.log(`  ✓ Generated icon${size}.png (${size}x${size})`);
+      }
+    } catch (e) {
+      console.warn(`  ⚠ Could not render ${size}x${size} via Chrome:`, e.message);
+    } finally {
+      if (fs.existsSync(tempHtml)) fs.unlinkSync(tempHtml);
+    }
+  }
+} else {
+  console.log('Chrome not found at standard path, preserving SVG master.');
+}
+
+console.log('\n✨ Master Cinema Aperture Icons successfully created and synced to dist/!\n');

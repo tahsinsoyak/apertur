@@ -8,10 +8,10 @@
 </head>
 <body>
   <div class="popup-wrapper">
-    <!-- Ambient Background Glow -->
+    <!-- Ambient Background Aura -->
     <div class="ambient-glow"></div>
 
-    <!-- Header -->
+    <!-- Clean Header -->
     <header class="app-header">
       <div class="brand-group">
         <div class="logo-mark">
@@ -23,17 +23,20 @@
             <h1>Tab Recorder</h1>
             <span class="pro-tag">STUDIO</span>
           </div>
-          <span class="subtitle">1080p Full HD Engine</span>
+          <span class="subtitle">1080p Ultra-HD Engine</span>
         </div>
       </div>
 
-      <button id="btnHistory" class="glass-icon-btn" title="Saved Recordings Library">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-        </svg>
-      </button>
+      <div class="header-actions">
+        <button id="btnHistory" class="glass-icon-btn" title="Saved Recordings Gallery">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+        </button>
+      </div>
     </header>
 
     <!-- Error Toast -->
@@ -46,20 +49,26 @@
         </svg>
         <span id="errorMessage"></span>
       </div>
-      <button id="btnDismissError" class="toast-close">&times;</button>
+      <div class="toast-actions">
+        <button id="btnResetTabLock" class="toast-action-btn hidden">🔄 Unlock & Refresh</button>
+        <button id="btnDismissError" class="toast-close">&times;</button>
+      </div>
     </div>
 
     <!-- Live Recording In-Progress View -->
     <section id="recordingView" class="view-panel recording-active-card hidden">
-      <div class="radar-hud">
-        <div class="radar-outer-ring"></div>
-        <div class="radar-inner-ring"></div>
-        <div class="radar-core"></div>
-      </div>
-
-      <div class="status-pill">
-        <span class="dot-blink"></span>
-        <span id="recordingStateLabel">RECORDING IN 1080P</span>
+      <div class="live-status-hud">
+        <div class="live-soundwaves">
+          <span class="sw-bar b1"></span>
+          <span class="sw-bar b2"></span>
+          <span class="sw-bar b3"></span>
+          <span class="sw-bar b4"></span>
+          <span class="sw-bar b5"></span>
+        </div>
+        <div class="status-pill">
+          <span class="dot-blink"></span>
+          <span id="recordingStateLabel">RECORDING IN 1080P</span>
+        </div>
       </div>
 
       <div class="timecode-display" id="recordingTimer">00:00:00</div>
@@ -67,6 +76,7 @@
       <div class="specs-pills" id="recordingMeta">
         <span class="spec-pill">1920 × 1080</span>
         <span class="spec-pill">60 FPS</span>
+        <span class="spec-pill">Window</span>
         <span class="spec-pill accent">12 Mbps</span>
       </div>
 
@@ -84,74 +94,88 @@
 
     <!-- Main Idle Configuration View -->
     <section id="configView" class="view-panel config-panel">
-      <!-- Resolution & FPS Selection -->
+      <!-- 1. Recording Scope Segmented Switcher -->
+      <div class="section-block">
+        <div class="section-title-row">
+          <span class="section-title">Recording Scope</span>
+          <span class="section-tag-pill">Survives Navigation</span>
+        </div>
+
+        <div class="scope-segmented-bar">
+          <button class="scope-card active" data-scope="continuous" id="scopeContinuous" title="Records entire browser window - survives all button clicks, URL navigations & redirects">
+            <span class="sc-icon">🪟</span>
+            <span class="sc-label">Window</span>
+            <span class="sc-badge">Pro</span>
+          </button>
+
+          <button class="scope-card" data-scope="screen" id="scopeScreen" title="Captures entire desktop monitor across all windows">
+            <span class="sc-icon">🖥️</span>
+            <span class="sc-label">Screen</span>
+          </button>
+
+          <button class="scope-card" data-scope="tab" id="scopeTab" title="Direct 1-click capture for single view (ends if page navigates)">
+            <span class="sc-icon">📄</span>
+            <span class="sc-label">Tab</span>
+          </button>
+        </div>
+
+        <!-- Dynamic Scope Guidance Subtitle -->
+        <div class="scope-guide-pill" id="scopeGuidePill">
+          <span class="guide-dot"></span>
+          <span id="scopeGuideText">Select Chrome Window — 100% survives all button clicks & redirects (BenchGen)</span>
+        </div>
+      </div>
+
+      <!-- 2. Video Quality Selector -->
       <div class="section-block">
         <div class="section-title-row">
           <span class="section-title">Video Quality</span>
-          <span class="section-note">Hardware Accelerated</span>
+          <span class="section-note">60 FPS Hardware Accelerated</span>
         </div>
-        <div class="quality-grid">
+
+        <div class="quality-segmented-bar">
           <button class="quality-card active" data-quality="1080p60">
-            <div class="qc-top">
-              <span class="qc-res">1080p</span>
-              <span class="qc-fps-tag">60 FPS</span>
-            </div>
-            <span class="qc-desc">Ultra Smooth • 12 Mbps</span>
+            <span class="qc-res-title">1080p</span>
+            <span class="qc-fps-tag">60 FPS</span>
           </button>
 
           <button class="quality-card" data-quality="1080p30">
-            <div class="qc-top">
-              <span class="qc-res">1080p</span>
-              <span class="qc-fps-tag muted">30 FPS</span>
-            </div>
-            <span class="qc-desc">Full HD • Standard</span>
+            <span class="qc-res-title">1080p</span>
+            <span class="qc-fps-tag muted">30 FPS</span>
           </button>
 
           <button class="quality-card" data-quality="720p60">
-            <div class="qc-top">
-              <span class="qc-res">720p</span>
-              <span class="qc-fps-tag muted">60 FPS</span>
-            </div>
-            <span class="qc-desc">Lightweight • Compact</span>
+            <span class="qc-res-title">720p</span>
+            <span class="qc-fps-tag muted">60 FPS</span>
           </button>
         </div>
       </div>
 
-      <!-- Audio Sources Selection -->
+      <!-- 3. Audio Inputs -->
       <div class="section-block">
         <span class="section-title">Audio Capture</span>
-        <div class="glass-list">
-          <label class="glass-row">
-            <div class="row-info">
-              <div class="row-icon-box">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                </svg>
-              </div>
-              <div class="row-text">
-                <span class="row-title">Tab Audio</span>
-                <span class="row-desc">Plays through speakers & captures in video</span>
-              </div>
+        <div class="audio-chips-row">
+          <label class="audio-chip" title="Capture audio playing inside the browser tab / system">
+            <div class="chip-left">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              </svg>
+              <span>Tab Audio</span>
             </div>
             <input type="checkbox" id="checkTabAudio" checked>
             <span class="custom-switch"></span>
           </label>
 
-          <label class="glass-row">
-            <div class="row-info">
-              <div class="row-icon-box">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                  <line x1="12" y1="19" x2="12" y2="23"/>
-                  <line x1="8" y1="23" x2="16" y2="23"/>
-                </svg>
-              </div>
-              <div class="row-text">
-                <span class="row-title">Microphone Commentary</span>
-                <span class="row-desc">Mix voice with tab audio in real-time</span>
-              </div>
+          <label class="audio-chip" title="Mix your voice microphone commentary into the video">
+            <div class="chip-left">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+              <span>Microphone</span>
             </div>
             <input type="checkbox" id="checkMic">
             <span class="custom-switch"></span>
@@ -159,73 +183,69 @@
         </div>
       </div>
 
-      <!-- Studio Cursor & Click Highlight Studio -->
+      <!-- 4. Studio Presentation FX & Cursor Spotlight -->
       <div class="section-block studio-effects-card">
-        <div class="effects-header">
+        <div class="effects-header" id="btnToggleEffects">
           <div class="effects-badge-title">
             <span class="sparkle-icon">✦</span>
-            <span>Presentation Effects</span>
+            <span>Presentation Cursor & Dock</span>
           </div>
           <span class="status-live-tag">Screen Studio Mode</span>
         </div>
 
-        <div class="glass-list transparent">
-          <label class="glass-row compact">
-            <div class="row-text">
-              <span class="row-title">Cursor Spotlight Halo</span>
-              <span class="row-desc">Luminous aura tracking pointer smoothly</span>
-            </div>
-            <input type="checkbox" id="checkHalo" checked>
-            <span class="custom-switch"></span>
-          </label>
+        <div class="effects-body" id="effectsBody">
+          <div class="toggles-grid">
+            <label class="glass-toggle-row">
+              <span class="gtr-label">Cursor Spotlight Aura</span>
+              <input type="checkbox" id="checkHalo" checked>
+              <span class="custom-switch"></span>
+            </label>
 
-          <label class="glass-row compact">
-            <div class="row-text">
-              <span class="row-title">Click Shockwave Ripple</span>
-              <span class="row-desc">Expanding pulse waves on mouse down</span>
-            </div>
-            <input type="checkbox" id="checkClickRipple" checked>
-            <span class="custom-switch"></span>
-          </label>
+            <label class="glass-toggle-row">
+              <span class="gtr-label">Click Ripple Waves</span>
+              <input type="checkbox" id="checkClickRipple" checked>
+              <span class="custom-switch"></span>
+            </label>
 
-          <label class="glass-row compact">
-            <div class="row-text">
-              <span class="row-title">Floating In-Tab Dock</span>
-              <span class="row-desc">Draggable timer & controls inside tab</span>
-            </div>
-            <input type="checkbox" id="checkFloatingDock" checked>
-            <span class="custom-switch"></span>
-          </label>
-        </div>
-
-        <!-- Color Themes Selector -->
-        <div class="theme-row">
-          <span class="theme-label">Aesthetic Theme:</span>
-          <div class="theme-pills">
-            <button class="theme-btn yellow active" data-theme="yellow" title="Amber Gold (Screen Studio)"></button>
-            <button class="theme-btn cyan" data-theme="cyan" title="Cyber Cyan"></button>
-            <button class="theme-btn violet" data-theme="violet" title="Hyper Violet"></button>
-            <button class="theme-btn red" data-theme="red" title="Crimson Neon"></button>
-            <button class="theme-btn green" data-theme="green" title="Emerald Pulse"></button>
+            <label class="glass-toggle-row">
+              <span class="gtr-label">In-Tab Floating Island</span>
+              <input type="checkbox" id="checkFloatingDock" checked>
+              <span class="custom-switch"></span>
+            </label>
           </div>
-        </div>
 
-        <!-- Interactive Sandbox Inside Popup -->
-        <div id="testClickArea" class="interactive-sandbox" title="Click anywhere here to preview halo & shockwave!">
-          <div class="sandbox-halo-preview" id="sandboxHalo"></div>
-          <div class="sandbox-text">
-            <span>✨ Move mouse & click here to test effect</span>
+          <!-- Color Themes Palette -->
+          <div class="theme-row">
+            <span class="theme-label">Aura Palette:</span>
+            <div class="theme-pills">
+              <button class="theme-btn yellow active" data-theme="yellow" title="Amber Gold (Screen Studio)"></button>
+              <button class="theme-btn cyan" data-theme="cyan" title="Cyber Cyan"></button>
+              <button class="theme-btn violet" data-theme="violet" title="Neon Violet"></button>
+              <button class="theme-btn red" data-theme="red" title="Crimson Glow"></button>
+              <button class="theme-btn green" data-theme="green" title="Emerald Pulse"></button>
+            </div>
+          </div>
+
+          <!-- Interactive Micro Preview Sandbox -->
+          <div id="testClickArea" class="interactive-sandbox" title="Move & click here to test aura & ripples!">
+            <div class="sandbox-halo-preview" id="sandboxHalo"></div>
+            <div class="sandbox-text">
+              <span>✨ Hover & click to preview effect</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Big Neon Action Button -->
+      <!-- 5. Hero Studio Record Button -->
       <button id="btnStart" class="neon-record-btn">
+        <span class="rec-button-shimmer"></span>
         <span class="rec-ring-outer">
           <span class="rec-dot-inner"></span>
         </span>
-        <span class="btn-text">Start 1080p Recording</span>
-        <span class="btn-subtext">1920 × 1080 • 60 FPS</span>
+        <div class="btn-text-group">
+          <span class="btn-text">Start Studio Recording</span>
+          <span class="btn-subtext">1920 × 1080 • 60 FPS</span>
+        </div>
       </button>
     </section>
   </div>

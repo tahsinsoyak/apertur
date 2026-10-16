@@ -1,5 +1,6 @@
 /* ==========================================================================
    Tab Recorder HD - Studio Grade Cursor, Click Shockwave & Floating Dock
+   Screen Studio & Dynamic Island Inspired
    ========================================================================== */
 
 #tab-recorder-cursor-host {
@@ -16,117 +17,96 @@
 }
 
 /* --------------------------------------------------------------------------
-   1. Dynamic Spotlight Halo (Buttery Smooth Screen Studio Style)
+   1. Optical Lens Spotlight Halo (Screen Studio Signature)
    -------------------------------------------------------------------------- */
 .tab-rec-cursor-halo {
   position: fixed !important;
   pointer-events: none !important;
   user-select: none !important;
-  width: 48px !important;
-  height: 48px !important;
+  width: 46px !important;
+  height: 46px !important;
   border-radius: 50% !important;
   transform: translate(-50%, -50%) !important;
-  top: 0 !important;
-  left: 0 !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  display: none !important;
   will-change: transform, left, top !important;
   transition: width 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), 
               height 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              opacity 0.25s ease, 
-              box-shadow 0.2s ease !important;
+              opacity 0.25s ease !important;
   box-sizing: border-box !important;
 }
 
-/* Precision Target Center Core */
+/* Subtle Optical Precision Core */
 .tab-rec-cursor-halo::before {
   content: '' !important;
   position: absolute !important;
   inset: 50% !important;
-  width: 6px !important;
-  height: 6px !important;
+  width: 5px !important;
+  height: 5px !important;
   transform: translate(-50%, -50%) !important;
   border-radius: 50% !important;
   background: #ffffff !important;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 0 2px rgba(0, 0, 0, 0.8) !important;
   opacity: 0.9 !important;
   transition: transform 0.15s ease !important;
 }
 
-/* Secondary Inner Ring */
-.tab-rec-cursor-halo::after {
-  content: '' !important;
-  position: absolute !important;
-  inset: 6px !important;
-  border-radius: 50% !important;
-  border: 1px dashed rgba(255, 255, 255, 0.4) !important;
-  opacity: 0.7 !important;
-  animation: tabRecRotateRing 12s linear infinite !important;
-}
-
-@keyframes tabRecRotateRing {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 /* Active Holding / MouseDown Compression State */
 .tab-rec-cursor-halo.is-pressed {
-  width: 36px !important;
-  height: 36px !important;
+  width: 34px !important;
+  height: 34px !important;
   opacity: 1 !important;
-  filter: brightness(1.3) !important;
+  filter: brightness(1.2) !important;
 }
 
 .tab-rec-cursor-halo.is-pressed::before {
-  transform: translate(-50%, -50%) scale(1.4) !important;
+  transform: translate(-50%, -50%) scale(1.3) !important;
 }
 
 /* ---- Color Themes ---- */
 /* 1. Amber Gold (Screen Studio signature aesthetic) */
 .tab-rec-cursor-halo.theme-yellow {
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.38) 0%, rgba(217, 119, 6, 0.22) 50%, rgba(245, 158, 11, 0) 75%) !important;
-  border: 2px solid rgba(251, 191, 36, 0.9) !important;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.65), 
-              0 0 40px rgba(217, 119, 6, 0.25), 
-              inset 0 0 10px rgba(254, 240, 138, 0.5) !important;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, rgba(217, 119, 6, 0.18) 50%, rgba(245, 158, 11, 0) 75%) !important;
+  border: 1.5px solid rgba(251, 191, 36, 0.85) !important;
+  box-shadow: 0 0 22px rgba(245, 158, 11, 0.55), 
+              inset 0 0 10px rgba(254, 240, 138, 0.4) !important;
 }
 
 /* 2. Cyber Cyan */
 .tab-rec-cursor-halo.theme-cyan {
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.38) 0%, rgba(14, 165, 233, 0.22) 50%, rgba(6, 182, 212, 0) 75%) !important;
-  border: 2px solid rgba(56, 189, 248, 0.9) !important;
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.65), 
-              0 0 40px rgba(14, 165, 233, 0.25), 
-              inset 0 0 10px rgba(186, 230, 253, 0.5) !important;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.35) 0%, rgba(14, 165, 233, 0.18) 50%, rgba(6, 182, 212, 0) 75%) !important;
+  border: 1.5px solid rgba(56, 189, 248, 0.85) !important;
+  box-shadow: 0 0 22px rgba(6, 182, 212, 0.55), 
+              inset 0 0 10px rgba(186, 230, 253, 0.4) !important;
 }
 
 /* 3. Hyper Violet */
 .tab-rec-cursor-halo.theme-violet {
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.38) 0%, rgba(147, 51, 234, 0.22) 50%, rgba(168, 85, 247, 0) 75%) !important;
-  border: 2px solid rgba(192, 132, 252, 0.9) !important;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.65), 
-              0 0 40px rgba(147, 51, 234, 0.25), 
-              inset 0 0 10px rgba(243, 232, 255, 0.5) !important;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(147, 51, 234, 0.18) 50%, rgba(168, 85, 247, 0) 75%) !important;
+  border: 1.5px solid rgba(192, 132, 252, 0.85) !important;
+  box-shadow: 0 0 22px rgba(168, 85, 247, 0.55), 
+              inset 0 0 10px rgba(243, 232, 255, 0.4) !important;
 }
 
 /* 4. Crimson Neon */
 .tab-rec-cursor-halo.theme-red {
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.38) 0%, rgba(220, 38, 38, 0.22) 50%, rgba(239, 68, 68, 0) 75%) !important;
-  border: 2px solid rgba(248, 113, 113, 0.9) !important;
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.65), 
-              0 0 40px rgba(220, 38, 38, 0.25), 
-              inset 0 0 10px rgba(254, 202, 202, 0.5) !important;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(220, 38, 38, 0.18) 50%, rgba(239, 68, 68, 0) 75%) !important;
+  border: 1.5px solid rgba(248, 113, 113, 0.85) !important;
+  box-shadow: 0 0 22px rgba(239, 68, 68, 0.55), 
+              inset 0 0 10px rgba(254, 202, 202, 0.4) !important;
 }
 
 /* 5. Emerald Pulse */
 .tab-rec-cursor-halo.theme-green {
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.38) 0%, rgba(22, 163, 74, 0.22) 50%, rgba(34, 197, 94, 0) 75%) !important;
-  border: 2px solid rgba(74, 222, 128, 0.9) !important;
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.65), 
-              0 0 40px rgba(22, 163, 74, 0.25), 
-              inset 0 0 10px rgba(220, 252, 231, 0.5) !important;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.18) 50%, rgba(16, 185, 129, 0) 75%) !important;
+  border: 1.5px solid rgba(52, 211, 153, 0.85) !important;
+  box-shadow: 0 0 22px rgba(16, 185, 129, 0.55), 
+              inset 0 0 10px rgba(209, 250, 229, 0.4) !important;
 }
 
 /* --------------------------------------------------------------------------
-   2. Cinematic Multi-Layer Click Shockwave Ripples
+   2. Water-Drop Concentric Click Shockwave Ripples
    -------------------------------------------------------------------------- */
 .tab-rec-shockwave {
   position: fixed !important;
@@ -134,68 +114,20 @@
   user-select: none !important;
   border-radius: 50% !important;
   transform: translate(-50%, -50%) !important;
-  box-sizing: border-box !important;
-  will-change: width, height, transform, opacity !important;
+  animation: tabRecShockwaveExpand 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  will-change: transform, opacity !important;
+  z-index: 2147483641 !important;
 }
 
-/* Outer Shockwave Ring */
-.tab-rec-shockwave.ring {
-  animation: tabRecShockwaveExpand 0.55s cubic-bezier(0.12, 0.8, 0.28, 1) forwards !important;
-}
-
-/* Inner Bloom Wave */
-.tab-rec-shockwave.bloom {
-  animation: tabRecBloomExpand 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-}
-
-/* Theme variations for shockwave */
-.tab-rec-shockwave.theme-yellow.ring {
-  border: 2.5px solid rgba(251, 191, 36, 0.95) !important;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.8), 0 0 32px rgba(245, 158, 11, 0.4) !important;
-}
-.tab-rec-shockwave.theme-yellow.bloom {
-  background: radial-gradient(circle, rgba(253, 230, 138, 0.6) 0%, rgba(245, 158, 11, 0.2) 50%, transparent 80%) !important;
-}
-
-.tab-rec-shockwave.theme-cyan.ring {
-  border: 2.5px solid rgba(56, 189, 248, 0.95) !important;
-  box-shadow: 0 0 16px rgba(6, 182, 212, 0.8), 0 0 32px rgba(6, 182, 212, 0.4) !important;
-}
-.tab-rec-shockwave.theme-cyan.bloom {
-  background: radial-gradient(circle, rgba(186, 230, 253, 0.6) 0%, rgba(6, 182, 212, 0.2) 50%, transparent 80%) !important;
-}
-
-.tab-rec-shockwave.theme-violet.ring {
-  border: 2.5px solid rgba(192, 132, 252, 0.95) !important;
-  box-shadow: 0 0 16px rgba(168, 85, 247, 0.8), 0 0 32px rgba(168, 85, 247, 0.4) !important;
-}
-.tab-rec-shockwave.theme-violet.bloom {
-  background: radial-gradient(circle, rgba(243, 232, 255, 0.6) 0%, rgba(168, 85, 247, 0.2) 50%, transparent 80%) !important;
-}
-
-.tab-rec-shockwave.theme-red.ring {
-  border: 2.5px solid rgba(248, 113, 113, 0.95) !important;
-  box-shadow: 0 0 16px rgba(239, 68, 68, 0.8), 0 0 32px rgba(239, 68, 68, 0.4) !important;
-}
-.tab-rec-shockwave.theme-red.bloom {
-  background: radial-gradient(circle, rgba(254, 202, 202, 0.6) 0%, rgba(239, 68, 68, 0.2) 50%, transparent 80%) !important;
-}
-
-.tab-rec-shockwave.theme-green.ring {
-  border: 2.5px solid rgba(74, 222, 128, 0.95) !important;
-  box-shadow: 0 0 16px rgba(34, 197, 94, 0.8), 0 0 32px rgba(34, 197, 94, 0.4) !important;
-}
-.tab-rec-shockwave.theme-green.bloom {
-  background: radial-gradient(circle, rgba(220, 252, 231, 0.6) 0%, rgba(34, 197, 94, 0.2) 50%, transparent 80%) !important;
-}
-
-/* Right Click Distinct Highlight */
-.tab-rec-shockwave.right-click.ring {
-  border-color: rgba(236, 72, 153, 0.95) !important;
-  box-shadow: 0 0 20px rgba(236, 72, 153, 0.9) !important;
-}
-.tab-rec-shockwave.right-click.bloom {
-  background: radial-gradient(circle, rgba(244, 114, 182, 0.6) 0%, transparent 70%) !important;
+.tab-rec-shockwave-bloom {
+  position: fixed !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  border-radius: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  animation: tabRecBloomExpand 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  will-change: transform, opacity !important;
+  z-index: 2147483641 !important;
 }
 
 @keyframes tabRecShockwaveExpand {
@@ -206,13 +138,13 @@
     transform: translate(-50%, -50%) scale(0.3);
   }
   40% {
-    opacity: 0.9;
+    opacity: 0.85;
   }
   100% {
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.6);
+    transform: translate(-50%, -50%) scale(1.5);
   }
 }
 
@@ -220,19 +152,19 @@
   0% {
     width: 8px;
     height: 8px;
-    opacity: 0.85;
+    opacity: 0.9;
     transform: translate(-50%, -50%) scale(0.2);
   }
   100% {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.3);
+    transform: translate(-50%, -50%) scale(1.2);
   }
 }
 
 /* --------------------------------------------------------------------------
-   3. Floating In-Tab Glass Recording Dock (Loom / Screen Studio Style)
+   3. Floating Dynamic Island Recording Dock (Screen Studio Style)
    -------------------------------------------------------------------------- */
 #tab-rec-floating-dock {
   position: fixed !important;
@@ -243,19 +175,20 @@
   user-select: none !important;
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
-  background: rgba(13, 15, 23, 0.88) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  gap: 8px !important;
+  background: rgba(11, 13, 19, 0.88) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 9999px !important;
-  padding: 6px 14px 6px 8px !important;
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 
-              0 0 1px 1px rgba(255, 255, 255, 0.08) inset !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  padding: 5px 8px 5px 8px !important;
+  box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.65), 
+              0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif !important;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
               opacity 0.25s ease, 
-              box-shadow 0.2s ease !important;
+              box-shadow 0.2s ease,
+              padding 0.2s ease !important;
   cursor: grab !important;
 }
 
@@ -264,27 +197,34 @@
 }
 
 #tab-rec-floating-dock:hover {
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 14px 36px -4px rgba(0, 0, 0, 0.7), 
-              0 0 1px 1px rgba(255, 255, 255, 0.15) inset !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 16px 42px -4px rgba(0, 0, 0, 0.75), 
+              0 0 0 1px rgba(255, 255, 255, 0.14) inset !important;
 }
 
-/* Drag Handle / Dot */
+/* Drag Handle */
 .tab-rec-dock-handle {
   display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 14px !important;
+  gap: 2.5px !important;
+  width: 10px !important;
   height: 20px !important;
-  opacity: 0.4 !important;
+  opacity: 0.35 !important;
   cursor: grab !important;
+  padding: 0 2px !important;
 }
 
-.tab-rec-dock-handle::before {
-  content: '⋮⋮' !important;
-  font-size: 11px !important;
-  color: #ffffff !important;
-  letter-spacing: -1px !important;
+.tab-rec-dock-handle:hover {
+  opacity: 0.8 !important;
+}
+
+.tab-rec-grip-dot {
+  width: 3px !important;
+  height: 3px !important;
+  background: #ffffff !important;
+  border-radius: 50% !important;
 }
 
 /* Pulsing Recording Pill */
@@ -292,15 +232,15 @@
   display: flex !important;
   align-items: center !important;
   gap: 6px !important;
-  background: rgba(239, 68, 68, 0.16) !important;
-  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  background: rgba(239, 68, 68, 0.14) !important;
+  border: 1px solid rgba(239, 68, 68, 0.35) !important;
   border-radius: 9999px !important;
-  padding: 3px 8px !important;
+  padding: 3px 9px !important;
 }
 
 .tab-rec-dock-dot {
-  width: 8px !important;
-  height: 8px !important;
+  width: 7px !important;
+  height: 7px !important;
   background: #ef4444 !important;
   border-radius: 50% !important;
   box-shadow: 0 0 8px #ef4444 !important;
@@ -312,52 +252,120 @@
   50% { opacity: 0.3; transform: scale(0.8); }
 }
 
+/* Live Equalizer Soundwaves */
+.tab-rec-dock-waves {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  height: 12px !important;
+}
+
+.tab-rec-wave {
+  width: 2px !important;
+  background: #f87171 !important;
+  border-radius: 9999px !important;
+  animation: tabRecEqualizer 0.9s ease-in-out infinite !important;
+}
+
+.tab-rec-wave.w1 { height: 4px !important; animation-delay: 0.1s !important; }
+.tab-rec-wave.w2 { height: 10px !important; animation-delay: 0.3s !important; }
+.tab-rec-wave.w3 { height: 6px !important; animation-delay: 0.2s !important; }
+
+@keyframes tabRecEqualizer {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
 .tab-rec-dock-time {
   font-size: 12px !important;
   font-weight: 700 !important;
   font-variant-numeric: tabular-nums !important;
   color: #f87171 !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 0.4px !important;
 }
 
 .tab-rec-dock-res {
-  font-size: 10px !important;
-  font-weight: 700 !important;
-  color: #60a5fa !important;
-  background: rgba(59, 130, 246, 0.14) !important;
-  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.12) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
   padding: 2px 6px !important;
-  border-radius: 6px !important;
+  border-radius: 5px !important;
+  letter-spacing: 0.5px !important;
 }
 
 /* Actions in Dock */
 .tab-rec-dock-btn {
   background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   color: #f3f4f6 !important;
-  width: 28px !important;
-  height: 28px !important;
-  border-radius: 50% !important;
+  height: 26px !important;
+  border-radius: 9999px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
   transition: all 0.15s ease !important;
-  padding: 0 !important;
+  padding: 0 8px !important;
 }
 
 .tab-rec-dock-btn:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-  transform: scale(1.08) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  transform: translateY(-1px) !important;
+}
+
+.tab-rec-dock-btn#btnDockPause {
+  width: 26px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
 }
 
 .tab-rec-dock-btn.stop {
-  background: #ef4444 !important;
-  border-color: #ef4444 !important;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5) !important;
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.45) !important;
+  gap: 5px !important;
+  padding: 0 10px !important;
 }
 
 .tab-rec-dock-btn.stop:hover {
-  background: #dc2626 !important;
-  box-shadow: 0 0 14px rgba(239, 68, 68, 0.7) !important;
+  filter: brightness(1.1) !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.65) !important;
+}
+
+.tab-rec-stop-label {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+}
+
+.tab-rec-dock-btn.min {
+  width: 22px !important;
+  height: 22px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  opacity: 0.5 !important;
+}
+
+.tab-rec-dock-btn.min:hover {
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Minimized Dock State */
+#tab-rec-floating-dock.minimized .tab-rec-dock-handle,
+#tab-rec-floating-dock.minimized .tab-rec-dock-res,
+#tab-rec-floating-dock.minimized .tab-rec-dock-waves,
+#tab-rec-floating-dock.minimized #btnDockPause,
+#tab-rec-floating-dock.minimized #btnDockStop,
+#tab-rec-floating-dock.minimized .tab-rec-dock-btn.min {
+  display: none !important;
+}
+
+#tab-rec-floating-dock.minimized {
+  padding: 4px 8px !important;
+  cursor: pointer !important;
 }
