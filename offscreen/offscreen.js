@@ -1,5 +1,5 @@
 /**
- * Offscreen Document Script for 1080p Tab Video & Audio Recording
+ * Offscreen Document Script for 1080p Video & Audio Recording
  */
 
 let mediaRecorder = null;
@@ -9,9 +9,9 @@ let rawTabStream = null;
 let micStream = null;
 let audioContext = null;
 let recordingStartTime = 0;
-let recordingDuration = 0;
-let recordingTimerInterval = null;
 let recordingOptions = {};
+let isSavingRecording = false;
+let pendingStopResolvers = [];
 
 // Select best supported mimeType for high quality
 function getSupportedMimeType() {
@@ -30,12 +30,100 @@ function getSupportedMimeType() {
 }
 
 /**
- * Starts recording a tab at 1080p Full HD
+ * Acquires the video/audio stream for Tab, Window, or Screen mode
+ */
+async function acquireCaptureStream({
+  streamId,
+  mediaSource,
+  captureMode,
+  width,
+  height,
+  fps,
+  includeTabAudio
+}) {
+  // 1. If we have a streamId from tabCapture or desktopCapture
+  if (streamId) {
+    const videoMandatory = {
+      chromeMediaSource: mediaSource,
+      chromeMediaSourceId: streamId,
+      maxWidth: width,
+      maxHeight: height,
+      maxFrameRate: fps
+    };
+
+    if (includeTabAudio) {
+      try {
+        return await navigator.mediaDevices.getUserMedia({
+          audio: {
+            mandatory: {
+              chromeMediaSource: mediaSource,
+              chromeMediaSourceId: streamId
+            }
+          },
+          video: { mandatory: videoMandatory }
+        });
+      } catch (audioErr) {
+        console.warn('Audio track not available on this source, retrying video-only:', audioErr);
+      }
+    }
+
+    try {
+      return await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: { mandatory: videoMandatory }
+      });
+    } catch (videoErr) {
+      console.warn('getUserMedia with streamId failed, falling back to getDisplayMedia:', videoErr);
+    }
+  }
+
+  // 2. Direct getDisplayMedia (Manifest V3 DISPLAY_MEDIA offscreen reason)
+  const displaySurface = captureMode === 'screen' ? 'monitor' : 'window';
+  try {
+    return await navigator.mediaDevices.getDisplayMedia({
+      video: {
+        displaySurface,
+        width: { ideal: width },
+        height: { ideal: height },
+        frameRate: { ideal: fps }
+      },
+      audio: Boolean(includeTabAudio)
+    });
+  } catch (displayErr) {
+    if (displayErr && displayErr.name === 'NotAllowedError') {
+      throw displayErr;
+    }
+    console.warn('Primary getDisplayMedia constraints failed, retrying with basic video constraints:', displayErr?.message || displayErr);
+    return await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: false
+    });
+  }
+}
+
+/**
+ * Starts recording at 1080p / 720p
  */
 async function startRecording(message) {
   try {
-    const { streamId, resolution = '1080p', fps = 60, includeTabAudio = true, includeMic = false } = message;
-    recordingOptions = { resolution, fps, includeTabAudio, includeMic };
+    // Clean up any leftover state from a previous session
+    cleanupAllResources();
+    isSavingRecording = false;
+    recordedChunks = [];
+    pendingStopResolvers = [];
+
+    const {
+      streamId = null,
+      mediaSource = 'desktop',
+      captureMode = 'continuous',
+      resolution = '1080p',
+      fps = 60,
+      includeTabAudio = true,
+      includeMic = false,
+      enableCountdown = false
+    } = message;
+
+    recordingOptions = { resolution, fps, includeTabAudio, includeMic, mediaSource, captureMode };
 
     let width = 1920;
     let height = 1080;
@@ -46,55 +134,53 @@ async function startRecording(message) {
 
     const videoBitrate = (resolution === '1080p' && fps >= 60) ? 12000000 : 8000000;
 
-    // 1. Capture the tab stream via streamId
-    rawTabStream = await navigator.mediaDevices.getUserMedia({
-      audio: includeTabAudio ? {
-        mandatory: {
-          chromeMediaSource: 'tab',
-          chromeMediaSourceId: streamId
-        }
-      } : false,
-      video: {
-        mandatory: {
-          chromeMediaSource: 'tab',
-          chromeMediaSourceId: streamId,
-          minWidth: width,
-          maxWidth: width,
-          minHeight: height,
-          maxHeight: height,
-          minFrameRate: fps,
-          maxFrameRate: fps
-        }
-      }
+    // 1. Capture the media stream
+    rawTabStream = await acquireCaptureStream({
+      streamId,
+      mediaSource,
+      captureMode,
+      width,
+      height,
+      fps,
+      includeTabAudio
     });
 
     audioContext = new AudioContext();
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume().catch(() => {});
+    }
     const audioDestination = audioContext.createMediaStreamDestination();
+    let hasAnyAudioSource = false;
 
-    // 2. Tab Audio routing (prevent tab audio from going silent to the user)
+    // 2. System / Tab Audio routing
     const tabAudioTracks = rawTabStream.getAudioTracks();
     if (includeTabAudio && tabAudioTracks.length > 0) {
       const tabAudioSource = audioContext.createMediaStreamSource(new MediaStream(tabAudioTracks));
-      // Connect to speakers so user can still hear tab
-      tabAudioSource.connect(audioContext.destination);
-      // Connect to recorder
+      // Connect to speakers ONLY for tabCapture (tabCapture mutes the tab by default)
+      if (mediaSource === 'tab') {
+        tabAudioSource.connect(audioContext.destination);
+      }
       tabAudioSource.connect(audioDestination);
+      hasAnyAudioSource = true;
     }
 
     // 3. Optional Microphone mixing
     if (includeMic) {
       try {
         micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const micSource = audioContext.createMediaStreamSource(micStream);
-        micSource.connect(audioDestination);
+        if (micStream.getAudioTracks().length > 0) {
+          const micSource = audioContext.createMediaStreamSource(micStream);
+          micSource.connect(audioDestination);
+          hasAnyAudioSource = true;
+        }
       } catch (err) {
-        console.warn('Microphone permission or capture failed, continuing with tab audio only:', err);
+        console.warn('Microphone capture unavailable, continuing without mic:', err);
       }
     }
 
-    // 4. Combine video tracks with destination audio
+    // 4. Combine video tracks with mixed audio (only attach audio track if a real audio source exists)
     const outputTracks = [...rawTabStream.getVideoTracks()];
-    if (includeTabAudio || includeMic) {
+    if (hasAnyAudioSource) {
       const mixedAudioTracks = audioDestination.stream.getAudioTracks();
       if (mixedAudioTracks.length > 0) {
         outputTracks.push(mixedAudioTracks[0]);
@@ -103,14 +189,32 @@ async function startRecording(message) {
 
     combinedStream = new MediaStream(outputTracks);
 
-    // Watch for stream termination
-    combinedStream.getVideoTracks()[0].onended = () => {
-      console.log('Tab video track ended');
-      stopRecording();
-    };
+    // Watch for stream termination (e.g. user clicks "Stop Sharing" on Chrome's native bar)
+    const videoTracks = rawTabStream.getVideoTracks();
+    if (videoTracks.length > 0) {
+      videoTracks[0].onended = () => {
+        console.log('Video stream track ended by user/browser. Auto-saving recording...');
+        stopRecording();
+      };
+    }
 
-    // 5. Initialize MediaRecorder
-    recordedChunks = [];
+    // 5. Optional 3-Second Countdown on page right after user selects window/tab
+    if (enableCountdown) {
+      try {
+        await chrome.runtime.sendMessage({
+          action: 'RUN_TAB_COUNTDOWN',
+          seconds: 3
+        });
+      } catch (_) {}
+    }
+
+    // Verify stream wasn't cancelled by user during the 3-second countdown
+    if (!rawTabStream || videoTracks.length === 0 || videoTracks[0].readyState === 'ended') {
+      cleanupAllResources();
+      return { success: false, error: 'Screen or window selection was cancelled.' };
+    }
+
+    // 6. Initialize MediaRecorder
     const mimeType = getSupportedMimeType();
 
     mediaRecorder = new MediaRecorder(combinedStream, {
@@ -125,40 +229,59 @@ async function startRecording(message) {
     };
 
     mediaRecorder.onstop = async () => {
-      await handleRecordingFinished(mimeType);
+      await finalizeAndSaveRecording(mimeType);
     };
 
-    // Collect data every second for smooth memory handling
-    mediaRecorder.start(1000);
+    // Collect chunks every 250ms so even short recordings have complete data
+    mediaRecorder.start(250);
     recordingStartTime = Date.now();
 
-    // Notify background that recording started successfully
     chrome.runtime.sendMessage({
       action: 'RECORDING_STARTED_CONFIRMED',
       resolution: `${width}x${height}`,
       fps
-    });
+    }).catch(() => {});
 
     return { success: true };
   } catch (error) {
-    console.error('Failed to start recording in offscreen document:', error);
-    chrome.runtime.sendMessage({
-      action: 'RECORDING_FAILED',
-      error: error.message || 'Failed to capture tab media stream.'
-    });
-    cleanupResources();
-    return { success: false, error: error.message };
+    const errName = error?.name || 'Error';
+    const errMsg = error?.message || 'Failed to capture media stream.';
+    console.warn(`Recording start stopped (${errName}): ${errMsg}`);
+    cleanupAllResources();
+    const friendlyError = errName === 'NotAllowedError'
+      ? 'Screen or window selection was cancelled.'
+      : errMsg;
+    return { success: false, error: friendlyError };
+  }
+}
+
+function resolveAllPendingStops(result) {
+  const resolvers = pendingStopResolvers.slice();
+  pendingStopResolvers = [];
+  for (const fn of resolvers) {
+    try { fn(result); } catch (_) {}
   }
 }
 
 /**
  * Handle stopping recording and saving to IndexedDB
  */
-async function handleRecordingFinished(mimeType) {
+async function finalizeAndSaveRecording(mimeType = 'video/webm') {
+  if (isSavingRecording) return;
+  isSavingRecording = true;
+  console.log('finalizeAndSaveRecording: recordedChunks count:', recordedChunks ? recordedChunks.length : 0);
+
   try {
+    if (!recordedChunks || recordedChunks.length === 0) {
+      console.warn('No recorded chunks found to save.');
+      cleanupAllResources();
+      resolveAllPendingStops({ success: false, error: 'No video frames recorded' });
+      return;
+    }
+
     const finalBlob = new Blob(recordedChunks, { type: mimeType });
     const recordingId = 'rec_' + Date.now();
-    const duration = Date.now() - recordingStartTime;
+    const duration = Math.max(1000, Date.now() - recordingStartTime);
 
     const recordingRecord = {
       id: recordingId,
@@ -172,24 +295,33 @@ async function handleRecordingFinished(mimeType) {
     };
 
     if (window.RecorderDB) {
+      console.log('Saving to IndexedDB...', recordingId, finalBlob.size, 'bytes');
       await window.RecorderDB.saveRecording(recordingRecord);
+      console.log('Saved to IndexedDB and committed to disk:', recordingId);
     }
 
-    chrome.runtime.sendMessage({
+    cleanupAllResources();
+
+    // Notify background to open preview tab with saved video
+    await chrome.runtime.sendMessage({
       action: 'RECORDING_FINISHED_SUCCESS',
       recordingId,
       duration,
       size: finalBlob.size,
       resolution: recordingOptions.resolution || '1080p'
-    });
+    }).catch(() => {});
+
+    resolveAllPendingStops({ success: true, recordingId });
   } catch (error) {
     console.error('Error saving recording to DB:', error);
-    chrome.runtime.sendMessage({
+    await chrome.runtime.sendMessage({
       action: 'RECORDING_FAILED',
-      error: 'Failed to process and save recorded video.'
-    });
+      error: 'Failed to process and save recorded video: ' + error.message
+    }).catch(() => {});
+    resolveAllPendingStops({ success: false, error: error.message });
   } finally {
-    cleanupResources();
+    isSavingRecording = false;
+    cleanupAllResources();
   }
 }
 
@@ -210,27 +342,55 @@ function resumeRecording() {
 }
 
 function stopRecording() {
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    mediaRecorder.stop();
-    return { success: true };
-  }
-  cleanupResources();
-  return { success: false };
+  console.log('offscreen.js: stopRecording requested. isSavingRecording:', isSavingRecording);
+
+  return new Promise((resolve) => {
+    pendingStopResolvers.push(resolve);
+
+    if (isSavingRecording) {
+      return;
+    }
+
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      try {
+        if (mediaRecorder.state === 'recording') {
+          try { mediaRecorder.requestData(); } catch (_) {}
+        }
+        mediaRecorder.stop();
+        return;
+      } catch (e) {
+        console.warn('Error calling mediaRecorder.stop():', e);
+      }
+    }
+
+    finalizeAndSaveRecording(getSupportedMimeType());
+  });
 }
 
-function cleanupResources() {
+function cleanupCaptureTracks() {
   if (rawTabStream) {
-    rawTabStream.getTracks().forEach((track) => track.stop());
+    rawTabStream.getTracks().forEach((track) => {
+      try { track.stop(); } catch (e) {}
+    });
     rawTabStream = null;
   }
   if (micStream) {
-    micStream.getTracks().forEach((track) => track.stop());
+    micStream.getTracks().forEach((track) => {
+      try { track.stop(); } catch (e) {}
+    });
     micStream = null;
   }
   if (combinedStream) {
-    combinedStream.getTracks().forEach((track) => track.stop());
+    combinedStream.getTracks().forEach((track) => {
+      try { track.stop(); } catch (e) {}
+    });
     combinedStream = null;
   }
+}
+
+function cleanupAllResources() {
+  cleanupCaptureTracks();
+
   if (audioContext && audioContext.state !== 'closed') {
     audioContext.close().catch(() => {});
     audioContext = null;
@@ -240,33 +400,33 @@ function cleanupResources() {
 
 // Message Dispatcher
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.target !== 'offscreen') return;
+  if (message.target !== 'offscreen') return false;
 
   switch (message.action) {
     case 'START_RECORDING':
       startRecording(message).then(sendResponse);
-      return true; // async sendResponse
+      return true;
 
     case 'PAUSE_RECORDING':
       sendResponse(pauseRecording());
-      break;
+      return false;
 
     case 'RESUME_RECORDING':
       sendResponse(resumeRecording());
-      break;
+      return false;
 
     case 'STOP_RECORDING':
-      sendResponse(stopRecording());
-      break;
+      stopRecording().then(sendResponse);
+      return true;
 
     case 'GET_RECORDING_STATUS':
       sendResponse({
         state: mediaRecorder ? mediaRecorder.state : 'inactive',
         duration: recordingStartTime ? Date.now() - recordingStartTime : 0
       });
-      break;
+      return false;
 
     default:
-      break;
+      return false;
   }
 });
