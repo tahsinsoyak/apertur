@@ -1,12 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Tab Recorder HD - 1080p & Cursor Highlighter",
+  "name": "Apertur: 60 FPS Screen & Workflow Recorder",
   "version": "1.0.0",
-  "description": "Record browser tabs in crisp 1080p Full HD with glowing cursor spotlights and animated click highlights.",
+  "description": "Free open-source 1080p 60 FPS screen, window, and tab recorder with cursor spotlights, click animations, and local video storage.",
   "permissions": [
     "tabCapture",
+    "desktopCapture",
     "offscreen",
     "activeTab",
+    "tabs",
     "storage",
     "scripting"
   ],
