@@ -1,371 +1,312 @@
-/* ==========================================================================
-   Tab Recorder HD - Studio Grade Cursor, Click Shockwave & Floating Dock
-   Screen Studio & Dynamic Island Inspired
-   ========================================================================== */
+/**
+ * Apertur: In-Page Cursor FX & Frosted Porcelain Floating HUD
+ */
 
-#tab-recorder-cursor-host {
-  position: fixed !important;
-  inset: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
+/* ========================================================================== */
+/* CURSOR SPOTLIGHT HALO                                                      */
+/* ========================================================================== */
+#__tab_recorder_cursor_halo__ {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  margin-left: -22px;
+  margin-top: -22px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--tr-halo-fill, rgba(245, 158, 11, 0.24)) 0%,
+    var(--tr-halo-fade, rgba(245, 158, 11, 0.08)) 55%,
+    transparent 75%
+  );
+  border: 1.5px solid var(--tr-halo-border, rgba(245, 158, 11, 0.55));
+  box-shadow: 0 0 18px var(--tr-halo-glow, rgba(245, 158, 11, 0.25));
   pointer-events: none !important;
-  user-select: none !important;
-  z-index: 2147483640 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  z-index: 2147483646;
+  will-change: transform, opacity;
+  transition: width 0.14s ease, height 0.14s ease, margin 0.14s ease, opacity 0.2s ease;
+  opacity: 0;
 }
 
-/* --------------------------------------------------------------------------
-   1. Optical Lens Spotlight Halo (Screen Studio Signature)
-   -------------------------------------------------------------------------- */
-.tab-rec-cursor-halo {
-  position: fixed !important;
+#__tab_recorder_cursor_halo__.tr-halo-pressing {
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
+  border-width: 2px;
+}
+
+/* ========================================================================== */
+/* CLICK PULSE SHOCKWAVE                                                      */
+/* ========================================================================== */
+.__tab_recorder_click_ripple__ {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--tr-ripple-bg, rgba(245, 158, 11, 0.28));
+  border: 2px solid var(--tr-ripple-color, rgba(245, 158, 11, 0.95));
+  box-shadow: 0 0 14px var(--tr-ripple-color, rgba(245, 158, 11, 0.7));
   pointer-events: none !important;
-  user-select: none !important;
-  width: 46px !important;
-  height: 46px !important;
-  border-radius: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  top: -9999px !important;
-  left: -9999px !important;
-  display: none !important;
-  will-change: transform, left, top !important;
-  transition: width 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              height 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              opacity 0.25s ease !important;
-  box-sizing: border-box !important;
+  z-index: 2147483646;
+  animation: __tr_ripple_expand__ 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Subtle Optical Precision Core */
-.tab-rec-cursor-halo::before {
-  content: '' !important;
-  position: absolute !important;
-  inset: 50% !important;
-  width: 5px !important;
-  height: 5px !important;
-  transform: translate(-50%, -50%) !important;
-  border-radius: 50% !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 0 2px rgba(0, 0, 0, 0.8) !important;
-  opacity: 0.9 !important;
-  transition: transform 0.15s ease !important;
-}
-
-/* Active Holding / MouseDown Compression State */
-.tab-rec-cursor-halo.is-pressed {
-  width: 34px !important;
-  height: 34px !important;
-  opacity: 1 !important;
-  filter: brightness(1.2) !important;
-}
-
-.tab-rec-cursor-halo.is-pressed::before {
-  transform: translate(-50%, -50%) scale(1.3) !important;
-}
-
-/* ---- Color Themes ---- */
-/* 1. Amber Gold (Screen Studio signature aesthetic) */
-.tab-rec-cursor-halo.theme-yellow {
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, rgba(217, 119, 6, 0.18) 50%, rgba(245, 158, 11, 0) 75%) !important;
-  border: 1.5px solid rgba(251, 191, 36, 0.85) !important;
-  box-shadow: 0 0 22px rgba(245, 158, 11, 0.55), 
-              inset 0 0 10px rgba(254, 240, 138, 0.4) !important;
-}
-
-/* 2. Cyber Cyan */
-.tab-rec-cursor-halo.theme-cyan {
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.35) 0%, rgba(14, 165, 233, 0.18) 50%, rgba(6, 182, 212, 0) 75%) !important;
-  border: 1.5px solid rgba(56, 189, 248, 0.85) !important;
-  box-shadow: 0 0 22px rgba(6, 182, 212, 0.55), 
-              inset 0 0 10px rgba(186, 230, 253, 0.4) !important;
-}
-
-/* 3. Hyper Violet */
-.tab-rec-cursor-halo.theme-violet {
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(147, 51, 234, 0.18) 50%, rgba(168, 85, 247, 0) 75%) !important;
-  border: 1.5px solid rgba(192, 132, 252, 0.85) !important;
-  box-shadow: 0 0 22px rgba(168, 85, 247, 0.55), 
-              inset 0 0 10px rgba(243, 232, 255, 0.4) !important;
-}
-
-/* 4. Crimson Neon */
-.tab-rec-cursor-halo.theme-red {
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(220, 38, 38, 0.18) 50%, rgba(239, 68, 68, 0) 75%) !important;
-  border: 1.5px solid rgba(248, 113, 113, 0.85) !important;
-  box-shadow: 0 0 22px rgba(239, 68, 68, 0.55), 
-              inset 0 0 10px rgba(254, 202, 202, 0.4) !important;
-}
-
-/* 5. Emerald Pulse */
-.tab-rec-cursor-halo.theme-green {
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.18) 50%, rgba(16, 185, 129, 0) 75%) !important;
-  border: 1.5px solid rgba(52, 211, 153, 0.85) !important;
-  box-shadow: 0 0 22px rgba(16, 185, 129, 0.55), 
-              inset 0 0 10px rgba(209, 250, 229, 0.4) !important;
-}
-
-/* --------------------------------------------------------------------------
-   2. Water-Drop Concentric Click Shockwave Ripples
-   -------------------------------------------------------------------------- */
-.tab-rec-shockwave {
-  position: fixed !important;
+.__tab_recorder_click_core__ {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px var(--tr-ripple-color, rgba(245, 158, 11, 1));
   pointer-events: none !important;
-  user-select: none !important;
-  border-radius: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  animation: tabRecShockwaveExpand 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-  will-change: transform, opacity !important;
-  z-index: 2147483641 !important;
+  z-index: 2147483646;
+  animation: __tr_core_fade__ 0.26s ease-out forwards;
 }
 
-.tab-rec-shockwave-bloom {
-  position: fixed !important;
-  pointer-events: none !important;
-  user-select: none !important;
-  border-radius: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  animation: tabRecBloomExpand 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-  will-change: transform, opacity !important;
-  z-index: 2147483641 !important;
-}
-
-@keyframes tabRecShockwaveExpand {
+@keyframes __tr_ripple_expand__ {
   0% {
-    width: 14px;
-    height: 14px;
+    transform: scale(0.35);
     opacity: 1;
-    transform: translate(-50%, -50%) scale(0.3);
-  }
-  40% {
-    opacity: 0.85;
   }
   100% {
-    width: 80px;
-    height: 80px;
+    transform: scale(4.2);
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.5);
   }
 }
 
-@keyframes tabRecBloomExpand {
+@keyframes __tr_core_fade__ {
   0% {
-    width: 8px;
-    height: 8px;
-    opacity: 0.9;
-    transform: translate(-50%, -50%) scale(0.2);
+    transform: scale(1.2);
+    opacity: 1;
   }
   100% {
-    width: 50px;
-    height: 50px;
+    transform: scale(0.2);
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.2);
   }
 }
 
-/* --------------------------------------------------------------------------
-   3. Floating Dynamic Island Recording Dock (Screen Studio Style)
-   -------------------------------------------------------------------------- */
-#tab-rec-floating-dock {
-  position: fixed !important;
-  bottom: 24px !important;
-  left: 24px !important;
-  z-index: 2147483645 !important;
-  pointer-events: auto !important;
-  user-select: none !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  background: rgba(11, 13, 19, 0.88) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 9999px !important;
-  padding: 5px 8px 5px 8px !important;
-  box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.65), 
-              0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
-              opacity 0.25s ease, 
-              box-shadow 0.2s ease,
-              padding 0.2s ease !important;
-  cursor: grab !important;
+/* ========================================================================== */
+/* FROSTED PORCELAIN FLOATING HUD CAPSULE                                     */
+/* ========================================================================== */
+#__tab_recorder_floating_dock__ {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 44px;
+  padding: 0 8px 0 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(15, 23, 42, 0.11);
+  box-shadow:
+    0 18px 42px -8px rgba(15, 23, 42, 0.18),
+    0 4px 12px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2147483647;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-#tab-rec-floating-dock:active {
-  cursor: grabbing !important;
+#__tab_recorder_floating_dock__:hover {
+  border-color: rgba(15, 23, 42, 0.18);
+  box-shadow:
+    0 22px 48px -8px rgba(15, 23, 42, 0.24),
+    0 6px 16px rgba(15, 23, 42, 0.1),
+    inset 0 1px 0 #ffffff;
 }
 
-#tab-rec-floating-dock:hover {
-  border-color: rgba(255, 255, 255, 0.22) !important;
-  box-shadow: 0 16px 42px -4px rgba(0, 0, 0, 0.75), 
-              0 0 0 1px rgba(255, 255, 255, 0.14) inset !important;
+.__tr_dock_grip__ {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 28px;
+  color: #94a3b8;
+  cursor: grab;
+  transition: color 0.15s ease;
 }
 
-/* Drag Handle */
-.tab-rec-dock-handle {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 2.5px !important;
-  width: 10px !important;
-  height: 20px !important;
-  opacity: 0.35 !important;
-  cursor: grab !important;
-  padding: 0 2px !important;
+.__tr_dock_grip__:hover {
+  color: #475569;
 }
 
-.tab-rec-dock-handle:hover {
-  opacity: 0.8 !important;
+.__tr_dock_grip__:active {
+  cursor: grabbing;
 }
 
-.tab-rec-grip-dot {
-  width: 3px !important;
-  height: 3px !important;
-  background: #ffffff !important;
-  border-radius: 50% !important;
+.__tr_dock_status__ {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 4px 0 2px;
 }
 
-/* Pulsing Recording Pill */
-.tab-rec-dock-rec {
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  background: rgba(239, 68, 68, 0.14) !important;
-  border: 1px solid rgba(239, 68, 68, 0.35) !important;
-  border-radius: 9999px !important;
-  padding: 3px 9px !important;
+.__tr_dock_dot__ {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e11d48;
+  box-shadow: 0 0 8px rgba(225, 29, 72, 0.6);
+  animation: __tr_hud_pulse__ 1.4s ease-in-out infinite;
 }
 
-.tab-rec-dock-dot {
-  width: 7px !important;
-  height: 7px !important;
-  background: #ef4444 !important;
-  border-radius: 50% !important;
-  box-shadow: 0 0 8px #ef4444 !important;
-  animation: tabRecDockPulse 1.4s ease-in-out infinite !important;
+.__tr_dock_dot__.paused {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+  animation: none;
 }
 
-@keyframes tabRecDockPulse {
+.__tr_dock_timer__ {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  min-width: 44px;
+}
+
+.__tr_dock_divider__ {
+  width: 1px;
+  height: 18px;
+  background: #e2e8f0;
+}
+
+.__tr_dock_btn__ {
+  all: unset;
+  box-sizing: border-box;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.__tr_dock_btn__.pause-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+.__tr_dock_btn__.pause-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.__tr_dock_btn__.stop-btn {
+  background: linear-gradient(180deg, #f43f5e 0%, #e11d48 100%);
+  border: 1px solid #be123c;
+  color: #ffffff;
+  padding: 0 13px;
+  box-shadow: 0 4px 10px rgba(225, 29, 72, 0.35);
+}
+
+.__tr_dock_btn__.stop-btn:hover {
+  background: linear-gradient(180deg, #fb7185 0%, #e11d48 100%);
+  transform: translateY(-1px);
+}
+
+.__tr_dock_btn__.snap-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  padding: 0 9px;
+}
+
+.__tr_dock_btn__.snap-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.__tr_dock_btn__.hide-btn {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  color: #94a3b8;
+}
+
+.__tr_dock_btn__.hide-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* ========================================================================== */
+/* 3-SECOND COUNTDOWN OVERLAY                                                 */
+/* ========================================================================== */
+#__tab_recorder_countdown_overlay__ {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  transition: opacity 0.16s ease;
+}
+
+.__tr_countdown_card__ {
+  width: 170px;
+  height: 170px;
+  border-radius: 36px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1.5px solid rgba(225, 29, 72, 0.25);
+  box-shadow:
+    0 28px 60px -12px rgba(15, 23, 42, 0.28),
+    0 0 0 8px rgba(255, 255, 255, 0.22);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  animation: __tr_countdown_pop__ 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.__tr_countdown_number__ {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 68px;
+  font-weight: 800;
+  line-height: 1;
+  color: #e11d48;
+}
+
+.__tr_countdown_label__ {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: -0.01em;
+}
+
+@keyframes __tr_countdown_pop__ {
+  0% { transform: scale(0.78); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes __tr_hud_pulse__ {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(0.8); }
-}
-
-/* Live Equalizer Soundwaves */
-.tab-rec-dock-waves {
-  display: flex !important;
-  align-items: center !important;
-  gap: 2px !important;
-  height: 12px !important;
-}
-
-.tab-rec-wave {
-  width: 2px !important;
-  background: #f87171 !important;
-  border-radius: 9999px !important;
-  animation: tabRecEqualizer 0.9s ease-in-out infinite !important;
-}
-
-.tab-rec-wave.w1 { height: 4px !important; animation-delay: 0.1s !important; }
-.tab-rec-wave.w2 { height: 10px !important; animation-delay: 0.3s !important; }
-.tab-rec-wave.w3 { height: 6px !important; animation-delay: 0.2s !important; }
-
-@keyframes tabRecEqualizer {
-  0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
-  50% { transform: scaleY(1); opacity: 1; }
-}
-
-.tab-rec-dock-time {
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  font-variant-numeric: tabular-nums !important;
-  color: #f87171 !important;
-  letter-spacing: 0.4px !important;
-}
-
-.tab-rec-dock-res {
-  font-size: 9px !important;
-  font-weight: 800 !important;
-  color: #38bdf8 !important;
-  background: rgba(56, 189, 248, 0.12) !important;
-  border: 1px solid rgba(56, 189, 248, 0.28) !important;
-  padding: 2px 6px !important;
-  border-radius: 5px !important;
-  letter-spacing: 0.5px !important;
-}
-
-/* Actions in Dock */
-.tab-rec-dock-btn {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #f3f4f6 !important;
-  height: 26px !important;
-  border-radius: 9999px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
-  padding: 0 8px !important;
-}
-
-.tab-rec-dock-btn:hover {
-  background: rgba(255, 255, 255, 0.18) !important;
-  transform: translateY(-1px) !important;
-}
-
-.tab-rec-dock-btn#btnDockPause {
-  width: 26px !important;
-  padding: 0 !important;
-  border-radius: 50% !important;
-}
-
-.tab-rec-dock-btn.stop {
-  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.45) !important;
-  gap: 5px !important;
-  padding: 0 10px !important;
-}
-
-.tab-rec-dock-btn.stop:hover {
-  filter: brightness(1.1) !important;
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.65) !important;
-}
-
-.tab-rec-stop-label {
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  color: #ffffff !important;
-}
-
-.tab-rec-dock-btn.min {
-  width: 22px !important;
-  height: 22px !important;
-  padding: 0 !important;
-  border-radius: 50% !important;
-  background: transparent !important;
-  border-color: transparent !important;
-  opacity: 0.5 !important;
-}
-
-.tab-rec-dock-btn.min:hover {
-  opacity: 1 !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Minimized Dock State */
-#tab-rec-floating-dock.minimized .tab-rec-dock-handle,
-#tab-rec-floating-dock.minimized .tab-rec-dock-res,
-#tab-rec-floating-dock.minimized .tab-rec-dock-waves,
-#tab-rec-floating-dock.minimized #btnDockPause,
-#tab-rec-floating-dock.minimized #btnDockStop,
-#tab-rec-floating-dock.minimized .tab-rec-dock-btn.min {
-  display: none !important;
-}
-
-#tab-rec-floating-dock.minimized {
-  padding: 4px 8px !important;
-  cursor: pointer !important;
+  50% { opacity: 0.45; transform: scale(0.86); }
 }
