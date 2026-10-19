@@ -1,0 +1,312 @@
+/**
+ * Apertur: In-Page Cursor FX & Frosted Porcelain Floating HUD
+ */
+
+/* ========================================================================== */
+/* CURSOR SPOTLIGHT HALO                                                      */
+/* ========================================================================== */
+#__tab_recorder_cursor_halo__ {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  margin-left: -22px;
+  margin-top: -22px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--tr-halo-fill, rgba(245, 158, 11, 0.24)) 0%,
+    var(--tr-halo-fade, rgba(245, 158, 11, 0.08)) 55%,
+    transparent 75%
+  );
+  border: 1.5px solid var(--tr-halo-border, rgba(245, 158, 11, 0.55));
+  box-shadow: 0 0 18px var(--tr-halo-glow, rgba(245, 158, 11, 0.25));
+  pointer-events: none !important;
+  z-index: 2147483646;
+  will-change: transform, opacity;
+  transition: width 0.14s ease, height 0.14s ease, margin 0.14s ease, opacity 0.2s ease;
+  opacity: 0;
+}
+
+#__tab_recorder_cursor_halo__.tr-halo-pressing {
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
+  border-width: 2px;
+}
+
+/* ========================================================================== */
+/* CLICK PULSE SHOCKWAVE                                                      */
+/* ========================================================================== */
+.__tab_recorder_click_ripple__ {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--tr-ripple-bg, rgba(245, 158, 11, 0.28));
+  border: 2px solid var(--tr-ripple-color, rgba(245, 158, 11, 0.95));
+  box-shadow: 0 0 14px var(--tr-ripple-color, rgba(245, 158, 11, 0.7));
+  pointer-events: none !important;
+  z-index: 2147483646;
+  animation: __tr_ripple_expand__ 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.__tab_recorder_click_core__ {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px var(--tr-ripple-color, rgba(245, 158, 11, 1));
+  pointer-events: none !important;
+  z-index: 2147483646;
+  animation: __tr_core_fade__ 0.26s ease-out forwards;
+}
+
+@keyframes __tr_ripple_expand__ {
+  0% {
+    transform: scale(0.35);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4.2);
+    opacity: 0;
+  }
+}
+
+@keyframes __tr_core_fade__ {
+  0% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* ========================================================================== */
+/* FROSTED PORCELAIN FLOATING HUD CAPSULE                                     */
+/* ========================================================================== */
+#__tab_recorder_floating_dock__ {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 44px;
+  padding: 0 8px 0 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(15, 23, 42, 0.11);
+  box-shadow:
+    0 18px 42px -8px rgba(15, 23, 42, 0.18),
+    0 4px 12px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2147483647;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+#__tab_recorder_floating_dock__:hover {
+  border-color: rgba(15, 23, 42, 0.18);
+  box-shadow:
+    0 22px 48px -8px rgba(15, 23, 42, 0.24),
+    0 6px 16px rgba(15, 23, 42, 0.1),
+    inset 0 1px 0 #ffffff;
+}
+
+.__tr_dock_grip__ {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 28px;
+  color: #94a3b8;
+  cursor: grab;
+  transition: color 0.15s ease;
+}
+
+.__tr_dock_grip__:hover {
+  color: #475569;
+}
+
+.__tr_dock_grip__:active {
+  cursor: grabbing;
+}
+
+.__tr_dock_status__ {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 4px 0 2px;
+}
+
+.__tr_dock_dot__ {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e11d48;
+  box-shadow: 0 0 8px rgba(225, 29, 72, 0.6);
+  animation: __tr_hud_pulse__ 1.4s ease-in-out infinite;
+}
+
+.__tr_dock_dot__.paused {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+  animation: none;
+}
+
+.__tr_dock_timer__ {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  min-width: 44px;
+}
+
+.__tr_dock_divider__ {
+  width: 1px;
+  height: 18px;
+  background: #e2e8f0;
+}
+
+.__tr_dock_btn__ {
+  all: unset;
+  box-sizing: border-box;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.__tr_dock_btn__.pause-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+.__tr_dock_btn__.pause-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.__tr_dock_btn__.stop-btn {
+  background: linear-gradient(180deg, #f43f5e 0%, #e11d48 100%);
+  border: 1px solid #be123c;
+  color: #ffffff;
+  padding: 0 13px;
+  box-shadow: 0 4px 10px rgba(225, 29, 72, 0.35);
+}
+
+.__tr_dock_btn__.stop-btn:hover {
+  background: linear-gradient(180deg, #fb7185 0%, #e11d48 100%);
+  transform: translateY(-1px);
+}
+
+.__tr_dock_btn__.snap-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  padding: 0 9px;
+}
+
+.__tr_dock_btn__.snap-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.__tr_dock_btn__.hide-btn {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  color: #94a3b8;
+}
+
+.__tr_dock_btn__.hide-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* ========================================================================== */
+/* 3-SECOND COUNTDOWN OVERLAY                                                 */
+/* ========================================================================== */
+#__tab_recorder_countdown_overlay__ {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  transition: opacity 0.16s ease;
+}
+
+.__tr_countdown_card__ {
+  width: 170px;
+  height: 170px;
+  border-radius: 36px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1.5px solid rgba(225, 29, 72, 0.25);
+  box-shadow:
+    0 28px 60px -12px rgba(15, 23, 42, 0.28),
+    0 0 0 8px rgba(255, 255, 255, 0.22);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  animation: __tr_countdown_pop__ 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.__tr_countdown_number__ {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 68px;
+  font-weight: 800;
+  line-height: 1;
+  color: #e11d48;
+}
+
+.__tr_countdown_label__ {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: -0.01em;
+}
+
+@keyframes __tr_countdown_pop__ {
+  0% { transform: scale(0.78); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes __tr_hud_pulse__ {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.86); }
+}

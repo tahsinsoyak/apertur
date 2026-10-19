@@ -1,8 +1,12 @@
 {
-  "name": "tab-recorder-studio",
-  "version": "1.0.0",
-  "description": "1080p Tab Screen Recorder with glowing cursor spotlight and animated click ripples",
+  "name": "apertur",
+  "version": "2.0.0",
+  "description": "Free Open-Source 1080p 60 FPS Screen & Workflow Recorder for Chrome with cursor spotlight, click ripples, video trimming, and instant screenshots",
   "main": "background/background.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tahsinsoyak/apertur.git"
+  },
   "scripts": {
     "build": "node build.js",
     "test-server": "node test-server.js"
@@ -11,9 +15,11 @@
     "chrome-extension",
     "screen-recorder",
     "1080p",
+    "60fps",
     "cursor-highlight",
-    "screencast"
+    "screencast",
+    "apertur"
   ],
-  "author": "",
+  "author": "Tahsin Soyak <tahsinsoyakk@gmail.com>",
   "license": "MIT"
 }

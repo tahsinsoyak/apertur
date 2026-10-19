@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apertur: Watch &amp; Download Video</title>
+  <link rel="stylesheet" href="preview.css">
+</head>
+<body>
+  <div class="ambient-backdrop"></div>
+
+  <!-- Top Navigation -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-logo-box">
+          <img src="../icons/icon32.png" alt="Apertur" class="brand-logo" />
+        </div>
+        <div class="brand-text">
+          <div class="brand-name-row">
+            <span class="brand-title">Apertur</span>
+            <span class="studio-pill">FREE &amp; OPEN SOURCE</span>
+          </div>
+          <span class="brand-sub">Your Recordings</span>
+        </div>
+      </div>
+
+      <nav class="nav-segmented" aria-label="View Switcher">
+        <button id="navTabPlayer" class="seg-tab active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <span>Watch Video</span>
+        </button>
+        <button id="navTabGallery" class="seg-tab">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+          <span>My Saved Videos</span>
+          <span id="galleryCountBadge" class="count-pill">0</span>
+        </button>
+      </nav>
+
+      <div class="topbar-actions">
+        <a href="../landing/index.html" target="_blank" class="ghost-btn" title="Open Apertur Guide &amp; Website">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>How It Works</span>
+        </a>
+        <div class="vault-status" title="Your videos stay private on your computer">
+          <span class="vault-dot"></span>
+          <span>Saved on Your Device</span>
+        </div>
+        <button id="btnNewRecording" class="ghost-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+          <span>Close</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================================================================== -->
+  <!-- VIEW 1: WATCH VIDEO                                                  -->
+  <!-- ==================================================================== -->
+  <main id="playerView" class="workspace-container">
+    <div class="theater-frame">
+      <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-ring"></div>
+        <p id="loadingStatusText">Loading your video...</p>
+      </div>
+      <video id="videoPlayer" controls playsinline preload="auto"></video>
+    </div>
+
+    <!-- Trim Start / End Bar -->
+    <section class="trim-studio-bar" aria-label="Trim Video Start and End">
+      <div class="trim-header-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="6" cy="6" r="3"/>
+          <circle cx="6" cy="18" r="3"/>
+          <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+          <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+          <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+        </svg>
+        <span>Trim Start / End</span>
+      </div>
+
+      <div class="trim-sliders-wrap">
+        <label class="trim-slider-group" for="trimStartRange">
+          <span class="trim-bound-label">Start</span>
+          <input type="range" id="trimStartRange" class="trim-range-input" min="0" max="100" step="0.1" value="0">
+          <span id="trimStartVal" class="trim-time-pill">00:00.0</span>
+        </label>
+
+        <label class="trim-slider-group" for="trimEndRange">
+          <span class="trim-bound-label">End</span>
+          <input type="range" id="trimEndRange" class="trim-range-input" min="0" max="100" step="0.1" value="100">
+          <span id="trimEndVal" class="trim-time-pill">00:00.0</span>
+        </label>
+      </div>
+
+      <div class="trim-actions">
+        <button type="button" id="btnPreviewTrim" class="trim-mini-btn" title="Play only the selected trim range">
+          Preview Cut
+        </button>
+        <button type="button" id="btnResetTrim" class="trim-mini-btn" title="Reset start and end sliders">
+          Reset
+        </button>
+        <button type="button" id="btnApplyTrim" class="trim-mini-btn primary" title="Save trimmed video to your library">
+          Save Trimmed Video
+        </button>
+      </div>
+    </section>
+
+    <section class="inspector-bar">
+      <div class="inspector-meta">
+        <div class="title-line">
+          <h1 id="recordingTitle" class="editable-title" title="Click to rename video">Your Recording</h1>
+          <button id="btnRenameTitle" class="rename-inline-btn" title="Rename video">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"/>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+          </button>
+          <span id="tagDate" class="timestamp-label">Just now</span>
+        </div>
+
+        <div class="spec-badges">
+          <span id="tagResolution" class="spec-tag highlight">1080p Full HD</span>
+          <span id="tagFps" class="spec-tag">60 FPS</span>
+          <span id="tagDuration" class="spec-tag mono">00:00</span>
+          <span id="tagSize" class="spec-tag mono">0.0 MB</span>
+        </div>
+      </div>
+
+      <div class="inspector-actions">
+        <button id="btnPlaybackSpeed" class="action-btn secondary speed-btn" title="Change playback speed">
+          <span>1x Speed</span>
+        </button>
+
+        <button id="btnSnapshot" class="action-btn secondary" title="Save current video frame as PNG image">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <span>Screenshot</span>
+        </button>
+
+        <button id="btnSwitchToGallery" class="action-btn secondary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          <span>My Saved Videos</span>
+        </button>
+
+        <button id="btnDeleteCurrent" class="action-btn icon-only danger" title="Delete this video">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+        </button>
+
+        <button id="btnDownload" class="action-btn primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Download Video</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================================================================== -->
+  <!-- VIEW 2: MY SAVED VIDEOS                                              -->
+  <!-- ==================================================================== -->
+  <main id="galleryView" class="workspace-container hidden">
+    <div class="archive-header">
+      <div class="archive-title-group">
+        <h2>My Saved Videos</h2>
+        <p id="gallerySummaryText">All recordings are saved privately in your browser</p>
+      </div>
+
+      <button id="btnClearAll" class="action-btn danger-outline">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+        <span>Delete All</span>
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div id="galleryEmptyState" class="empty-vault hidden">
+      <div class="empty-icon-ring">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="3"/>
+          <circle cx="12" cy="12" r="3.5"/>
+        </svg>
+      </div>
+      <h3>No saved videos yet</h3>
+      <p>Click the Apertur icon in your Chrome toolbar to record your screen or browser window.</p>
+      <button id="btnEmptyStart" class="action-btn secondary">Close Window</button>
+    </div>
+
+    <!-- Recordings Grid -->
+    <div id="galleryGrid" class="gallery-grid"></div>
+  </main>
+
+  <script src="../utils/db.js"></script>
+  <script src="preview.js"></script>
+</body>
+</html>

@@ -17,6 +17,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnDeleteCurrent = document.getElementById('btnDeleteCurrent');
   const btnSwitchToGallery = document.getElementById('btnSwitchToGallery');
   const btnNewRecording = document.getElementById('btnNewRecording');
+  const btnRenameTitle = document.getElementById('btnRenameTitle');
+  const btnPlaybackSpeed = document.getElementById('btnPlaybackSpeed');
+  const btnSnapshot = document.getElementById('btnSnapshot');
+
+  const trimStartRange = document.getElementById('trimStartRange');
+  const trimEndRange = document.getElementById('trimEndRange');
+  const trimStartVal = document.getElementById('trimStartVal');
+  const trimEndVal = document.getElementById('trimEndVal');
+  const btnPreviewTrim = document.getElementById('btnPreviewTrim');
+  const btnResetTrim = document.getElementById('btnResetTrim');
+  const btnApplyTrim = document.getElementById('btnApplyTrim');
 
   const recordingTitle = document.getElementById('recordingTitle');
   const tagResolution = document.getElementById('tagResolution');
@@ -34,6 +45,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentRecording = null;
   let currentObjectUrl = null;
   let allRecordingsCache = [];
+  const playbackSpeeds = [1, 1.25, 1.5, 2];
+  let currentSpeedIndex = 0;
+  let totalDurationSec = 0;
+  let trimStartSec = 0;
+  let trimEndSec = 0;
+  let isApplyingTrim = false;
 
   // --------------------------------------------------------------------------
   // Formatting Utilities
@@ -59,6 +76,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
+  function formatTrimSeconds(sec) {
+    const safe = Math.max(0, Number(sec) || 0);
+    const mins = Math.floor(safe / 60).toString().padStart(2, '0');
+    const rem = (safe % 60).toFixed(1).padStart(4, '0');
+    return `${mins}:${rem}`;
+  }
+
   function formatDate(timestamp) {
     if (!timestamp) return 'Recent';
     const date = new Date(timestamp);
@@ -68,6 +92,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  function getRecordingDisplayTitle(rec) {
+    if (rec && rec.customTitle && rec.customTitle.trim()) {
+      return rec.customTitle.trim();
+    }
+    return `Apertur Capture (${formatDate(rec?.timestamp)})`;
+  }
+
+  function initTrimControls(durationMs) {
+    totalDurationSec = Math.max(0.5, Number(((durationMs || 1000) / 1000).toFixed(1)));
+    trimStartSec = 0;
+    trimEndSec = totalDurationSec;
+
+    if (trimStartRange && trimEndRange) {
+      trimStartRange.min = '0';
+      trimStartRange.max = String(totalDurationSec);
+      trimStartRange.step = '0.1';
+      trimStartRange.value = '0';
+
+      trimEndRange.min = '0';
+      trimEndRange.max = String(totalDurationSec);
+      trimEndRange.step = '0.1';
+      trimEndRange.value = String(totalDurationSec);
+    }
+    if (trimStartVal) trimStartVal.textContent = formatTrimSeconds(0);
+    if (trimEndVal) trimEndVal.textContent = formatTrimSeconds(totalDurationSec);
   }
 
   // --------------------------------------------------------------------------
@@ -137,15 +188,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       currentObjectUrl = URL.createObjectURL(record.blob);
       videoPlayer.src = currentObjectUrl;
+      videoPlayer.playbackRate = playbackSpeeds[currentSpeedIndex] || 1;
 
-      recordingTitle.textContent = `Tab Recording — ${formatDate(record.timestamp)}`;
+      recordingTitle.textContent = getRecordingDisplayTitle(record);
       tagResolution.textContent = record.resolution === '720p' ? '720p HD' : '1080p Full HD';
       if (tagFps) tagFps.textContent = `${record.fps || 60} FPS`;
       tagDuration.textContent = formatDuration(record.duration);
       tagSize.textContent = formatBytes(record.size);
       tagDate.textContent = formatDate(record.timestamp);
 
+      initTrimControls(record.duration);
+
       videoPlayer.onloadedmetadata = () => {
+        if (Number.isFinite(videoPlayer.duration) && videoPlayer.duration > 0) {
+          initTrimControls(videoPlayer.duration * 1000);
+        }
         loadingOverlay.style.opacity = '0';
         setTimeout(() => {
           loadingOverlay.style.display = 'none';
@@ -160,22 +217,273 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Download Action
-  btnDownload.addEventListener('click', () => {
-    if (!currentRecording || !currentObjectUrl) return;
-    downloadBlob(currentRecording.blob, currentRecording.timestamp);
-  });
+  // --------------------------------------------------------------------------
+  // Trim Start / End Logic
+  // --------------------------------------------------------------------------
+  if (trimStartRange) {
+    trimStartRange.addEventListener('input', () => {
+      let nextStart = parseFloat(trimStartRange.value) || 0;
+      if (nextStart >= trimEndSec - 0.2) {
+        nextStart = Math.max(0, Number((trimEndSec - 0.2).toFixed(1)));
+        trimStartRange.value = String(nextStart);
+      }
+      trimStartSec = nextStart;
+      if (trimStartVal) trimStartVal.textContent = formatTrimSeconds(trimStartSec);
+      if (videoPlayer) {
+        try { videoPlayer.currentTime = trimStartSec; } catch (_) {}
+      }
+    });
+  }
 
-  function downloadBlob(blob, timestamp) {
-    const timestampStr = new Date(timestamp || Date.now())
+  if (trimEndRange) {
+    trimEndRange.addEventListener('input', () => {
+      let nextEnd = parseFloat(trimEndRange.value) || totalDurationSec;
+      if (nextEnd <= trimStartSec + 0.2) {
+        nextEnd = Math.min(totalDurationSec, Number((trimStartSec + 0.2).toFixed(1)));
+        trimEndRange.value = String(nextEnd);
+      }
+      trimEndSec = nextEnd;
+      if (trimEndVal) trimEndVal.textContent = formatTrimSeconds(trimEndSec);
+      if (videoPlayer) {
+        try { videoPlayer.currentTime = trimEndSec; } catch (_) {}
+      }
+    });
+  }
+
+  if (videoPlayer) {
+    videoPlayer.addEventListener('timeupdate', () => {
+      if (!isApplyingTrim && trimEndSec > 0 && videoPlayer.currentTime >= trimEndSec) {
+        videoPlayer.pause();
+        try { videoPlayer.currentTime = trimStartSec; } catch (_) {}
+      }
+    });
+  }
+
+  if (btnPreviewTrim) {
+    btnPreviewTrim.addEventListener('click', () => {
+      if (!videoPlayer) return;
+      try {
+        videoPlayer.currentTime = trimStartSec;
+        videoPlayer.play().catch(() => {});
+      } catch (_) {}
+    });
+  }
+
+  if (btnResetTrim) {
+    btnResetTrim.addEventListener('click', () => {
+      initTrimControls(currentRecording?.duration || (totalDurationSec * 1000));
+      if (videoPlayer) {
+        try { videoPlayer.currentTime = 0; } catch (_) {}
+      }
+    });
+  }
+
+  if (btnApplyTrim) {
+    btnApplyTrim.addEventListener('click', async () => {
+      if (!currentRecording || !videoPlayer || isApplyingTrim) return;
+      const isUnchanged = trimStartSec <= 0.05 && Math.abs(trimEndSec - totalDurationSec) <= 0.1;
+      if (isUnchanged) {
+        btnApplyTrim.textContent = 'Move Sliders First';
+        setTimeout(() => { btnApplyTrim.textContent = 'Save Trimmed Video'; }, 1400);
+        return;
+      }
+
+      isApplyingTrim = true;
+      btnApplyTrim.disabled = true;
+      btnApplyTrim.textContent = 'Trimming Video...';
+
+      try {
+        videoPlayer.pause();
+        const prevMuted = videoPlayer.muted;
+        const prevRate = videoPlayer.playbackRate;
+        videoPlayer.playbackRate = 1;
+        videoPlayer.currentTime = trimStartSec;
+
+        await new Promise((resolve) => {
+          const onSeeked = () => {
+            videoPlayer.removeEventListener('seeked', onSeeked);
+            resolve();
+          };
+          videoPlayer.addEventListener('seeked', onSeeked);
+          setTimeout(resolve, 250);
+        });
+
+        const stream = videoPlayer.captureStream ? videoPlayer.captureStream() : videoPlayer.mozCaptureStream();
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+          ? 'video/webm;codecs=vp9,opus'
+          : 'video/webm';
+        const chunks = [];
+        const recorder = new MediaRecorder(stream, {
+          mimeType,
+          videoBitsPerSecond: 10000000
+        });
+
+        recorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) chunks.push(e.data);
+        };
+
+        const trimmedBlob = await new Promise((resolve, reject) => {
+          recorder.onstop = () => {
+            resolve(new Blob(chunks, { type: mimeType }));
+          };
+          recorder.onerror = (err) => reject(err);
+
+          recorder.start(100);
+          videoPlayer.play().catch(reject);
+
+          const checkStop = setInterval(() => {
+            if (videoPlayer.currentTime >= trimEndSec || videoPlayer.ended) {
+              clearInterval(checkStop);
+              videoPlayer.pause();
+              if (recorder.state !== 'inactive') {
+                recorder.stop();
+              }
+            }
+          }, 50);
+        });
+
+        videoPlayer.muted = prevMuted;
+        videoPlayer.playbackRate = prevRate;
+
+        if (trimmedBlob && trimmedBlob.size > 0) {
+          const newDurationMs = Math.max(200, Math.round((trimEndSec - trimStartSec) * 1000));
+          currentRecording.blob = trimmedBlob;
+          currentRecording.size = trimmedBlob.size;
+          currentRecording.duration = newDurationMs;
+
+          await window.RecorderDB.saveRecording(currentRecording);
+          await loadRecording(currentRecording.id);
+
+          btnApplyTrim.textContent = 'Trim Saved!';
+          setTimeout(() => { btnApplyTrim.textContent = 'Save Trimmed Video'; }, 1600);
+        } else {
+          btnApplyTrim.textContent = 'Save Trimmed Video';
+        }
+      } catch (err) {
+        console.warn('Error applying trim:', err);
+        btnApplyTrim.textContent = 'Save Trimmed Video';
+      } finally {
+        isApplyingTrim = false;
+        btnApplyTrim.disabled = false;
+      }
+    });
+  }
+
+  // Inline Title Rename
+  function startInlineTitleEdit() {
+    if (!currentRecording || !recordingTitle) return;
+    recordingTitle.contentEditable = 'true';
+    recordingTitle.focus();
+    const range = document.createRange();
+    range.selectNodeContents(recordingTitle);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  async function commitInlineTitleEdit() {
+    if (!currentRecording || !recordingTitle) return;
+    recordingTitle.contentEditable = 'false';
+    const nextTitle = (recordingTitle.textContent || '').trim();
+    if (nextTitle) {
+      currentRecording.customTitle = nextTitle;
+      recordingTitle.textContent = nextTitle;
+      try {
+        await window.RecorderDB.saveRecording(currentRecording);
+      } catch (e) {
+        console.warn('Could not save custom title:', e);
+      }
+    } else {
+      recordingTitle.textContent = getRecordingDisplayTitle(currentRecording);
+    }
+  }
+
+  if (recordingTitle) {
+    recordingTitle.addEventListener('click', startInlineTitleEdit);
+    recordingTitle.addEventListener('blur', commitInlineTitleEdit);
+    recordingTitle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        recordingTitle.blur();
+      } else if (e.key === 'Escape') {
+        recordingTitle.textContent = getRecordingDisplayTitle(currentRecording);
+        recordingTitle.blur();
+      }
+    });
+  }
+  if (btnRenameTitle) {
+    btnRenameTitle.addEventListener('click', startInlineTitleEdit);
+  }
+
+  // Playback Speed Switcher
+  if (btnPlaybackSpeed) {
+    btnPlaybackSpeed.addEventListener('click', () => {
+      currentSpeedIndex = (currentSpeedIndex + 1) % playbackSpeeds.length;
+      const rate = playbackSpeeds[currentSpeedIndex];
+      if (videoPlayer) videoPlayer.playbackRate = rate;
+      btnPlaybackSpeed.innerHTML = `<span>${rate}x Speed</span>`;
+    });
+  }
+
+  // 1-Click Frame Screenshot (PNG)
+  if (btnSnapshot) {
+    btnSnapshot.addEventListener('click', () => {
+      if (!videoPlayer || !videoPlayer.videoWidth) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = videoPlayer.videoWidth;
+      canvas.height = videoPlayer.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+      const snapLabelSpan = btnSnapshot.querySelector('span');
+      canvas.toBlob((pngBlob) => {
+        if (!pngBlob) return;
+        const url = URL.createObjectURL(pngBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        const safeName = getSafeFilename(currentRecording);
+        a.download = `${safeName}-frame.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        if (snapLabelSpan) {
+          snapLabelSpan.textContent = 'Saved PNG!';
+          setTimeout(() => { snapLabelSpan.textContent = 'Screenshot'; }, 1500);
+        }
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }, 'image/png');
+    });
+  }
+
+  function getSafeFilename(rec) {
+    if (rec && rec.customTitle && rec.customTitle.trim()) {
+      const slug = rec.customTitle
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-_]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      if (slug) return slug;
+    }
+    const timestampStr = new Date(rec?.timestamp || Date.now())
       .toISOString()
       .replace(/[:.]/g, '-')
       .slice(0, 19);
+    return `apertur-${timestampStr}`;
+  }
+
+  // Download Action
+  btnDownload.addEventListener('click', () => {
+    if (!currentRecording || !currentObjectUrl) return;
+    downloadBlob(currentRecording.blob, currentRecording);
+  });
+
+  function downloadBlob(blob, recOrTimestamp) {
+    const rec = typeof recOrTimestamp === 'object' ? recOrTimestamp : { timestamp: recOrTimestamp };
+    const safeName = getSafeFilename(rec);
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `tab-recording-${timestampStr}.webm`;
+    a.download = `${safeName}.webm`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -230,9 +538,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       card.className = `gallery-card ${currentRecording && currentRecording.id === rec.id ? 'active-playing' : ''}`;
 
       const blobUrl = URL.createObjectURL(rec.blob);
+      const displayTitle = getRecordingDisplayTitle(rec);
 
       card.innerHTML = `
-        <div class="gallery-thumbnail-box" title="Click to watch in Cinema Player">
+        <div class="gallery-thumbnail-box" title="Click to watch video">
           <video class="gallery-thumbnail-video" src="${blobUrl}#t=0.5" preload="metadata"></video>
           <div class="gallery-play-overlay">
             <div class="play-circle">
@@ -249,8 +558,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         <div class="gallery-card-body">
           <div class="card-title-row">
-            <span class="card-title" title="${formatDate(rec.timestamp)}">Recording — ${formatDate(rec.timestamp)}</span>
-            <span class="card-subtitle">${rec.fps || 60} FPS • VP9 High Bitrate</span>
+            <span class="card-title" title="${displayTitle}">${displayTitle}</span>
+            <span class="card-subtitle">${rec.fps || 60} FPS • Full HD WebM</span>
           </div>
 
           <div class="card-actions-row">
@@ -275,14 +584,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       `;
 
       // Click card thumbnail to watch in player
-      card.querySelector('.gallery-thumbnail-box').addEventListener('click', () => {
+      const thumbBox = card.querySelector('.gallery-thumbnail-box');
+      const thumbVideo = card.querySelector('.gallery-thumbnail-video');
+      if (thumbVideo) {
+        thumbVideo.muted = true;
+        thumbBox.addEventListener('mouseenter', () => {
+          thumbVideo.play().catch(() => {});
+        });
+        thumbBox.addEventListener('mouseleave', () => {
+          thumbVideo.pause();
+          try { thumbVideo.currentTime = 0.5; } catch (_) {}
+        });
+      }
+      thumbBox.addEventListener('click', () => {
         loadRecording(rec.id);
       });
 
       // Download
       card.querySelector('.card-mini-btn.download').addEventListener('click', (e) => {
         e.stopPropagation();
-        downloadBlob(rec.blob, rec.timestamp);
+        downloadBlob(rec.blob, rec);
       });
 
       // Delete

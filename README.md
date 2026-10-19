@@ -26,7 +26,7 @@ Most screen recorders force you to choose between **expensive cloud subscription
 
 ### 1. Clone & Build
 ```bash
-git clone https://github.com/your-username/apertur.git
+git clone https://github.com/tahsinsoyak/apertur.git
 cd apertur
 node build.js
 ```

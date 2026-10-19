@@ -10,6 +10,7 @@ const ITEMS_TO_COPY = [
   'background',
   'content',
   'icons',
+  'landing',
   'offscreen',
   'popup',
   'preview',
