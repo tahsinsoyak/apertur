@@ -842,6 +842,10 @@ body {
   grid-column: span 2;
 }
 
+.bento-card.span-3 {
+  grid-column: span 3;
+}
+
 .feature-icon {
   width: 42px;
   height: 42px;
@@ -1137,7 +1141,8 @@ body {
   .install-card {
     grid-template-columns: 1fr;
   }
-  .bento-card.span-2 {
+  .bento-card.span-2,
+  .bento-card.span-3 {
     grid-column: span 1;
   }
 }
