@@ -178,3 +178,4 @@ if (typeof window !== 'undefined') {
 if (typeof self !== 'undefined') {
   self.RecorderDB = dbExport;
 }
+
