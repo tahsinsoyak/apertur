@@ -657,5 +657,3 @@ chrome.commands.onCommand.addListener(async (command) => {
     });
   }
 });
-
-
