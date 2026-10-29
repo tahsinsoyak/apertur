@@ -310,3 +310,235 @@
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.45; transform: scale(0.86); }
 }
+
+/* ========================================================================== */
+/* APERTUR INTERACTIVE SNIPPING TOOL (SELECTED AREA)                          */
+/* ========================================================================== */
+#__apertur_snip_overlay__ {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  opacity: 1;
+  transition: opacity 0.12s ease;
+}
+
+.__apertur_snip_banner__ {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  pointer-events: auto;
+  z-index: 2147483647;
+}
+
+.__apertur_snip_banner__ kbd {
+  background: #334155;
+  color: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 11px;
+}
+
+.__apertur_snip_close_btn__ {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.__apertur_snip_close_btn__:hover {
+  color: #ffffff;
+  background: #334155;
+}
+
+#__apertur_snip_box__ {
+  position: fixed;
+  display: none;
+  border: 2px solid #f59e0b;
+  box-shadow: 0 0 0 99999px rgba(15, 23, 42, 0.52);
+  pointer-events: none;
+  z-index: 2147483647;
+  background: transparent;
+}
+
+.__apertur_snip_dims__ {
+  position: absolute;
+  top: -26px;
+  left: 0;
+  background: #0f172a;
+  color: #f8fafc;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.__apertur_snip_toolbar__ {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px -6px rgba(15, 23, 42, 0.3), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  pointer-events: auto;
+  z-index: 2147483647;
+  animation: __apertur_pop__ 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.__apertur_snip_btn__ {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+}
+
+.__apertur_snip_btn__.primary {
+  background: #e11d48;
+  color: #ffffff;
+}
+
+.__apertur_snip_btn__.primary:hover {
+  background: #be123c;
+}
+
+.__apertur_snip_btn__.secondary {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #e2e8f0;
+}
+
+.__apertur_snip_btn__.secondary:hover {
+  background: #e2e8f0;
+}
+
+.__apertur_snip_btn__.ghost {
+  background: transparent;
+  color: #64748b;
+  padding: 0 6px;
+}
+
+.__apertur_snip_btn__.ghost:hover {
+  background: #fee2e2;
+  color: #e11d48;
+}
+
+/* ========================================================================== */
+/* APERTUR FULL-PAGE CAPTURE PROGRESS HUD                                     */
+/* ========================================================================== */
+#__apertur_fullpage_progress__ {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: rgba(15, 23, 42, 0.94);
+  color: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 2147483647;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.__apertur_progress_bar_wrap__ {
+  width: 140px;
+  height: 6px;
+  background: #334155;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.__apertur_progress_bar_fill__ {
+  height: 100%;
+  width: 0%;
+  background: #e11d48;
+  border-radius: 999px;
+  transition: width 0.18s ease;
+}
+
+/* ========================================================================== */
+/* APERTUR FLOATING TOAST NOTIFICATIONS                                       */
+/* ========================================================================== */
+.__apertur_toast__ {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 10px;
+  box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 2147483647;
+  animation: __apertur_toast_slide__ 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: auto;
+}
+
+.__apertur_toast__.success svg {
+  color: #10b981;
+}
+
+.__apertur_toast__.info svg {
+  color: #38bdf8;
+}
+
+@keyframes __apertur_toast_slide__ {
+  0% { transform: translateY(16px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes __apertur_pop__ {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
