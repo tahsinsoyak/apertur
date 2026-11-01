@@ -989,4 +989,3 @@ if (!window.__TAB_RECORDER_CONTENT_INITIALIZED__) {
     });
   } catch (_) {}
 }
-
