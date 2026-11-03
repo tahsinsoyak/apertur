@@ -51,6 +51,132 @@ document.addEventListener('DOMContentLoaded', async () => {
   let trimStartSec = 0;
   let trimEndSec = 0;
   let isApplyingTrim = false;
+  let currentMediaFilter = 'all';
+  let modalCurrentItem = null;
+  let isModalZoomed = false;
+
+  // Media Library Elements & Modal
+  const filterButtons = document.querySelectorAll('.media-filter-pill');
+  const imageViewerModal = document.getElementById('imageViewerModal');
+  const modalBackdrop = document.getElementById('modalBackdrop');
+  const btnCloseModal = document.getElementById('btnCloseModal');
+  const modalImageTitle = document.getElementById('modalImageTitle');
+  const modalImageMeta = document.getElementById('modalImageMeta');
+  const modalFullImage = document.getElementById('modalFullImage');
+  const modalBody = document.querySelector('.image-modal-body');
+  const btnModalZoom = document.getElementById('btnModalZoom');
+  const modalZoomLabel = document.getElementById('modalZoomLabel');
+  const btnModalCopy = document.getElementById('btnModalCopy');
+  const btnModalDownload = document.getElementById('btnModalDownload');
+  const btnModalDelete = document.getElementById('btnModalDelete');
+  const modalCopyLabel = document.getElementById('modalCopyLabel');
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentMediaFilter = btn.dataset.filter || 'all';
+      renderGallery();
+    });
+  });
+
+  function setModalZoom(zoomed) {
+    isModalZoomed = zoomed;
+    if (modalBody) {
+      modalBody.classList.toggle('zoom-full', isModalZoomed);
+    }
+    if (modalZoomLabel) {
+      modalZoomLabel.textContent = isModalZoomed ? 'Fit Screen' : '100% Size';
+    }
+    if (modalFullImage) {
+      modalFullImage.title = isModalZoomed ? 'Click to fit image to window' : 'Click to view at 100% full size';
+    }
+  }
+
+  function openImageModal(item) {
+    modalCurrentItem = item;
+    if (modalImageTitle) modalImageTitle.textContent = item.title || 'Screenshot';
+    if (modalImageMeta) {
+      modalImageMeta.textContent = item.dimensions ? `${item.dimensions.width} × ${item.dimensions.height}` : 'PNG';
+    }
+    const src = item.dataUrl || (item.blob ? URL.createObjectURL(item.blob) : '');
+    if (modalFullImage) modalFullImage.src = src;
+
+    // Automatically enable full scroll mode if it's a long full-page screenshot
+    const isVeryTall = Boolean(item.dimensions && item.dimensions.height / (item.dimensions.width || 1) > 1.8);
+    setModalZoom(isVeryTall);
+
+    if (imageViewerModal) imageViewerModal.classList.remove('hidden');
+  }
+
+  function closeImageModal() {
+    if (imageViewerModal) imageViewerModal.classList.add('hidden');
+    modalCurrentItem = null;
+    setModalZoom(false);
+  }
+
+  if (btnModalZoom) {
+    btnModalZoom.addEventListener('click', () => {
+      setModalZoom(!isModalZoomed);
+    });
+  }
+
+  if (modalFullImage) {
+    modalFullImage.addEventListener('click', () => {
+      setModalZoom(!isModalZoomed);
+    });
+  }
+
+  if (btnModalDelete) {
+    btnModalDelete.addEventListener('click', async () => {
+      if (!modalCurrentItem) return;
+      const conf = confirm(`Delete "${modalCurrentItem.title || 'this screenshot'}" from your library?`);
+      if (!conf) return;
+
+      await window.RecorderDB.deleteRecording(modalCurrentItem.id);
+      closeImageModal();
+      await renderGallery();
+    });
+  }
+
+  if (btnCloseModal) btnCloseModal.addEventListener('click', closeImageModal);
+  if (modalBackdrop) modalBackdrop.addEventListener('click', closeImageModal);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && imageViewerModal && !imageViewerModal.classList.contains('hidden')) {
+      closeImageModal();
+    }
+  });
+
+  if (btnModalCopy) {
+    btnModalCopy.addEventListener('click', async () => {
+      if (!modalCurrentItem) return;
+      try {
+        const src = modalCurrentItem.dataUrl || modalFullImage.src;
+        const res = await fetch(src);
+        const blob = await res.blob();
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        if (modalCopyLabel) modalCopyLabel.textContent = 'Copied!';
+        setTimeout(() => { if (modalCopyLabel) modalCopyLabel.textContent = 'Copy Image'; }, 1500);
+      } catch (err) {
+        if (modalCopyLabel) modalCopyLabel.textContent = 'Copy Failed';
+        setTimeout(() => { if (modalCopyLabel) modalCopyLabel.textContent = 'Copy Image'; }, 1500);
+      }
+    });
+  }
+
+  if (btnModalDownload) {
+    btnModalDownload.addEventListener('click', () => {
+      if (!modalCurrentItem) return;
+      const src = modalCurrentItem.dataUrl || modalFullImage.src;
+      const a = document.createElement('a');
+      a.href = src;
+      const stamp = new Date(modalCurrentItem.timestamp || Date.now()).toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      a.download = `apertur-screenshot-${stamp}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+  }
 
   // --------------------------------------------------------------------------
   // Formatting Utilities
@@ -165,17 +291,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         record = await window.RecorderDB.getRecording(id);
       }
 
-      // Fallback to most recent recording
+      // Fallback to most recent video recording
       if (!record) {
         const all = await window.RecorderDB.getAllRecordings();
         if (all && all.length > 0) {
-          all.sort((a, b) => b.timestamp - a.timestamp);
-          record = all[0];
+          const videos = all.filter((item) => item.type !== 'screenshot' && item.blob);
+          if (videos.length > 0) {
+            videos.sort((a, b) => b.timestamp - a.timestamp);
+            record = videos[0];
+          }
         }
       }
 
       if (!record || !record.blob) {
-        loadingStatusText.textContent = 'No recording found. Record a tab first!';
         showGalleryView();
         return;
       }
@@ -435,18 +563,44 @@ document.addEventListener('DOMContentLoaded', async () => {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
       const snapLabelSpan = btnSnapshot.querySelector('span');
-      canvas.toBlob((pngBlob) => {
+
+      canvas.toBlob(async (pngBlob) => {
         if (!pngBlob) return;
+        const safeName = getSafeFilename(currentRecording);
+        const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        const dataUrl = canvas.toDataURL('image/png');
+
+        // Save to IndexedDB so it appears in the Media Library
+        try {
+          await window.RecorderDB.saveScreenshot({
+            id: `frame-${Date.now()}`,
+            title: `${recordingTitle.textContent || 'Video'} (Frame)`,
+            timestamp: Date.now(),
+            dimensions: { width: canvas.width, height: canvas.height },
+            size: pngBlob.size,
+            dataUrl
+          });
+          await updateGalleryBadge();
+        } catch (_) {}
+
+        // Also copy to clipboard if supported
+        let copied = false;
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
+          copied = true;
+        } catch (_) {}
+
+        // Download PNG file
         const url = URL.createObjectURL(pngBlob);
         const a = document.createElement('a');
         a.href = url;
-        const safeName = getSafeFilename(currentRecording);
-        a.download = `${safeName}-frame.png`;
+        a.download = `${safeName}-frame-${stamp}.png`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+
         if (snapLabelSpan) {
-          snapLabelSpan.textContent = 'Saved PNG!';
+          snapLabelSpan.textContent = copied ? 'Copied & Saved!' : 'Saved PNG!';
           setTimeout(() => { snapLabelSpan.textContent = 'Screenshot'; }, 1500);
         }
         setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -519,105 +673,203 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!allRecordingsCache || allRecordingsCache.length === 0) {
       galleryEmptyState.classList.remove('hidden');
       galleryGrid.classList.add('hidden');
-      gallerySummaryText.textContent = '0 recordings saved';
+      gallerySummaryText.textContent = '0 items saved';
+      return;
+    }
+
+    // Sort by latest first
+    allRecordingsCache.sort((a, b) => b.timestamp - a.timestamp);
+
+    // Filter items based on selected tab
+    let itemsToRender = allRecordingsCache;
+    if (currentMediaFilter === 'video') {
+      itemsToRender = allRecordingsCache.filter((item) => item.type !== 'screenshot');
+    } else if (currentMediaFilter === 'screenshot') {
+      itemsToRender = allRecordingsCache.filter((item) => item.type === 'screenshot');
+    }
+
+    if (itemsToRender.length === 0) {
+      galleryEmptyState.classList.remove('hidden');
+      galleryGrid.classList.add('hidden');
+      gallerySummaryText.textContent = `0 ${currentMediaFilter}s found`;
       return;
     }
 
     galleryEmptyState.classList.add('hidden');
     galleryGrid.classList.remove('hidden');
 
-    // Sort by latest first
-    allRecordingsCache.sort((a, b) => b.timestamp - a.timestamp);
-
-    // Calculate total size
     const totalBytes = allRecordingsCache.reduce((acc, cur) => acc + (cur.size || 0), 0);
-    gallerySummaryText.textContent = `${allRecordingsCache.length} recording${allRecordingsCache.length > 1 ? 's' : ''} • ${formatBytes(totalBytes)} stored locally`;
+    const videoCount = allRecordingsCache.filter((i) => i.type !== 'screenshot').length;
+    const snapCount = allRecordingsCache.filter((i) => i.type === 'screenshot').length;
+    gallerySummaryText.textContent = `${videoCount} video${videoCount === 1 ? '' : 's'} • ${snapCount} screenshot${snapCount === 1 ? '' : 's'} • ${formatBytes(totalBytes)} stored locally`;
 
-    allRecordingsCache.forEach((rec) => {
+    itemsToRender.forEach((rec) => {
+      const isScreenshot = (rec.type === 'screenshot');
       const card = document.createElement('div');
-      card.className = `gallery-card ${currentRecording && currentRecording.id === rec.id ? 'active-playing' : ''}`;
+      card.className = `gallery-card ${isScreenshot ? 'screenshot-item' : ''} ${currentRecording && currentRecording.id === rec.id ? 'active-playing' : ''}`;
 
-      const blobUrl = URL.createObjectURL(rec.blob);
       const displayTitle = getRecordingDisplayTitle(rec);
+      const mediaSrc = rec.dataUrl || (rec.blob ? URL.createObjectURL(rec.blob) : '');
 
-      card.innerHTML = `
-        <div class="gallery-thumbnail-box" title="Click to watch video">
-          <video class="gallery-thumbnail-video" src="${blobUrl}#t=0.5" preload="metadata"></video>
-          <div class="gallery-play-overlay">
-            <div class="play-circle">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
-                <polygon points="5 3 19 12 5 21 5 3"/>
-              </svg>
+      if (isScreenshot) {
+        card.innerHTML = `
+          <div class="gallery-thumbnail-box screenshot-thumb" title="Click to open full screenshot">
+            <img class="gallery-thumbnail-img" src="${mediaSrc}" alt="${displayTitle}" loading="lazy" />
+            <div class="gallery-play-overlay">
+              <div class="play-circle" style="border-radius: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              </div>
+            </div>
+            <div class="thumbnail-badges">
+              <span class="thumb-badge snap-badge">Screenshot</span>
+              <span class="thumb-badge">${rec.dimensions ? `${rec.dimensions.width}×${rec.dimensions.height}` : 'PNG'}</span>
             </div>
           </div>
-          <div class="thumbnail-badges">
-            <span class="thumb-badge res">${rec.resolution === '720p' ? '720p' : '1080p'}</span>
-            <span class="thumb-badge">${formatDuration(rec.duration)}</span>
-          </div>
-        </div>
 
-        <div class="gallery-card-body">
-          <div class="card-title-row">
-            <span class="card-title" title="${displayTitle}">${displayTitle}</span>
-            <span class="card-subtitle">${rec.fps || 60} FPS • Full HD WebM</span>
-          </div>
+          <div class="gallery-card-body">
+            <div class="card-title-row">
+              <span class="card-title" title="${displayTitle}">${displayTitle}</span>
+              <span class="card-subtitle">${formatDate(rec.timestamp)} • Lossless Image</span>
+            </div>
 
-          <div class="card-actions-row">
-            <span class="card-size-label">${formatBytes(rec.size)}</span>
-            <div class="card-btn-group">
-              <button class="card-mini-btn download" title="Download video (.webm)">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                </svg>
-                <span>Save</span>
-              </button>
+            <div class="card-actions-row">
+              <span class="card-size-label">${formatBytes(rec.size)}</span>
+              <div class="card-btn-group">
+                <button class="card-mini-btn copy-btn" title="Copy image to clipboard">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span>Copy</span>
+                </button>
 
-              <button class="card-mini-btn delete" title="Delete recording">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="3 6 5 6 21 6"/>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                </svg>
-              </button>
+                <button class="card-mini-btn download" title="Download screenshot (.png)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                  <span>Save</span>
+                </button>
+
+                <button class="card-mini-btn delete" title="Delete screenshot">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      `;
+        `;
 
-      // Click card thumbnail to watch in player
-      const thumbBox = card.querySelector('.gallery-thumbnail-box');
-      const thumbVideo = card.querySelector('.gallery-thumbnail-video');
-      if (thumbVideo) {
-        thumbVideo.muted = true;
-        thumbBox.addEventListener('mouseenter', () => {
-          thumbVideo.play().catch(() => {});
+        card.querySelector('.gallery-thumbnail-box').addEventListener('click', () => {
+          openImageModal(rec);
         });
-        thumbBox.addEventListener('mouseleave', () => {
-          thumbVideo.pause();
-          try { thumbVideo.currentTime = 0.5; } catch (_) {}
+
+        const copyBtn = card.querySelector('.card-mini-btn.copy-btn');
+        if (copyBtn) {
+          copyBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            try {
+              const res = await fetch(mediaSrc);
+              const blob = await res.blob();
+              await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+              const label = copyBtn.querySelector('span');
+              if (label) label.textContent = 'Copied!';
+              setTimeout(() => { if (label) label.textContent = 'Copy'; }, 1500);
+            } catch (_) {}
+          });
+        }
+
+        card.querySelector('.card-mini-btn.download').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const a = document.createElement('a');
+          a.href = mediaSrc;
+          const stamp = new Date(rec.timestamp || Date.now()).toISOString().replace(/[:.]/g, '-').slice(0, 19);
+          a.download = `apertur-screenshot-${stamp}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+
+        card.querySelector('.card-mini-btn.delete').addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const conf = confirm('Delete this screenshot from library?');
+          if (!conf) return;
+          await window.RecorderDB.deleteRecording(rec.id);
+          await renderGallery();
+        });
+
+      } else {
+        // Video card
+        const blobUrl = mediaSrc;
+        card.innerHTML = `
+          <div class="gallery-thumbnail-box" title="Click to watch video">
+            <video class="gallery-thumbnail-video" src="${blobUrl}#t=0.5" preload="metadata"></video>
+            <div class="gallery-play-overlay">
+              <div class="play-circle">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </div>
+            </div>
+            <div class="thumbnail-badges">
+              <span class="thumb-badge res">${rec.resolution === '720p' ? '720p' : '1080p'}</span>
+              <span class="thumb-badge">${formatDuration(rec.duration)}</span>
+            </div>
+          </div>
+
+          <div class="gallery-card-body">
+            <div class="card-title-row">
+              <span class="card-title" title="${displayTitle}">${displayTitle}</span>
+              <span class="card-subtitle">${rec.fps || 60} FPS • Full HD WebM</span>
+            </div>
+
+            <div class="card-actions-row">
+              <span class="card-size-label">${formatBytes(rec.size)}</span>
+              <div class="card-btn-group">
+                <button class="card-mini-btn download" title="Download video (.webm)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                  </svg>
+                  <span>Save</span>
+                </button>
+
+                <button class="card-mini-btn delete" title="Delete recording">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const thumbBox = card.querySelector('.gallery-thumbnail-box');
+        const thumbVideo = card.querySelector('.gallery-thumbnail-video');
+        if (thumbVideo) {
+          thumbVideo.muted = true;
+          thumbBox.addEventListener('mouseenter', () => {
+            thumbVideo.play().catch(() => {});
+          });
+          thumbBox.addEventListener('mouseleave', () => {
+            thumbVideo.pause();
+            try { thumbVideo.currentTime = 0.5; } catch (_) {}
+          });
+        }
+        thumbBox.addEventListener('click', () => {
+          loadRecording(rec.id);
+        });
+
+        card.querySelector('.card-mini-btn.download').addEventListener('click', (e) => {
+          e.stopPropagation();
+          downloadBlob(rec.blob, rec);
+        });
+
+        card.querySelector('.card-mini-btn.delete').addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const conf = confirm('Delete this recording from library?');
+          if (!conf) return;
+
+          await window.RecorderDB.deleteRecording(rec.id);
+          if (currentRecording && currentRecording.id === rec.id) {
+            currentRecording = null;
+          }
+          await renderGallery();
         });
       }
-      thumbBox.addEventListener('click', () => {
-        loadRecording(rec.id);
-      });
-
-      // Download
-      card.querySelector('.card-mini-btn.download').addEventListener('click', (e) => {
-        e.stopPropagation();
-        downloadBlob(rec.blob, rec);
-      });
-
-      // Delete
-      card.querySelector('.card-mini-btn.delete').addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const conf = confirm('Delete this recording from library?');
-        if (!conf) return;
-
-        await window.RecorderDB.deleteRecording(rec.id);
-        if (currentRecording && currentRecording.id === rec.id) {
-          currentRecording = null;
-        }
-        await renderGallery();
-      });
 
       galleryGrid.appendChild(card);
     });
