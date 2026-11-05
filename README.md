@@ -18,7 +18,9 @@
     &nbsp;•&nbsp;
     <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><strong>📦 Download Extension v2.0 (.zip)</strong></a>
     &nbsp;•&nbsp;
-    <a href="https://www.patreon.com/tahsinsoyak"><strong>💖 Support on Patreon</strong></a>
+    <a href="https://tahsinsoyak.github.io/apertur/sponsor.html"><strong>💖 Sponsor &amp; Patreon</strong></a>
+    &nbsp;•&nbsp;
+    <a href="SPONSORS.md"><strong>🌟 Backer Tiers</strong></a>
     &nbsp;•&nbsp;
     <a href="https://github.com/tahsinsoyak/apertur/issues"><strong>🐛 Report Issue</strong></a>
   </p>
@@ -150,8 +152,12 @@ apertur/
 ├── icons/
 │   ├── icon.svg           # Master vector branding artwork
 │   └── icon*.png          # Multi-resolution extension icons (16px, 32px, 48px, 128px)
+├── .github/
+│   ├── FUNDING.yml        # GitHub Native Sponsorship button configuration (Patreon)
+│   └── SUPPORT.md         # Community support guidelines and issue reporting
 ├── landing/
 │   ├── index.html         # SEO-optimized product landing page & interactive cursor playground
+│   ├── sponsor.html       # Dedicated community sponsorship, roadmap & Patreon tiers page
 │   ├── landing.css        # Daylight Studio design system & responsive showcase styles
 │   ├── landing.js         # Interactive 60Hz cursor physics & simulated HUD controller
 │   └── assets/            # High-resolution showcase screenshots for the landing page
@@ -176,6 +182,7 @@ apertur/
 │   └── test-live-e2e.js             # Live browser E2E test (Area snip, full page, modal zoom, IndexedDB)
 ├── build.js               # Zero-dependency production bundler -> generates dist/
 ├── manifest.json          # Chrome Extension Manifest V3 configuration (v2.0.0)
+├── SPONSORS.md            # Comprehensive sponsorship guide, budget breakdown & Patreon tiers
 └── LICENSE                # MIT License
 ```
 
@@ -201,18 +208,28 @@ node scripts/capture-store-screenshots.js
 
 ---
 
-## 💖 Support the Developer
+## 💖 Support the Developer & Sponsor Apertur
 
 Apertur is built and maintained as a completely free, open-source project by **[Tahsin Soyak](https://github.com/tahsinsoyak)** under the MIT license.
 
-If Apertur has been helpful to your workflow or saved you from monthly subscription fees, please consider supporting ongoing development:
+There are zero cloud subscriptions, zero paywalls, and zero watermarks. If Apertur has saved you or your team from paying $15 to $29 per month for proprietary screen recorders, please consider supporting ongoing development:
 
 [![Support on Patreon](https://img.shields.io/badge/Patreon-Support%20on%20Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/tahsinsoyak)
 
 - **Patreon**: [patreon.com/tahsinsoyak](https://www.patreon.com/tahsinsoyak)
-- **GitHub Sponsor / Star**: [github.com/tahsinsoyak/apertur](https://github.com/tahsinsoyak/apertur)
+- **Dedicated Sponsor Page**: [Online Sponsor Page](https://tahsinsoyak.github.io/apertur/sponsor.html)
+- **Sponsorship Guide & Roadmap**: [SPONSORS.md](SPONSORS.md)
+- **GitHub Star**: [github.com/tahsinsoyak/apertur](https://github.com/tahsinsoyak/apertur)
 
-Your support funds continuous development, Chrome Web Store listing updates, and new creative features.
+### Patreon Membership Tiers
+
+| Tier | Monthly Contribution | Highlights |
+| :--- | :--- | :--- |
+| ☕ **Coffee Supporter** | **$3 / month** | Shoutout in GitHub Release notes and eternal gratitude |
+| 🚀 **Studio Backer** | **$10 / month** | Name listed in README & Website wall + Early access to feature builds |
+| 💎 **Visionary Sponsor** | **$25 / month** | Logo & backlink on README/Website + Priority feature/bug triage |
+
+Your contributions fund Chrome Web Store maintenance, WebCodecs and AV1 video research, webcam Picture-in-Picture overlays, and continuous open-source innovation.
 
 ---
 
