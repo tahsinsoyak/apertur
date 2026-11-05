@@ -146,4 +146,18 @@ document.addEventListener('DOMContentLoaded', () => {
       card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
     });
   });
+
+  // 8. Showcase Gallery Tabs Switcher
+  const galleryTabs = document.querySelectorAll('.gallery-tab');
+  const gallerySlides = document.querySelectorAll('.gallery-slide');
+  galleryTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      galleryTabs.forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      const targetId = tab.dataset.target;
+      gallerySlides.forEach((slide) => {
+        slide.classList.toggle('active', slide.id === targetId);
+      });
+    });
+  });
 });
