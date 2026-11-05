@@ -70,6 +70,13 @@ function build() {
     }
   }
 
+  // 4. Build GitHub Pages assets
+  try {
+    const buildPages = require('./scripts/build-github-pages.js');
+  } catch (e) {
+    console.warn('  ⚠ Notice: Could not build GitHub Pages assets', e.message);
+  }
+
   console.log('\n✨ Build complete! Production extension is ready in:');
   console.log(`   ${DIST_DIR}\n`);
 }

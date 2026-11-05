@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "node build.js",
+    "build:pages": "node scripts/build-github-pages.js",
     "test-server": "node test-server.js"
   },
   "keywords": [

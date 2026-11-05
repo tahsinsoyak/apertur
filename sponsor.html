@@ -2,11 +2,455 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=landing/sponsor.html">
-  <title>Sponsor Apertur - Creator Tahsin Soyak</title>
-  <script>window.location.replace("landing/sponsor.html");</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sponsor Apertur: Support Open-Source Development &amp; Creator Tahsin Soyak</title>
+  <meta name="description" content="Support Apertur screen recorder and screenshot suite development. 100% free, private, and open-source under the MIT license. Become a sponsor on Patreon.">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/icon16.png">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Sponsor Apertur: Support Open-Source Development &amp; Creator Tahsin Soyak">
+  <meta property="og:description" content="Apertur is 100% free, private, and open-source under the MIT license. Support creator Tahsin Soyak on Patreon.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tahsinsoyak.github.io/apertur/sponsor.html">
+  <meta property="og:image" content="assets/screenshot-popup-studio.png">
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="landing/landing.css">
 </head>
 <body>
-  <p>Redirecting to <a href="landing/sponsor.html">Apertur Sponsorship Page</a>...</p>
+  <!-- Animated Ambient Background Orbs & Grid -->
+  <div class="ambient-orbs" aria-hidden="true">
+    <div class="orb orb-rose"></div>
+    <div class="orb orb-sky"></div>
+    <div class="orb orb-amber"></div>
+  </div>
+  <div class="grid-backdrop" aria-hidden="true"></div>
+
+  <!-- Sticky Navigation -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand" aria-label="Apertur Home">
+        <div class="nav-logo-box">
+          <img src="icons/icon32.png" alt="Apertur Logo" width="24" height="24">
+        </div>
+        <span class="nav-brand-name">Apertur</span>
+        <span class="nav-version-pill">v2.0 MIT</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="index.html#playground">Playground</a>
+        <a href="index.html#showcase-gallery">Gallery</a>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#comparison">Compare</a>
+        <a href="sponsor.html" style="color: var(--accent-ruby); font-weight: 700;">Sponsor</a>
+        <a href="index.html#faq">FAQ</a>
+      </nav>
+
+      <div class="nav-cta-group">
+        <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener" class="btn-patreon" title="Support Apertur on Patreon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.39-5.575-5.275-6.425C14.28.01 10.74 0 7.42 0 3.32 0 0 3.32 0 7.42v15.16h4.52V9.3c0-2.6 2.1-4.7 4.7-4.7 2.6 0 4.7 2.1 4.7 4.7 0 2.6-2.1 4.7-4.7 4.7-1.07 0-2.07-.37-2.86-1v4.86c.9.23 1.87.35 2.86.35 6.07 0 11.02-4.94 11.02-11.01 0-.03-.004-.06-.004-.09z"/></svg>
+          <span>Patreon</span>
+        </a>
+        <a href="https://github.com/tahsinsoyak/apertur" target="_blank" rel="noopener" class="btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================================================================== -->
+    <!-- HERO SECTION                                                       -->
+    <!-- ================================================================== -->
+    <section class="hero-section" style="padding-bottom: 30px;">
+      <div class="container hero-inner">
+        <div class="announcement-pill reveal-up">
+          <span class="pill-dot" style="background:#ff424d;"></span>
+          <span>100% Free &amp; Open Source • Community Supported</span>
+        </div>
+
+        <h1 class="hero-title reveal-up">
+          Sponsor Apertur &amp;<br>
+          <span class="gradient-text">Creator Tahsin Soyak</span>
+        </h1>
+
+        <p class="hero-subtitle reveal-up">
+          Apertur is built to stay 100% free under the MIT license forever. No subscription paywalls, no cloud surveillance, and no watermarks. Your sponsorship on Patreon directly fuels continuous development, new creative tools, and independent open-source engineering.
+        </p>
+
+        <div class="hero-actions reveal-up">
+          <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener" class="btn-patreon btn-lg" style="box-shadow: 0 10px 25px -4px rgba(255, 66, 77, 0.4);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.39-5.575-5.275-6.425C14.28.01 10.74 0 7.42 0 3.32 0 0 3.32 0 7.42v15.16h4.52V9.3c0-2.6 2.1-4.7 4.7-4.7 2.6 0 4.7 2.1 4.7 4.7 0 2.6-2.1 4.7-4.7 4.7-1.07 0-2.07-.37-2.86-1v4.86c.9.23 1.87.35 2.86.35 6.07 0 11.02-4.94 11.02-11.01 0-.03-.004-.06-.004-.09z"/></svg>
+            <span>Become a Patron on Patreon</span>
+          </a>
+          <a href="https://github.com/tahsinsoyak/apertur" target="_blank" rel="noopener" class="btn-outline btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            <span>Star on GitHub</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- WHY SPONSOR SECTION                                                -->
+    <!-- ================================================================== -->
+    <section class="features-section" style="padding: 40px 0;">
+      <div class="container">
+        <div class="section-heading reveal-up">
+          <span class="section-kicker">COMMUNITY PHILOSOPHY</span>
+          <h2>Why sponsor an open-source project?</h2>
+          <p>Proprietary cloud screen recorders charge $180 to $350 per year per user while locking your content behind cloud servers. Apertur provides an open, private alternative.</p>
+        </div>
+
+        <div class="workflow-grid" style="margin-top: 32px;">
+          <div class="workflow-card">
+            <div class="wf-icon-box" style="background:#fee2e2; color:#ef4444;">🛡️</div>
+            <h3>100% Free &amp; Private Forever</h3>
+            <p>Apertur will never gate core features behind subscriptions or time limits. All video recordings and screenshots stay on your computer inside local IndexedDB storage.</p>
+          </div>
+          <div class="workflow-card">
+            <div class="wf-icon-box" style="background:#dbeafe; color:#2563eb;">🚀</div>
+            <h3>Independent Creator Engineering</h3>
+            <p>Maintained by creator Tahsin Soyak with zero venture capital or corporate tracking. Your sponsorship directly funds development time, bug fixes, and browser API updates.</p>
+          </div>
+          <div class="workflow-card">
+            <div class="wf-icon-box" style="background:#dcfce7; color:#16a34a;">✨</div>
+            <h3>Continuous Community Features</h3>
+            <p>From precision area snipping (<kbd>Alt+Shift+A</kbd>) to built-in video trimming and 100% zoom inspection, your support powers tools that make everyday work effortless.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- PATREON MEMBERSHIP TIERS SECTION                                  -->
+    <!-- ================================================================== -->
+    <section class="sponsor-tiers-section" style="padding: 50px 0;">
+      <div class="container">
+        <div class="section-heading reveal-up">
+          <span class="section-kicker">PATREON MEMBERSHIP TIERS</span>
+          <h2>Choose your level of support.</h2>
+          <p>Every contribution makes a real difference. Select a tier on Patreon that fits your goals and join our creative backer community.</p>
+        </div>
+
+        <div class="tiers-grid">
+          <!-- Tier 1: Coffee Supporter -->
+          <div class="tier-card">
+            <div class="tier-header">
+              <div class="tier-name">
+                <span>☕</span>
+                <span>Coffee Supporter</span>
+              </div>
+              <div class="tier-price-box">
+                <span class="tier-price">$3</span>
+                <span class="tier-period">/ month</span>
+              </div>
+              <p class="tier-desc">Perfect for enthusiastic users who want to fuel daily development and say thank you.</p>
+            </div>
+
+            <div class="tier-divider"></div>
+            <div class="tier-perks-title">What is included:</div>
+
+            <ul class="tier-perks-list">
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Official shoutout in GitHub Release notes</span>
+              </li>
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Special Supporter role in GitHub Discussions</span>
+              </li>
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Our eternal gratitude for supporting free software</span>
+              </li>
+            </ul>
+
+            <div class="tier-action">
+              <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener" class="tier-btn tier-btn-outline">
+                <span>Join for $3/month</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Tier 2: Studio Backer (Featured) -->
+          <div class="tier-card featured">
+            <div class="tier-featured-pill">Most Popular</div>
+
+            <div class="tier-header">
+              <div class="tier-name">
+                <span>🚀</span>
+                <span>Studio Backer</span>
+              </div>
+              <div class="tier-price-box">
+                <span class="tier-price">$10</span>
+                <span class="tier-period">/ month</span>
+              </div>
+              <p class="tier-desc">For power users, content creators, and developers who rely on Apertur every day.</p>
+            </div>
+
+            <div class="tier-divider"></div>
+            <div class="tier-perks-title">Everything in Coffee, plus:</div>
+
+            <ul class="tier-perks-list">
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span><strong>Your name listed on GitHub README &amp; Website wall</strong></span>
+              </li>
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Early access to pre-release beta builds</span>
+              </li>
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Voting input on upcoming feature roadmaps</span>
+              </li>
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Direct feedback channel with creator Tahsin Soyak</span>
+              </li>
+            </ul>
+
+            <div class="tier-action">
+              <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener" class="tier-btn tier-btn-primary">
+                <span>Join for $10/month</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Tier 3: Visionary Sponsor -->
+          <div class="tier-card">
+            <div class="tier-header">
+              <div class="tier-name">
+                <span>💎</span>
+                <span>Visionary Sponsor</span>
+              </div>
+              <div class="tier-price-box">
+                <span class="tier-price">$25</span>
+                <span class="tier-period">/ month</span>
+              </div>
+              <p class="tier-desc">For teams, companies, and patrons who want to empower the next generation of screen capture.</p>
+            </div>
+
+            <div class="tier-divider"></div>
+            <div class="tier-perks-title">Everything in Studio, plus:</div>
+
+            <ul class="tier-perks-list">
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span><strong>Company logo and backlink on GitHub README and Website</strong></span>
+              </li>
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>High-priority triage for your bug reports and feature requests</span>
+              </li>
+              <li class="tier-perk-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Custom team configuration and developer setup assistance</span>
+              </li>
+            </ul>
+
+            <div class="tier-action">
+              <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener" class="tier-btn tier-btn-outline">
+                <span>Join for $25/month</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- TRANSPARENT FUND ALLOCATION SECTION                                -->
+    <!-- ================================================================== -->
+    <section class="allocation-section" style="padding: 50px 0; background: var(--bg-subtle);">
+      <div class="container">
+        <div class="section-heading reveal-up">
+          <span class="section-kicker">TRANSPARENT ALLOCATION</span>
+          <h2>Where your sponsorship goes.</h2>
+          <p>We believe in total transparency. Here is how funds from Patreon directly support the Apertur ecosystem:</p>
+        </div>
+
+        <div class="allocation-grid">
+          <div class="allocation-card">
+            <span class="allocation-pct">40%</span>
+            <span class="allocation-title">New Creative Features</span>
+            <p class="allocation-desc">Circular webcam overlays (PiP), animated GIF export, and live canvas annotation tools.</p>
+          </div>
+          <div class="allocation-card">
+            <span class="allocation-pct">30%</span>
+            <span class="allocation-title">Store &amp; Ecosystem</span>
+            <p class="allocation-desc">Chrome Web Store developer fees, release signing, and continuous delivery infrastructure.</p>
+          </div>
+          <div class="allocation-card">
+            <span class="allocation-pct">20%</span>
+            <span class="allocation-title">Codec Optimization</span>
+            <p class="allocation-desc">WebCodecs API hardware acceleration, AV1 encoding benchmarks, and 120 FPS high refresh mode.</p>
+          </div>
+          <div class="allocation-card">
+            <span class="allocation-pct">10%</span>
+            <span class="allocation-title">Docs &amp; Community</span>
+            <p class="allocation-desc">Automated E2E browser test suites, installation tutorials, and active GitHub issue triage.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- COMMUNITY SPONSORS WALL                                           -->
+    <!-- ================================================================== -->
+    <section class="sponsor-wall-section" style="padding: 50px 0;">
+      <div class="container">
+        <div class="section-heading reveal-up">
+          <span class="section-kicker">WALL OF SPONSORS</span>
+          <h2>Thank you to our supporters.</h2>
+          <p>Your generosity keeps Apertur independent and freely available to millions of web creators.</p>
+        </div>
+
+        <div class="sponsor-wall-grid">
+          <div class="sponsor-wall-card">
+            <strong>Backer Slot #1</strong>
+            <span>Reserved for Studio Backer</span>
+            <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener">Join on Patreon &rarr;</a>
+          </div>
+          <div class="sponsor-wall-card">
+            <strong>Backer Slot #2</strong>
+            <span>Reserved for Studio Backer</span>
+            <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener">Join on Patreon &rarr;</a>
+          </div>
+          <div class="sponsor-wall-card">
+            <strong>Visionary Partner Slot</strong>
+            <span>Reserved for Organization Logo</span>
+            <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener">Join on Patreon &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- NON-FINANCIAL WAYS TO SUPPORT                                      -->
+    <!-- ================================================================== -->
+    <section class="non-financial-section" style="padding: 50px 0; background: var(--bg-surface); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+      <div class="container">
+        <div class="section-heading reveal-up">
+          <span class="section-kicker">OTHER WAYS TO HELP</span>
+          <h2>Support Apertur without spending a dime.</h2>
+          <p>Not ready to contribute financially? You can make an immense difference through simple community actions:</p>
+        </div>
+
+        <div class="workflow-grid" style="margin-top: 32px;">
+          <div class="workflow-card">
+            <div class="wf-icon-box" style="background:#fef3c7; color:#d97706;">⭐</div>
+            <h3>Star the Repository</h3>
+            <p>Giving Apertur a star on <a href="https://github.com/tahsinsoyak/apertur" target="_blank" rel="noopener" style="color:var(--accent-ruby); font-weight:700;">GitHub</a> increases our search visibility and helps other developers discover the project.</p>
+          </div>
+          <div class="workflow-card">
+            <div class="wf-icon-box" style="background:#ede9fe; color:#7c3aed;">📣</div>
+            <h3>Share with Colleagues</h3>
+            <p>Mention Apertur on X (Twitter), LinkedIn, Reddit, or in team Slack channels when discussing private screen recording tools.</p>
+          </div>
+          <div class="workflow-card">
+            <div class="wf-icon-box" style="background:#ccfbf1; color:#0d9488;">🐞</div>
+            <h3>Report Bugs &amp; Test</h3>
+            <p>Help us identify edge cases by reporting bugs and suggesting improvements on the official <a href="https://github.com/tahsinsoyak/apertur/issues" target="_blank" rel="noopener" style="color:var(--accent-ruby); font-weight:700;">GitHub Issues page</a>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SPONSORSHIP FAQ ACCORDION                                          -->
+    <!-- ================================================================== -->
+    <section class="faq-section" style="padding: 50px 0;">
+      <div class="container faq-container">
+        <div class="section-heading reveal-up">
+          <span class="section-kicker">FREQUENTLY ASKED QUESTIONS</span>
+          <h2>Questions about sponsorship.</h2>
+          <p>Everything you need to know about becoming a sponsor on Patreon.</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item reveal-up" open>
+            <summary>Will Apertur ever charge users or lock features behind a paywall?</summary>
+            <p>No. Apertur is released under the permissive MIT license and will always remain 100% free. Every feature, including 1080p 60 FPS recording, unlimited duration, built-in trimming, and lossless screenshots, is accessible to everyone at zero cost.</p>
+          </details>
+
+          <details class="faq-item reveal-up">
+            <summary>How do I claim my recognition after becoming a patron?</summary>
+            <p>After joining on Patreon, your Patreon username (or company name and link of your choice) is reviewed and added to the official GitHub README and website sponsor wall within 48 hours. You can also message Tahsin Soyak directly on Patreon with your preferred name or logo.</p>
+          </details>
+
+          <details class="faq-item reveal-up">
+            <summary>Can I cancel or change my Patreon contribution at any time?</summary>
+            <p>Yes. You have complete control over your Patreon membership. You can upgrade, downgrade, or cancel your pledge at any time with no questions asked.</p>
+          </details>
+
+          <details class="faq-item reveal-up">
+            <summary>Do you accept corporate or one-time sponsorships?</summary>
+            <p>Yes. If your company would like to make a custom annual contribution, request invoice billing, or prioritize specific enterprise features, please contact Tahsin Soyak on <a href="https://github.com/tahsinsoyak" target="_blank" rel="noopener" style="color:var(--accent-ruby); font-weight:700;">GitHub</a> or through Patreon messages.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand">
+            <img src="icons/icon32.png" alt="Apertur" width="22" height="22">
+            <span>Apertur</span>
+          </a>
+          <p class="footer-copy">Free, private, open-source 1080p 60 FPS screen recorder &amp; screenshot suite for Google Chrome. Built with Daylight Studio design.</p>
+          <div class="footer-creator">
+            <span>Engineered by <strong>Tahsin Soyak</strong></span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <a href="index.html#playground">Playground</a>
+          <a href="index.html#showcase-gallery">Showcase Gallery</a>
+          <a href="index.html#how-it-works">How It Works</a>
+          <a href="index.html#features">Features</a>
+          <a href="index.html#comparison">Comparison</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Open Source</h4>
+          <a href="https://github.com/tahsinsoyak/apertur" target="_blank" rel="noopener">GitHub Repository</a>
+          <a href="https://github.com/tahsinsoyak/apertur/releases/latest" target="_blank" rel="noopener">Releases &amp; ZIPs</a>
+          <a href="https://github.com/tahsinsoyak/apertur/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+          <a href="https://github.com/tahsinsoyak/apertur/issues" target="_blank" rel="noopener">Issue Tracker</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Creator &amp; Sponsor</h4>
+          <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener" style="color:#ff424d; font-weight:700;">Support on Patreon</a>
+          <a href="sponsor.html" style="color:var(--accent-ruby); font-weight:700;">Sponsorship Tiers &amp; Roadmap</a>
+          <a href="https://github.com/tahsinsoyak" target="_blank" rel="noopener">Tahsin Soyak Profile</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Tahsin Soyak. Released under the MIT License.</p>
+        <div class="footer-bottom-links">
+          <a href="index.html">Home</a>
+          <a href="sponsor.html">Sponsor</a>
+          <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener">Patreon</a>
+          <a href="https://github.com/tahsinsoyak/apertur" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
