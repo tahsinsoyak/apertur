@@ -579,7 +579,7 @@ async function generateScreenshots() {
           </div>
           <div class="story-kicker"><span></span>60HZ CURSOR &amp; LIVE HUD</div>
           <h2>Spotlight every click automatically.</h2>
-          <p>Guide viewers with a smooth 60Hz glowing cursor halo, click shockwave ripples in 5 colors, a 3 - 2 - 1 pre-roll countdown, and an in-page control bar.</p>
+          <p>Guide viewers with a smooth 60Hz glowing cursor halo, click shockwave ripples in 5 colors, a 3, 2, 1 pre-roll countdown, and an in-page control bar.</p>
           <div class="example-card">
             <div>
               <span class="example-label">Visual Telemetry</span>
@@ -625,7 +625,7 @@ async function generateScreenshots() {
               <div class="countdown-preview-card">
                 <div class="countdown-circle">3</div>
                 <div>
-                  <strong style="font-size:12px;display:block;">3 - 2 - 1 Countdown Overlay</strong>
+                  <strong style="font-size:12px;display:block;">3, 2, 1 Countdown Overlay</strong>
                   <span style="font-size:11px;color:#cbd5e1;">Get your mouse ready before capture starts</span>
                 </div>
               </div>

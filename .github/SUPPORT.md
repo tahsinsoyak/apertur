@@ -10,10 +10,10 @@ If you encounter an issue or have an idea for a new feature:
 
 1. **Check Existing Issues**: Search the [GitHub Issue Tracker](https://github.com/tahsinsoyak/apertur/issues) to see if the issue or feature has already been reported.
 2. **Open a New Issue**: If it has not been reported, open a new issue with:
-   - Your operating system (e.g. Windows 11, macOS Sequoia, Ubuntu 24.04).
-   - Your Google Chrome browser version.
-   - Exact steps to reproduce the issue.
-   - Any console errors from `chrome://extensions/` or the extension popup.
+   • Your operating system (e.g. Windows 11, macOS Sequoia, Ubuntu 24.04).
+   • Your Google Chrome browser version.
+   • Exact steps to reproduce the issue.
+   • Any console errors from `chrome://extensions/` or the extension popup.
 
 ---
 

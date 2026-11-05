@@ -70,13 +70,13 @@ Most screen recorders force you to choose between **expensive cloud subscription
 - **🛡️ Redirect-Safe Window &amp; Screen Capture**: Survives multi-page logins, OAuth redirects, and full-app workflows. Your floating recording HUD and cursor spotlight automatically re-attach after every navigation.
 - **🎬 1080p 60 FPS VP9 Master Engine**: Hardware-accelerated WebM video encoding up to **12 Mbps** (`video/webm;codecs=vp9,opus`) paired with **192 kbps** studio-mixed system and microphone audio.
 - **🎯 60Hz Cursor Spotlight &amp; Click Physics**: GPU-composited cursor halo and expanding click shockwave ripples in 5 studio color themes (`Amber`, `Blue`, `Purple`, `Red`, `Green`).
-- **⏱️ Optional 3-Second Countdown Overlay (`3 - 2 - 1`)**: Full-screen animated countdown right after selecting your window, screen, or tab so your mouse is positioned before recording begins.
+- **⏱️ Optional 3-Second Countdown Overlay (3, 2, 1)**: Full-screen animated countdown right after selecting your window, screen, or tab so your mouse is positioned before recording begins.
 - **✂️ Built-In Video Trim Studio**: Interactive **Start** and **End** range sliders in the Video Player Studio let you preview a trimmed segment and save a clean trimmed `.webm` copy directly to your local library.
 - **✏️ Click-to-Rename Video Titles**: Click any recording title or the pencil icon in the player to rename it inline. Custom titles persist in IndexedDB and name your downloaded files automatically.
 - **📸 Lossless Screenshot Suite (3 Modes)**:
-  - **Area Crop (<kbd>Alt+Shift+A</kbd>)**: Drag to crop any rectangle with live pixel dimension HUD and floating action toolbar (`Copy`, `Save PNG`, `Library`).
-  - **Full Webpage Scrolling (<kbd>Alt+Shift+F</kbd>)**: Automatically scrolls and stitches the entire webpage into one crystal-clear PNG.
-  - **Visible Viewport (<kbd>Alt+Shift+V</kbd>)**: Instant 1-click snapshot of the current view.
+  • **Area Crop (<kbd>Alt+Shift+A</kbd>)**: Drag to crop any rectangle with live pixel dimension HUD and floating action toolbar (`Copy`, `Save PNG`, `Library`).
+  • **Full Webpage Scrolling (<kbd>Alt+Shift+F</kbd>)**: Automatically scrolls and stitches the entire webpage into one crystal-clear PNG.
+  • **Visible Viewport (<kbd>Alt+Shift+V</kbd>)**: Instant 1-click snapshot of the current view.
 - **🗄️ 100% Private Media Vault with 100% Zoom Viewer**: Filter videos and screenshots with category pills, watch WebMs with hover previews, and inspect tall screenshots at native 100% full-resolution.
 - **🔒 100% Local &amp; Free**: Zero cloud uploads, zero telemetry, zero watermarks, and no 5-minute time caps. Everything stays on your machine inside IndexedDB (`RecorderDB`).
 
@@ -125,7 +125,7 @@ Then open `chrome://extensions/`, enable **Developer mode**, click **Load unpack
 ### 2. Live In-Page Floating HUD &amp; Cursor FX
 - **Draggable Floating Bar**: Shows recording status, `MM:SS` timer, **Snap** (PNG), **Snip** (Area crop), **Pause/Resume**, and **Finish**.
 - **5 Studio Highlight Colors**: Switch between `Amber (#f59e0b)`, `Blue (#06b6d4)`, `Purple (#8b5cf6)`, `Red (#e11d48)`, and `Green (#10b981)`.
-- **3-Second Countdown**: Optional `3 - 2 - 1` pre-roll overlay so you can position your cursor before recording starts.
+- **3-Second Countdown**: Optional 3, 2, 1 pre-roll overlay so you can position your cursor before recording starts.
 
 ### 3. Video Player Studio &amp; Trimmer (`preview/preview.html`)
 - **Theater Player**: Fitted viewport layout with speed switcher (`1x`, `1.25x`, `1.5x`, `2x`).

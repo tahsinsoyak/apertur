@@ -38,16 +38,16 @@ By sponsoring creator **[Tahsin Soyak](https://github.com/tahsinsoyak)** on Patr
 Your contributions directly support the following initiatives:
 
 1. **Chrome Web Store Distribution**:
-   - Funding developer account maintenance, store verification, and automated build pipelines.
+   • Funding developer account maintenance, store verification, and automated build pipelines.
 2. **Advanced Codec & Performance Engineering**:
-   - Researching WebCodecs API integrations, AV1 hardware encoding, and 120 FPS high-refresh capture for modern displays.
+   • Researching WebCodecs API integrations, AV1 hardware encoding, and 120 FPS high-refresh capture for modern displays.
 3. **Upcoming Feature Roadmap**:
-   - Circular webcam Picture-in-Picture (PiP) video overlays.
-   - Animated GIF and MP4 export options.
-   - Microphone noise suppression and dynamic audio level meters.
-   - Advanced screenshot canvas annotations (arrows, text callouts, redaction blur).
+   • Circular webcam Picture-in-Picture (PiP) video overlays.
+   • Animated GIF and MP4 export options.
+   • Microphone noise suppression and dynamic audio level meters.
+   • Advanced screenshot canvas annotations (arrows, text callouts, redaction blur).
 4. **Documentation & User Support**:
-   - Writing comprehensive guides, answering community questions on GitHub, and maintaining regression test suites.
+   • Writing comprehensive guides, answering community questions on GitHub, and maintaining regression test suites.
 
 ---
 
