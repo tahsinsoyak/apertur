@@ -10,8 +10,29 @@
     "activeTab",
     "tabs",
     "storage",
-    "scripting"
+    "scripting",
+    "clipboardWrite"
   ],
+  "commands": {
+    "capture_visible": {
+      "suggested_key": {
+        "default": "Alt+Shift+V"
+      },
+      "description": "Capture visible page screenshot"
+    },
+    "capture_selected": {
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
+      "description": "Capture selected area / snip"
+    },
+    "capture_full": {
+      "suggested_key": {
+        "default": "Alt+Shift+F"
+      },
+      "description": "Capture entire full webpage"
+    }
+  },
   "host_permissions": [
     "<all_urls>"
   ],

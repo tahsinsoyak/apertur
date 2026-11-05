@@ -132,12 +132,49 @@ async function getAllRecordings() {
   });
 }
 
-// Make accessible for both module & non-module scripts
-if (typeof window !== 'undefined') {
-  window.RecorderDB = {
-    saveRecording,
-    getRecording,
-    deleteRecording,
-    getAllRecordings
+/**
+ * Saves a screenshot (Blob or DataURL) and metadata to IndexedDB.
+ */
+async function saveScreenshot(screenshotData) {
+  const item = {
+    ...screenshotData,
+    type: 'screenshot',
+    timestamp: screenshotData.timestamp || Date.now(),
+    id: screenshotData.id || `snip-${Date.now()}`
   };
+  return saveRecording(item);
+}
+
+/**
+ * Lists all screenshots only
+ */
+async function getAllScreenshots() {
+  const all = await getAllRecordings();
+  return all.filter((item) => item.type === 'screenshot');
+}
+
+/**
+ * Lists all videos only
+ */
+async function getAllVideos() {
+  const all = await getAllRecordings();
+  return all.filter((item) => item.type !== 'screenshot');
+}
+
+// Make accessible for both module & non-module scripts (Window and ServiceWorker / Worker)
+const dbExport = {
+  saveRecording,
+  saveScreenshot,
+  getRecording,
+  deleteRecording,
+  getAllRecordings,
+  getAllScreenshots,
+  getAllVideos
+};
+
+if (typeof window !== 'undefined') {
+  window.RecorderDB = dbExport;
+}
+if (typeof self !== 'undefined') {
+  self.RecorderDB = dbExport;
 }

@@ -28,6 +28,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const checkCountdown = document.getElementById('checkCountdown');
   const btnQuickScreenshot = document.getElementById('btnQuickScreenshot');
   const quickSnapText = document.getElementById('quickSnapText');
+  const screenshotMenu = document.getElementById('screenshotMenu');
+  const btnCloseScreenshotMenu = document.getElementById('btnCloseScreenshotMenu');
+  const btnSnapVisible = document.getElementById('btnSnapVisible');
+  const btnSnapArea = document.getElementById('btnSnapArea');
+  const btnSnapFull = document.getElementById('btnSnapFull');
+  const checkAutoCopyClipboard = document.getElementById('checkAutoCopyClipboard');
   const themeButtons = document.querySelectorAll('.theme-btn');
   const testClickArea = document.getElementById('testClickArea');
   const scopeCards = document.querySelectorAll('.mode-option, .scope-card');
@@ -166,29 +172,191 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkCountdown.addEventListener('change', () => chrome.storage.local.set({ prefCountdown: checkCountdown.checked }));
   }
 
-  if (btnQuickScreenshot) {
-    btnQuickScreenshot.addEventListener('click', () => {
+  // Auto Copy to Clipboard preference
+  if (saved.prefAutoClipboard !== undefined && checkAutoCopyClipboard) {
+    checkAutoCopyClipboard.checked = Boolean(saved.prefAutoClipboard);
+  }
+  if (checkAutoCopyClipboard) {
+    checkAutoCopyClipboard.addEventListener('change', () => {
+      chrome.storage.local.set({ prefAutoClipboard: checkAutoCopyClipboard.checked });
+    });
+  }
+
+  // Screenshot Menu Toggle
+  if (btnQuickScreenshot && screenshotMenu) {
+    btnQuickScreenshot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      screenshotMenu.classList.toggle('hidden');
+    });
+  }
+
+  if (btnCloseScreenshotMenu && screenshotMenu) {
+    btnCloseScreenshotMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      screenshotMenu.classList.add('hidden');
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!screenshotMenu || screenshotMenu.classList.contains('hidden')) return;
+    if (e.target.closest('#screenshotMenu') || e.target.closest('#btnQuickScreenshot')) return;
+    screenshotMenu.classList.add('hidden');
+  });
+
+  async function getActiveBrowserTab() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab || !tab.id) {
+      throw new Error('No active browser tab found.');
+    }
+    return tab;
+  }
+
+  function isRestrictedPageUrl(url) {
+    if (!url) return true;
+    return (
+      url.startsWith('chrome://') ||
+      url.startsWith('chrome-extension://') ||
+      url.startsWith('edge://') ||
+      url.startsWith('about:') ||
+      url.startsWith('view-source:') ||
+      url.includes('chromewebstore.google.com') ||
+      url.includes('chrome.google.com/webstore')
+    );
+  }
+
+  // Action 1: Visible Area
+  if (btnSnapVisible) {
+    btnSnapVisible.addEventListener('click', async () => {
+      if (screenshotMenu) screenshotMenu.classList.add('hidden');
       if (quickSnapText) quickSnapText.textContent = 'Saving...';
-      chrome.runtime.sendMessage({ action: 'CAPTURE_TAB_SCREENSHOT_REQUEST' }, (res) => {
-        if (res && res.success && res.dataUrl) {
-          const a = document.createElement('a');
-          a.href = res.dataUrl;
+      const autoCopy = checkAutoCopyClipboard ? checkAutoCopyClipboard.checked : true;
+
+      try {
+        const tab = await getActiveBrowserTab();
+
+        chrome.tabs.captureVisibleTab(null, { format: 'png' }, async (dataUrl) => {
+          if (chrome.runtime.lastError || !dataUrl) {
+            if (quickSnapText) quickSnapText.textContent = 'Screenshot ▾';
+            showError(chrome.runtime.lastError?.message || 'Could not capture tab screenshot.');
+            return;
+          }
+
           const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-          a.download = `apertur-screenshot-${stamp}.png`;
+          const safeTitle = (tab.title || 'Page').replace(/[/\\?%*:|"<>]/g, '-').slice(0, 40);
+
+          // Save directly to IndexedDB library
+          if (window.RecorderDB && window.RecorderDB.saveScreenshot) {
+            try {
+              await window.RecorderDB.saveScreenshot({
+                id: `snap-${Date.now()}`,
+                title: `${safeTitle} (Visible)`,
+                timestamp: Date.now(),
+                dimensions: { width: tab.width || 1920, height: tab.height || 1080 },
+                size: Math.round(dataUrl.length * 0.75),
+                type: 'screenshot',
+                dataUrl
+              });
+            } catch (dbErr) {
+              console.warn('DB save warning:', dbErr);
+            }
+          }
+
+          // Copy to clipboard if supported
+          let copied = false;
+          if (autoCopy) {
+            try {
+              const res = await fetch(dataUrl);
+              const blob = await res.blob();
+              await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+              copied = true;
+            } catch (_) {}
+          }
+
+          // Trigger PNG download
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = `apertur-${safeTitle}-${stamp}.png`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
+
           if (quickSnapText) {
-            quickSnapText.textContent = 'Saved PNG!';
-            setTimeout(() => {
-              if (quickSnapText) quickSnapText.textContent = 'Screenshot';
-            }, 1400);
+            quickSnapText.textContent = copied ? 'Copied & Saved!' : 'Saved PNG!';
           }
-        } else {
-          if (quickSnapText) quickSnapText.textContent = 'Screenshot';
-          showError(res?.error || 'Switch to a regular website tab to take a screenshot.');
+          setTimeout(() => {
+            if (quickSnapText) quickSnapText.textContent = 'Screenshot ▾';
+          }, 1600);
+        });
+      } catch (err) {
+        if (quickSnapText) quickSnapText.textContent = 'Screenshot ▾';
+        showError(err.message);
+      }
+    });
+  }
+
+  // Action 2: Selected Area (Snip)
+  if (btnSnapArea) {
+    btnSnapArea.addEventListener('click', async () => {
+      if (screenshotMenu) screenshotMenu.classList.add('hidden');
+      const autoCopy = checkAutoCopyClipboard ? checkAutoCopyClipboard.checked : true;
+
+      try {
+        const tab = await getActiveBrowserTab();
+        if (isRestrictedPageUrl(tab.url)) {
+          showError('Area Snipping requires an active website. Chrome security prevents running tools on settings or chrome:// pages.');
+          return;
         }
-      });
+
+        // Inject content styles and script
+        try {
+          await chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: ['content/content.css'] });
+          await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content/content.js'] });
+        } catch (_) {}
+
+        // Send direct message to the active tab
+        chrome.tabs.sendMessage(tab.id, {
+          action: 'START_AREA_SELECTION',
+          options: { copyToClipboard: autoCopy }
+        }, () => {
+          const _ = chrome.runtime.lastError;
+          setTimeout(() => window.close(), 80);
+        });
+      } catch (err) {
+        showError(err.message);
+      }
+    });
+  }
+
+  // Action 3: Full Webpage (Scrolling)
+  if (btnSnapFull) {
+    btnSnapFull.addEventListener('click', async () => {
+      if (screenshotMenu) screenshotMenu.classList.add('hidden');
+      const autoCopy = checkAutoCopyClipboard ? checkAutoCopyClipboard.checked : true;
+
+      try {
+        const tab = await getActiveBrowserTab();
+        if (isRestrictedPageUrl(tab.url)) {
+          showError('Full Page capture requires an active website. Chrome security prevents running tools on settings or chrome:// pages.');
+          return;
+        }
+
+        // Inject content styles and script
+        try {
+          await chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: ['content/content.css'] });
+          await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content/content.js'] });
+        } catch (_) {}
+
+        // Send direct message to the active tab
+        chrome.tabs.sendMessage(tab.id, {
+          action: 'START_FULL_PAGE_SCREENSHOT',
+          options: { copyToClipboard: autoCopy, download: true, saveToLibrary: true }
+        }, () => {
+          const _ = chrome.runtime.lastError;
+          setTimeout(() => window.close(), 80);
+        });
+      } catch (err) {
+        showError(err.message);
+      }
     });
   }
 
@@ -258,6 +426,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       btnResetTabLock.textContent = 'Unlocking...';
       btnResetTabLock.disabled = true;
       chrome.runtime.sendMessage({ action: 'RESET_TAB_LOCK_REQUEST' }, () => {
+        const _ = chrome.runtime.lastError;
         errorBanner.classList.add('hidden');
         window.close();
       });
@@ -283,6 +452,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Status check
   chrome.runtime.sendMessage({ action: 'GET_STATUS_REQUEST' }, (state) => {
+    if (chrome.runtime.lastError) return;
     if (state && state.isRecording) {
       showRecordingView(state);
     } else {
@@ -390,6 +560,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       action: 'START_RECORDING_REQUEST',
       options
     }, (response) => {
+      const _ = chrome.runtime.lastError;
       btnStart.disabled = false;
       if (mainLabel) mainLabel.textContent = 'Start Recording';
       if (response && response.success) {
@@ -399,7 +570,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           isPaused: false
         });
       } else {
-        const err = response?.error || 'Failed to start recording.';
+        const err = response?.error || chrome.runtime.lastError?.message || 'Failed to start recording.';
         showError(err);
       }
     });
@@ -412,6 +583,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (labelSpan) labelSpan.textContent = 'Saving...';
 
     chrome.runtime.sendMessage({ action: 'STOP_RECORDING_REQUEST' }, () => {
+      const _ = chrome.runtime.lastError;
       btnStop.disabled = false;
       showConfigView();
       setTimeout(() => window.close(), 300);
@@ -421,11 +593,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Pause / Resume Action
   btnPauseResume.addEventListener('click', () => {
     chrome.runtime.sendMessage({ action: 'GET_STATUS_REQUEST' }, (state) => {
-      if (!state || !state.isRecording) return;
+      if (chrome.runtime.lastError || !state || !state.isRecording) return;
       if (state.isPaused) {
-        chrome.runtime.sendMessage({ action: 'RESUME_RECORDING_REQUEST' }, () => updatePauseResumeButton(false));
+        chrome.runtime.sendMessage({ action: 'RESUME_RECORDING_REQUEST' }, () => {
+          const _ = chrome.runtime.lastError;
+          updatePauseResumeButton(false);
+        });
       } else {
-        chrome.runtime.sendMessage({ action: 'PAUSE_RECORDING_REQUEST' }, () => updatePauseResumeButton(true));
+        chrome.runtime.sendMessage({ action: 'PAUSE_RECORDING_REQUEST' }, () => {
+          const _ = chrome.runtime.lastError;
+          updatePauseResumeButton(true);
+        });
       }
     });
   });

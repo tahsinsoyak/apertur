@@ -2,6 +2,16 @@
  * Background Service Worker for Apertur Screen Recorder (Manifest V3)
  */
 
+try {
+  importScripts('/utils/db.js');
+} catch (e) {
+  try {
+    importScripts('../utils/db.js');
+  } catch (e2) {
+    console.warn('Could not import db.js in background service worker:', e, e2);
+  }
+}
+
 const OFFSCREEN_DOCUMENT_PATH = 'offscreen/offscreen.html';
 
 let currentRecordingState = {
@@ -494,6 +504,60 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.action === 'SAVE_SCREENSHOT_TO_LIBRARY_REQUEST') {
+    (async () => {
+      try {
+        const item = message.screenshot;
+        if (!item) {
+          sendResponse({ success: false, error: 'No screenshot data provided.' });
+          return;
+        }
+        if (self.RecorderDB && self.RecorderDB.saveScreenshot) {
+          await self.RecorderDB.saveScreenshot(item);
+          sendResponse({ success: true, id: item.id });
+        } else {
+          sendResponse({ success: false, error: 'RecorderDB unavailable in background.' });
+        }
+      } catch (err) {
+        console.error('Error saving screenshot in background:', err);
+        sendResponse({ success: false, error: err.message });
+      }
+    })();
+    return true;
+  }
+
+  if (message.action === 'TRIGGER_AREA_SNIP_FROM_POPUP') {
+    (async () => {
+      const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+      if (!tab || !tab.id) return;
+      try {
+        await chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: ['content/content.css'] });
+        await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content/content.js'] });
+      } catch (_) {}
+      chrome.tabs.sendMessage(tab.id, { action: 'START_AREA_SELECTION', options: message.options }, () => {
+        const _ = chrome.runtime.lastError;
+      });
+    })();
+    sendResponse({ ok: true });
+    return false;
+  }
+
+  if (message.action === 'TRIGGER_FULL_PAGE_FROM_POPUP') {
+    (async () => {
+      const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+      if (!tab || !tab.id) return;
+      try {
+        await chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: ['content/content.css'] });
+        await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content/content.js'] });
+      } catch (_) {}
+      chrome.tabs.sendMessage(tab.id, { action: 'START_FULL_PAGE_SCREENSHOT', options: message.options }, () => {
+        const _ = chrome.runtime.lastError;
+      });
+    })();
+    sendResponse({ ok: true });
+    return false;
+  }
+
   if (message.action === 'RECORDING_FAILED') {
     console.error('Recording failed:', message.error);
     handleStopRecording();
@@ -558,5 +622,38 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
   const data = await chrome.storage.local.get(['isRecording', 'captureMode', 'recordingTabId']);
   if (data && data.isRecording && data.captureMode === 'tab' && data.recordingTabId === tabId) {
     handleStopRecording();
+  }
+});
+
+// Global Keyboard Shortcuts (Alt+Shift+V for Visible, Alt+Shift+A for Snip, Alt+Shift+F for Full Page)
+chrome.commands.onCommand.addListener(async (command) => {
+  const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+  if (!tab || !tab.id || !tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
+    return;
+  }
+
+  try {
+    await chrome.scripting.insertCSS({
+      target: { tabId: tab.id },
+      files: ['content/content.css']
+    });
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['content/content.js']
+    });
+  } catch (_) {}
+
+  if (command === 'capture_visible') {
+    chrome.tabs.sendMessage(tab.id, { action: 'TRIGGER_VISIBLE_SCREENSHOT' }, () => {
+      const _ = chrome.runtime.lastError;
+    });
+  } else if (command === 'capture_selected') {
+    chrome.tabs.sendMessage(tab.id, { action: 'START_AREA_SELECTION' }, () => {
+      const _ = chrome.runtime.lastError;
+    });
+  } else if (command === 'capture_full') {
+    chrome.tabs.sendMessage(tab.id, { action: 'START_FULL_PAGE_SCREENSHOT' }, () => {
+      const _ = chrome.runtime.lastError;
+    });
   }
 });
