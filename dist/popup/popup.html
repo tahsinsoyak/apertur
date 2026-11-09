@@ -211,6 +211,43 @@
             </label>
           </div>
 
+          <!-- Advanced Audio Configuration Drawer (Active when Mic is enabled) -->
+          <div id="micConfigDrawer" class="audio-config-drawer hidden">
+            <div class="audio-config-header">
+              <div class="audio-config-title-group">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                <span>Microphone Setup</span>
+              </div>
+              <span id="audioMeterLabel" class="audio-level-hint">Speak to test</span>
+            </div>
+
+            <!-- Device Selector -->
+            <select id="selectMicDevice" class="audio-device-select" title="Choose which microphone to capture">
+              <option value="default">Default System Microphone</option>
+            </select>
+
+            <!-- Live VU Audio Meter -->
+            <div class="audio-meter-track" title="Microphone volume level indicator">
+              <div id="audioMeterFill" class="audio-meter-fill"></div>
+            </div>
+
+            <!-- Gain & Processing Row -->
+            <div class="audio-settings-subrow">
+              <div class="audio-gain-group">
+                <span class="audio-sublabel">Boost: <strong id="valMicGain">100%</strong></span>
+                <input type="range" id="rangeMicGain" class="audio-gain-slider" min="50" max="200" step="5" value="100" title="Adjust microphone gain">
+              </div>
+
+              <label class="audio-sub-toggle" title="Filter out background air conditioner and room hiss">
+                <input type="checkbox" id="checkNoiseSuppression" checked>
+                <span>Noise Filter</span>
+              </label>
+            </div>
+          </div>
+
           <div class="card-divider"></div>
 
           <!-- Row 2: Cursor Highlight & Color Picker + Full-Width Interactive Playground -->

@@ -3,24 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apertur: Free Open-Source 1080p 60 FPS Screen Recorder for Chrome</title>
-  <meta name="description" content="Apertur is a free, open-source 1080p 60 FPS screen, window, and tab recorder for Chrome. Record smooth browser workflows with cursor highlights, click animations, and 100% local privacy.">
-  <meta name="keywords" content="screen recorder chrome extension, open source screen recorder, 60fps screen recorder, browser window recorder, cursor highlighter chrome, free loom alternative, local screen recording">
-  <meta name="author" content="Apertur Open Source Contributors">
+  <title>Apertur v2.1 • Free 1080p 60 FPS Screen Recorder &amp; Screenshot Studio</title>
+  <meta name="description" content="Apertur is a 100% free, private screen recorder and screenshot annotation studio for Chrome. Record smooth 1080p 60 FPS browser workflows, trim videos, annotate captures, and export with zero cloud fees.">
+  <meta name="keywords" content="screen recorder chrome extension, open source screen recorder, 60fps screen recorder, browser window recorder, cursor highlighter chrome, free loom alternative, local screen recording, screenshot annotation chrome">
+  <meta name="author" content="Tahsin Soyak">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#e11d48">
+  <link rel="canonical" href="https://tahsinsoyak.github.io/apertur/">
 
-  <!-- Open Graph / Social Meta -->
+  <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Apertur">
-  <meta property="og:title" content="Apertur: Free Open-Source 1080p 60 FPS Screen Recorder">
-  <meta property="og:description" content="Capture 1080p 60 FPS browser workflows, multi-page redirects, and full desktop demos with real-time cursor highlights. 100% local, zero cloud fees.">
-  <meta property="og:image" content="../icons/icon128.png">
+  <meta property="og:url" content="https://tahsinsoyak.github.io/apertur/">
+  <meta property="og:title" content="Apertur v2.1 • Free 1080p 60 FPS Screen Recorder &amp; Screenshot Studio">
+  <meta property="og:description" content="Record 1080p 60 FPS browser workflows with cursor highlights, mic gain boost, built-in trimmer, and screenshot annotation studio. 100% private, zero cloud fees.">
+  <meta property="og:image" content="https://tahsinsoyak.github.io/apertur/store-assets/screenshot-popup-studio.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Apertur: Free Open-Source 1080p 60 FPS Screen Recorder">
-  <meta name="twitter:description" content="Record 1080p 60 FPS browser workflows and full desktop demos with cursor highlights and click animations. 100% free and local.">
+  <meta name="twitter:site" content="@tahsinsoyak">
+  <meta name="twitter:title" content="Apertur v2.1 • Free 1080p 60 FPS Screen Recorder">
+  <meta name="twitter:description" content="Smooth 60 FPS screen capture with real-time cursor spotlight, click ripples, video trimmer, and screenshot markup studio.">
+  <meta name="twitter:image" content="https://tahsinsoyak.github.io/apertur/store-assets/screenshot-popup-studio.png">
 
   <link rel="icon" type="image/png" href="../icons/icon32.png">
   <link rel="stylesheet" href="landing.css">
@@ -31,24 +35,31 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "Apertur",
-    "softwareVersion": "2.0.0",
+    "softwareVersion": "2.1.0",
     "operatingSystem": "ChromeOS, Windows, macOS, Linux",
     "applicationCategory": "MultimediaApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Tahsin Soyak",
+      "url": "https://github.com/tahsinsoyak"
+    },
     "offers": {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD"
     },
-    "description": "Free open-source 1080p 60 FPS screen, window, and tab recorder for Google Chrome with real-time cursor spotlight, 3-second countdown overlay, built-in video trimmer, instant PNG screenshots, and local IndexedDB video storage.",
+    "description": "Free open-source 1080p 60 FPS screen, window, and tab recorder for Google Chrome with real-time cursor spotlight, 3-second countdown overlay, built-in video trimmer, screenshot annotation studio, and local IndexedDB video storage.",
     "featureList": [
       "1080p 60 FPS VP9 hardware-accelerated video recording",
       "Continuous browser window capture across multi-page redirects",
       "Real-time cursor spotlight and click shockwave animations in 5 themes",
+      "Pro microphone setup with gain booster and live reactive VU meter",
+      "Built-in screenshot annotation studio (Pen, Arrows, Boxes, Highlighter, Text badges)",
+      "Multi-format video export presets (1080p Master, 720p Web, Audio Only, Loop)",
       "Optional 3-second countdown overlay before recording starts",
       "Built-in video trim studio with Start and End sliders",
       "Click-to-rename video titles with custom download filenames",
-      "Instant PNG screenshots from popup, live HUD, and video player frames",
-      "Simultaneous system audio and microphone recording",
+      "Lossless screenshot suite: Area Crop, Full Page Scrolling, and Visible Viewport",
       "100% local browser storage with instant WebM video download"
     ]
   }
@@ -68,40 +79,137 @@
     <div class="nav-container">
       <a href="#" class="nav-brand" aria-label="Apertur Home">
         <div class="nav-logo-box">
-          <img src="../icons/icon32.png" alt="Apertur Logo" width="24" height="24">
+          <img src="../icons/icon32.png" alt="Apertur Logo" width="22" height="22">
         </div>
         <span class="nav-brand-name">Apertur</span>
-        <span class="nav-version-pill">v2.0 MIT</span>
+        <span class="nav-version-badge">v2.1</span>
       </a>
 
+      <!-- Desktop Navigation Links -->
       <nav class="nav-links" aria-label="Primary Navigation">
-        <a href="#playground">Playground</a>
-        <a href="#showcase-gallery">Gallery</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#features">Features</a>
-        <a href="#comparison">Compare</a>
-        <a href="#sponsor">Sponsor</a>
-        <a href="#faq">FAQ</a>
+        <a href="#docs" class="nav-link">Docs &amp; Guide</a>
+        <a href="#playground" class="nav-link">Playground</a>
+        <a href="#showcase-gallery" class="nav-link">Showcase</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#comparison" class="nav-link">Compare</a>
+        <a href="#sponsor" class="nav-link">Sponsor</a>
       </nav>
 
+      <!-- Desktop Action Buttons -->
       <div class="nav-cta-group">
-        <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener" class="btn-patreon" title="Support Apertur on Patreon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.39-5.575-5.275-6.425C14.28.01 10.74 0 7.42 0 3.32 0 0 3.32 0 7.42v15.16h4.52V9.3c0-2.6 2.1-4.7 4.7-4.7 2.6 0 4.7 2.1 4.7 4.7 0 2.6-2.1 4.7-4.7 4.7-1.07 0-2.07-.37-2.86-1v4.86c.9.23 1.87.35 2.86.35 6.07 0 11.02-4.94 11.02-11.01 0-.03-.004-.06-.004-.09z"/></svg>
-          <span>Patreon</span>
-        </a>
-        <a href="https://github.com/tahsinsoyak/apertur" target="_blank" rel="noopener" class="btn-outline">
+        <a href="https://github.com/tahsinsoyak/apertur" target="_blank" rel="noopener" class="btn-github-nav" title="Star Apertur on GitHub">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
           </svg>
-          <span>GitHub</span>
+          <span>Star</span>
         </a>
-        <a href="../preview/preview.html?view=gallery" class="btn-primary">
+        <a href="https://github.com/tahsinsoyak/apertur/releases" target="_blank" rel="noopener" class="btn-primary-nav">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="2" y="4" width="20" height="16" rx="3"/>
-            <polygon points="10 9 15 12 10 15 10 9" fill="currentColor" stroke="none"/>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          <span>My Media</span>
+          <span>Download</span>
         </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button type="button" class="nav-toggle-btn" id="btnNavToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNavDrawer">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer Backdrop Overlay -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" aria-hidden="true"></div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+      <nav class="mobile-nav-links" aria-label="Mobile Navigation">
+        <a href="#docs" class="mobile-nav-item">
+          <div class="mobile-item-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="mobile-item-content">
+            <span class="mobile-item-title">Documentation</span>
+            <span class="mobile-item-sub">Guides, shortcuts &amp; recording modes</span>
+          </div>
+        </a>
+
+        <a href="#playground" class="mobile-nav-item">
+          <div class="mobile-item-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="mobile-item-content">
+            <span class="mobile-item-title">Interactive Playground</span>
+            <span class="mobile-item-sub">Test 60 FPS spotlight &amp; click ripples</span>
+          </div>
+        </a>
+
+        <a href="#showcase-gallery" class="mobile-nav-item">
+          <div class="mobile-item-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div class="mobile-item-content">
+            <span class="mobile-item-title">Showcase Gallery</span>
+            <span class="mobile-item-sub">Popup Studio, live HUD &amp; trimmer</span>
+          </div>
+        </a>
+
+        <a href="#features" class="mobile-nav-item">
+          <div class="mobile-item-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="mobile-item-content">
+            <span class="mobile-item-title">Features &amp; Specs</span>
+            <span class="mobile-item-sub">1080p 60fps, mic setup &amp; zero lag</span>
+          </div>
+        </a>
+
+        <a href="#comparison" class="mobile-nav-item">
+          <div class="mobile-item-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="mobile-item-content">
+            <span class="mobile-item-title">Compare vs Paid Tools</span>
+            <span class="mobile-item-sub">100% free forever, no cloud paywalls</span>
+          </div>
+        </a>
+
+        <a href="#sponsor" class="mobile-nav-item">
+          <div class="mobile-item-icon" style="color: #f43f5e; background: #fff1f2;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="mobile-item-content">
+            <span class="mobile-item-title" style="color: #e11d48;">Sponsor Development</span>
+            <span class="mobile-item-sub">Support creator Tahsin Soyak on Patreon</span>
+          </div>
+        </a>
+      </nav>
+
+      <div class="mobile-nav-actions">
+        <a href="https://github.com/tahsinsoyak/apertur/releases" target="_blank" rel="noopener" class="btn-primary mobile-primary-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Download Extension v2.1 (.zip)</span>
+        </a>
+
+        <div class="mobile-secondary-grid">
+          <a href="https://github.com/tahsinsoyak/apertur" target="_blank" rel="noopener" class="btn-outline mobile-sec-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            <span>GitHub Star</span>
+          </a>
+          <a href="https://www.patreon.com/tahsinsoyak" target="_blank" rel="noopener" class="btn-patreon mobile-sec-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.39-5.575-5.275-6.425C14.28.01 10.74 0 7.42 0 3.32 0 0 3.32 0 7.42v15.16h4.52V9.3c0-2.6 2.1-4.7 4.7-4.7 2.6 0 4.7 2.1 4.7 4.7 0 2.6-2.1 4.7-4.7 4.7-1.07 0-2.07-.37-2.86-1v4.86c.9.23 1.87.35 2.86.35 6.07 0 11.02-4.94 11.02-11.01 0-.03-.004-.06-.004-.09z"/></svg>
+            <span>Patreon</span>
+          </a>
+        </div>
       </div>
     </div>
   </header>
@@ -113,8 +221,7 @@
     <section class="hero-section" aria-labelledby="hero-heading">
       <div class="container hero-inner">
         <div class="announcement-pill reveal-up">
-          <span class="pill-dot"></span>
-          <span>v2.0 Studio Release • Video Trimmer • 3s Countdown • Instant PNG Snapshots</span>
+          <span class="pill-dot"></span><span>v2.1 Studio Release • Annotation Studio • Mic Gain &amp; VU Meter • Export Presets</span>
         </div>
 
         <h1 id="hero-heading" class="hero-title reveal-up">
@@ -129,7 +236,7 @@
         <div class="hero-actions reveal-up">
           <a href="https://github.com/tahsinsoyak/apertur/releases/latest" target="_blank" rel="noopener" class="btn-primary btn-lg">
             <span class="btn-record-dot"></span>
-            <span>Download Extension v2.0 (.zip)</span>
+            <span>Download Extension v2.1 (.zip)</span>
           </a>
           <a href="#install" class="btn-secondary btn-lg">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -155,7 +262,8 @@
 
             <div class="showcase-url">
               <span class="live-rec-indicator"></span>
-              <span>Interactive Cursor Playground: Move &amp; click anywhere inside the stage below!</span>
+              <span class="url-text-desktop">Interactive Cursor Playground: Move &amp; click anywhere inside the stage below!</span>
+              <span class="url-text-mobile">Cursor Playground</span>
             </div>
 
             <div class="swatch-selector" role="group" aria-label="Choose Cursor Highlight Color">
@@ -361,6 +469,557 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- INTERACTIVE ANIMATED DOCUMENTATION HUB                             -->
+    <!-- ================================================================== -->
+    <section id="docs" class="docs-hub-section" aria-labelledby="docs-heading">
+      <div class="container">
+        <div class="section-heading reveal-up">
+          <span class="section-kicker">INTERACTIVE USER DOCUMENTATION &amp; ANIMATED GUIDE</span>
+          <h2 id="docs-heading">Everything you need to master Apertur.</h2>
+          <p>Explore step-by-step documentation with real-time interactive animated previews for every recording mode, audio setup, annotation tool, and export preset.</p>
+          <div class="docs-header-actions">
+            <a href="https://github.com/tahsinsoyak/apertur/blob/main/docs/USER_GUIDE.md" target="_blank" rel="noopener" class="btn-primary btn-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              <span>Read Full Markdown Manual (USER_GUIDE.md)</span>
+            </a>
+            <a href="https://github.com/tahsinsoyak/apertur/blob/main/USAGE.md" target="_blank" rel="noopener" class="btn-secondary btn-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              <span>60s Quick Start (USAGE.md)</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Documentation Tabs Navigation -->
+        <div class="docs-nav-strip reveal-up" role="tablist" aria-label="Documentation Topics">
+          <button type="button" class="doc-tab-btn active" data-doc-target="doc-panel-recording">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+            <span>Continuous Recording</span>
+          </button>
+          <button type="button" class="doc-tab-btn" data-doc-target="doc-panel-audio">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            <span>Audio &amp; Live VU Meter</span>
+          </button>
+          <button type="button" class="doc-tab-btn" data-doc-target="doc-panel-annot">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span>Annotation Studio</span>
+          </button>
+          <button type="button" class="doc-tab-btn" data-doc-target="doc-panel-trimmer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><line x1="6" y1="12" x2="18" y2="12"/></svg>
+            <span>Trimmer &amp; 4 Export Presets</span>
+          </button>
+          <button type="button" class="doc-tab-btn" data-doc-target="doc-panel-snip">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/></svg>
+            <span>3 Screenshot Modes</span>
+          </button>
+          <button type="button" class="doc-tab-btn" data-doc-target="doc-panel-vault">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Private Media Vault</span>
+          </button>
+        </div>
+
+        <!-- Documentation Card Panels -->
+        <div class="docs-content-container reveal-up">
+
+          <!-- ============================================================ -->
+          <!-- PANEL 1: CONTINUOUS RECORDING (REDIRECT-SAFE)                 -->
+          <!-- ============================================================ -->
+          <div class="doc-card-panel active" id="doc-panel-recording">
+            <div class="doc-text-col">
+              <span class="doc-badge">MODULE 01 • RECORDING WORKFLOWS</span>
+              <h3>Continuous Recording Across Redirects &amp; Logins</h3>
+              <p>Most browser extensions crash or lose their recording controller the second you click a link that opens a new URL, logs in via OAuth, or redirects to a sub-domain. Apertur runs on Chrome Manifest V3 Offscreen Documents to keep recording smoothly.</p>
+
+              <div class="doc-steps-list">
+                <div class="doc-step">
+                  <span class="step-badge-num">1</span>
+                  <div>
+                    <strong>Select Browser Window Mode</strong>
+                    <p>Open Apertur from your toolbar and select <strong>Browser Window</strong> (marked Recommended).</p>
+                  </div>
+                </div>
+                <div class="doc-step">
+                  <span class="step-badge-num">2</span>
+                  <div>
+                    <strong>Position Your Cursor During 3s Countdown</strong>
+                    <p>The optional animated <code>3, 2, 1</code> overlay gives you time to position your mouse before capture begins.</p>
+                  </div>
+                </div>
+                <div class="doc-step">
+                  <span class="step-badge-num">3</span>
+                  <div>
+                    <strong>Navigate Freely</strong>
+                    <p>Your on-screen floating HUD automatically reconnects across every page and login screen.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="doc-tip-box">
+                <span class="doc-tip-title">PRO TIP:</span>
+                <span>Need to demo full-screen terminal and code editor interactions alongside Chrome? Choose <strong>Entire Screen</strong> mode for monitor-wide 60 FPS recording.</span>
+              </div>
+            </div>
+
+            <div class="doc-anim-col">
+              <div class="anim-browser-window">
+                <div class="anim-browser-bar">
+                  <div class="window-dots"><span></span><span></span><span></span></div>
+                  <div class="anim-address-pill">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span id="animUrlDisplay" class="anim-url-text">https://app.saas.io/project</span>
+                  </div>
+                  <span class="anim-rec-badge"><span class="pulse-dot"></span> 60 FPS REC</span>
+                </div>
+
+                <div class="anim-browser-body">
+                  <div class="anim-site-mockup">
+                    <div class="mockup-header-bar">
+                      <div class="mockup-brand-block"></div>
+                      <div class="mockup-nav-blocks"><span></span><span></span><span></span></div>
+                    </div>
+                    <div class="mockup-hero-block">
+                      <div class="mockup-title-bar"></div>
+                      <div class="mockup-sub-bar"></div>
+                      <button type="button" class="mockup-cta-btn" id="animOAuthBtn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V18a1 1 0 0 1-2 0v-1.07A7 7 0 0 1 5.07 11H6a1 1 0 0 1 0-2h-.93A7 7 0 0 1 11 5.07V6a1 1 0 0 1 2 0v-.93A7 7 0 0 1 18.93 11H18a1 1 0 0 1 0 2h.93A7 7 0 0 1 13 16.93z"/></svg>
+                        <span>Authorize OAuth Login</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Animated Floating HUD staying pinned -->
+                  <div class="anim-hud-dock">
+                    <span class="anim-hud-indicator"></span>
+                    <span class="anim-hud-timer" id="animDockTimer">00:34</span>
+                    <span class="anim-hud-divider"></span>
+                    <span class="anim-hud-chip">Snap</span>
+                    <span class="anim-hud-chip">Pause</span>
+                    <span class="anim-hud-chip stop">Finish</span>
+                  </div>
+
+                  <!-- Animated Cursor spotlight demo -->
+                  <div class="anim-cursor-spotlight" id="animRedirectCursor"></div>
+                </div>
+              </div>
+              <span class="anim-caption">Live simulation: Floating HUD &amp; Cursor FX re-attach across page redirects</span>
+            </div>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- PANEL 2: AUDIO SETUP & LIVE VU METER                         -->
+          <!-- ============================================================ -->
+          <div class="doc-card-panel" id="doc-panel-audio">
+            <div class="doc-text-col">
+              <span class="doc-badge">MODULE 02 • SOUND &amp; MICROPHONE</span>
+              <h3>Hardware Audio Mixing &amp; Live VU Level Meter</h3>
+              <p>Record your voice alongside internal system audio with zero audio desync. Apertur mixes both audio sources into an ultra-clean 192 kbps Opus track with hardware noise reduction.</p>
+
+              <div class="doc-steps-list">
+                <div class="doc-step">
+                  <span class="step-badge-num">1</span>
+                  <div>
+                    <strong>Microphone Device Selection</strong>
+                    <p>Toggle <strong>Microphone</strong> in the popup to choose between built-in laptop mics, USB headsets, or professional studio inputs.</p>
+                  </div>
+                </div>
+                <div class="doc-step">
+                  <span class="step-badge-num">2</span>
+                  <div>
+                    <strong>Verify Levels with Real-Time VU Meter</strong>
+                    <p>Speak to confirm your audio before recording. A gradient meter (<code>Green</code> ➔ <code>Amber</code> ➔ <code>Red</code>) provides visual confidence.</p>
+                  </div>
+                </div>
+                <div class="doc-step">
+                  <span class="step-badge-num">3</span>
+                  <div>
+                    <strong>Boost Quiet Microphones (50% to 200%)</strong>
+                    <p>Adjust the integrated Gain Boost slider to increase vocal volume without buying external audio interface hardware.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="doc-tip-box">
+                <span class="doc-tip-title">PRO TIP:</span>
+                <span>Enable <strong>Noise Filter</strong> to automatically suppress air conditioner hum, laptop cooling fans, and room echo using WebRTC digital processing.</span>
+              </div>
+            </div>
+
+            <div class="doc-anim-col">
+              <div class="anim-audio-card">
+                <div class="anim-audio-header">
+                  <div class="anim-audio-mic-title">
+                    <div class="mic-pulsing-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                    </div>
+                    <div>
+                      <strong>Microphone Setup &amp; Monitoring</strong>
+                      <span id="animAudioStatusLabel">Live input: Speaking detected</span>
+                    </div>
+                  </div>
+                  <span class="anim-pill-accent">OPUS 192 KBPS</span>
+                </div>
+
+                <!-- Live VU Meter Simulation -->
+                <div class="anim-vu-meter-box">
+                  <div class="vu-meter-labels">
+                    <span>-36 dB</span>
+                    <span>-18 dB</span>
+                    <span>-6 dB</span>
+                    <span>0 dB (PEAK)</span>
+                  </div>
+                  <div class="vu-meter-track">
+                    <div class="vu-meter-fill" id="animVuFill"></div>
+                  </div>
+                </div>
+
+                <!-- Simulated Sound Wave Bars -->
+                <div class="anim-wave-visualizer">
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                </div>
+
+                <!-- Interactive Gain Boost Demo Control -->
+                <div class="anim-gain-control-row">
+                  <span class="anim-control-label">Mic Gain Boost: <strong id="animGainValue">150%</strong></span>
+                  <button type="button" id="btnSimulateVoice" class="anim-mini-btn">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Simulate Voice Pulse</span>
+                  </button>
+                </div>
+              </div>
+              <span class="anim-caption">Live simulation: Reactive VU volume meter confirms audio levels before you click record</span>
+            </div>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- PANEL 3: SCREENSHOT ANNOTATION STUDIO                        -->
+          <!-- ============================================================ -->
+          <div class="doc-card-panel" id="doc-panel-annot">
+            <div class="doc-text-col">
+              <span class="doc-badge">MODULE 03 • SCREENSHOT STUDIO</span>
+              <h3>Screenshot Annotation Studio: Arrows, Shapes &amp; Callouts</h3>
+              <p>Turn raw screenshots into clear bug reports and documentation. Click any screenshot in your Media Library and hit <strong>Annotate</strong> to unlock high-precision drawing tools directly in your browser.</p>
+
+              <div class="doc-tools-grid">
+                <div class="doc-tool-chip">
+                  <span class="tool-chip-icon">✏️</span>
+                  <div><strong>Freehand Pen</strong><span>Smooth curve drawing</span></div>
+                </div>
+                <div class="doc-tool-chip">
+                  <span class="tool-chip-icon">↗️</span>
+                  <div><strong>Callout Arrows</strong><span>Point to bugs &amp; buttons</span></div>
+                </div>
+                <div class="doc-tool-chip">
+                  <span class="tool-chip-icon">🔲</span>
+                  <div><strong>Rectangle Boxes</strong><span>Frame UI components</span></div>
+                </div>
+                <div class="doc-tool-chip">
+                  <span class="tool-chip-icon">🟡</span>
+                  <div><strong>Highlighter</strong><span>Emphasize key words</span></div>
+                </div>
+                <div class="doc-tool-chip">
+                  <span class="tool-chip-icon">🔤</span>
+                  <div><strong>Text Badges</strong><span>High-contrast callouts</span></div>
+                </div>
+                <div class="doc-tool-chip">
+                  <span class="tool-chip-icon">↩️</span>
+                  <div><strong>Multi-Step Undo</strong><span>Revert edits anytime</span></div>
+                </div>
+              </div>
+
+              <div class="doc-tip-box">
+                <span class="doc-tip-title">PRO TIP:</span>
+                <span>Click <strong>Save to Library</strong> to preserve all annotations in your offline vault, or click <strong>Copy Image</strong> to paste your marked-up PNG directly into GitHub or Slack.</span>
+              </div>
+            </div>
+
+            <div class="doc-anim-col">
+              <div class="anim-annot-studio-card">
+                <!-- Studio Toolbar Mockup -->
+                <div class="anim-annot-toolbar">
+                  <div class="annot-tool-pills">
+                    <button type="button" class="anim-tool-chip active" data-anim-tool="arrow">↗️ Arrow</button>
+                    <button type="button" class="anim-tool-chip" data-anim-tool="box">🔲 Box</button>
+                    <button type="button" class="anim-tool-chip" data-anim-tool="pen">✏️ Pen</button>
+                    <button type="button" class="anim-tool-chip" data-anim-tool="text">🔤 Text</button>
+                  </div>
+                  <div class="annot-color-dots">
+                    <span class="anim-dot amber active"></span>
+                    <span class="anim-dot red"></span>
+                    <span class="anim-dot cyan"></span>
+                    <span class="anim-dot purple"></span>
+                  </div>
+                </div>
+
+                <!-- Animated Interactive Canvas Display -->
+                <div class="anim-annot-canvas-stage">
+                  <div class="anim-screenshot-bg">
+                    <div class="mock-card-row">
+                      <div class="mock-avatar"></div>
+                      <div class="mock-lines"><span></span><span></span></div>
+                    </div>
+                    <div class="mock-form-input">Username / Email Input</div>
+                    <button type="button" class="mock-submit-btn">Submit Order ($49)</button>
+                  </div>
+
+                  <!-- Animated Dynamic SVG Drawing Overlay -->
+                  <svg class="anim-svg-overlay" viewBox="0 0 380 200">
+                    <!-- Animated Rectangle Box -->
+                    <rect class="anim-draw-rect" x="30" y="80" width="320" height="42" rx="6"/>
+                    <!-- Animated Arrow pointing to button -->
+                    <path class="anim-draw-arrow" d="M 90 28 Q 140 145 220 152"/>
+                    <polygon class="anim-draw-arrowhead" points="220,152 210,144 213,158"/>
+                  </svg>
+
+                  <!-- Animated Text Callout Badge -->
+                  <div class="anim-text-callout">
+                    <span>⚡ Critical conversion CTA</span>
+                  </div>
+                </div>
+              </div>
+              <span class="anim-caption">Interactive demo: Automated vector stroke drawing and high-contrast text callouts</span>
+            </div>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- PANEL 4: VIDEO TRIMMER & 4 EXPORT PRESETS                    -->
+          <!-- ============================================================ -->
+          <div class="doc-card-panel" id="doc-panel-trimmer">
+            <div class="doc-text-col">
+              <span class="doc-badge">MODULE 04 • EDITING &amp; EXPORT PRESETS</span>
+              <h3>Built-In Video Trimmer &amp; 4 Export Presets</h3>
+              <p>No need to open heavy video editing software just to cut out awkward delays or compress a clip. Apertur's Video Player Studio includes 0.1-second range trim sliders and 4 instant export presets.</p>
+
+              <div class="doc-presets-list">
+                <div class="doc-preset-card">
+                  <strong>🎬 Master 1080p (VP9 60fps)</strong>
+                  <span>Full-quality master encoding at up to 12 Mbps for razor-sharp product walkthroughs.</span>
+                </div>
+                <div class="doc-preset-card">
+                  <strong>🌐 Web-Ready 720p (Compact)</strong>
+                  <span>Lightweight file under 25MB optimized for instant Slack, Discord, and email attachments.</span>
+                </div>
+                <div class="doc-preset-card">
+                  <strong>🎵 Audio Only (WebM / Opus)</strong>
+                  <span>Extracts crystal-clear voice and system audio tracks for podcasts, transcripts, or meeting notes.</span>
+                </div>
+                <div class="doc-preset-card">
+                  <strong>🎞️ Short Animated Loop (WebM)</strong>
+                  <span>Auto-clips a 5-second repeating loop ideal for GitHub README showcases and pull request demos.</span>
+                </div>
+              </div>
+
+              <div class="doc-tip-box">
+                <span class="doc-tip-title">PRO TIP:</span>
+                <span>Click the video title in the player to rename your clip. The custom title automatically renames your downloaded files and persists in your local library.</span>
+              </div>
+            </div>
+
+            <div class="doc-anim-col">
+              <div class="anim-trimmer-card">
+                <div class="anim-theater-frame">
+                  <div class="anim-video-poster">
+                    <span class="anim-playhead-dot"></span>
+                    <div class="poster-elements">
+                      <div class="poster-bar"></div>
+                      <div class="poster-chart"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Animated Trimmer Timeline -->
+                <div class="anim-trim-bar">
+                  <div class="trim-bounds-header">
+                    <span>Start: <strong id="animTrimStartVal">00:01.2</strong></span>
+                    <span class="trim-center-label">Active Clip: 00:07.3</span>
+                    <span>End: <strong id="animTrimEndVal">00:08.5</strong></span>
+                  </div>
+                  <div class="trim-timeline-track">
+                    <div class="trim-dimmed-left"></div>
+                    <div class="trim-active-region">
+                      <span class="trim-handle left"></span>
+                      <span class="anim-timeline-playhead"></span>
+                      <span class="trim-handle right"></span>
+                    </div>
+                    <div class="trim-dimmed-right"></div>
+                  </div>
+                </div>
+
+                <!-- Export Presets Selector Demo -->
+                <div class="anim-export-buttons-group">
+                  <button type="button" class="anim-preset-btn active" data-format="1080p">Master 1080p</button>
+                  <button type="button" class="anim-preset-btn" data-format="720p">Web 720p</button>
+                  <button type="button" class="anim-preset-btn" data-format="audio">Audio Only</button>
+                  <button type="button" class="anim-preset-btn" data-format="loop">5s Loop</button>
+                </div>
+              </div>
+              <span class="anim-caption">Live simulation: 0.1s precision trim sliders and 1-click multi-format export</span>
+            </div>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- PANEL 5: 3 SCREENSHOT MODES & GLOBAL SHORTCUTS               -->
+          <!-- ============================================================ -->
+          <div class="doc-card-panel" id="doc-panel-snip">
+            <div class="doc-text-col">
+              <span class="doc-badge">MODULE 05 • LOSSLESS SCREENSHOT SUITE</span>
+              <h3>3 Capture Modes &amp; Global Keyboard Shortcuts</h3>
+              <p>Capture screenshots instantly from any web page without switching tabs or launching third-party apps.</p>
+
+              <div class="doc-shortcuts-table-wrap">
+                <table class="doc-shortcuts-table">
+                  <thead>
+                    <tr>
+                      <th>Mode</th>
+                      <th>Global Shortcut</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Area Crop (Snip)</strong></td>
+                      <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd></td>
+                      <td>Click &amp; drag crosshairs to crop any rectangular area with live dimensions.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Full Webpage</strong></td>
+                      <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd></td>
+                      <td>Auto-scrolls and stitches entire long pages into one crystal-clear PNG.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Visible Viewport</strong></td>
+                      <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></td>
+                      <td>Instant 1-click snapshot of the visible window with direct clipboard copy.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="doc-tip-box">
+                <span class="doc-tip-title">PRO TIP:</span>
+                <span>Customize shortcuts anytime by typing <code>chrome://extensions/shortcuts</code> in your browser address bar.</span>
+              </div>
+            </div>
+
+            <div class="doc-anim-col">
+              <div class="anim-snip-card">
+                <div class="anim-snip-viewport">
+                  <div class="anim-snip-backdrop">
+                    <div class="snip-mock-grid">
+                      <div class="mock-col"></div>
+                      <div class="mock-col"></div>
+                    </div>
+                  </div>
+
+                  <!-- Animated Crop Box -->
+                  <div class="anim-crop-box">
+                    <span class="anim-crop-dims-tag">840 × 440 px</span>
+                    <div class="anim-crop-toolbar">
+                      <button type="button" class="anim-crop-action primary">Copy</button>
+                      <button type="button" class="anim-crop-action">Save PNG</button>
+                      <button type="button" class="anim-crop-action">Library</button>
+                    </div>
+                  </div>
+
+                  <!-- Animated Crosshairs -->
+                  <div class="anim-crosshair-h"></div>
+                  <div class="anim-crosshair-v"></div>
+                </div>
+              </div>
+              <span class="anim-caption">Live simulation: Precision area snipping HUD with real-time dimensions and action bar</span>
+            </div>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- PANEL 6: 100% PRIVATE OFFLINE MEDIA VAULT                    -->
+          <!-- ============================================================ -->
+          <div class="doc-card-panel" id="doc-panel-vault">
+            <div class="doc-text-col">
+              <span class="doc-badge">MODULE 06 • PRIVACY &amp; LOCAL STORAGE</span>
+              <h3>100% Private Offline Media Vault</h3>
+              <p>Your screen recordings and screenshots contain sensitive internal dashboards, credentials, and client data. Apertur keeps 100% of your media on your computer inside IndexedDB.</p>
+
+              <div class="doc-steps-list">
+                <div class="doc-step">
+                  <span class="step-badge-num">1</span>
+                  <div>
+                    <strong>Zero Cloud Uploads &amp; Zero Telemetry</strong>
+                    <p>No third-party tracking, no external bandwidth bottlenecks, and no recurring storage subscription bills.</p>
+                  </div>
+                </div>
+                <div class="doc-step">
+                  <span class="step-badge-num">2</span>
+                  <div>
+                    <strong>Unified Library with Category Filters</strong>
+                    <p>Filter your recordings and screenshots with <strong>All Media</strong>, <strong>Videos</strong>, and <strong>Screenshots</strong> pills.</p>
+                  </div>
+                </div>
+                <div class="doc-step">
+                  <span class="step-badge-num">3</span>
+                  <div>
+                    <strong>100% Full-Resolution Inspection Viewer</strong>
+                    <p>Inspect tall full-page screenshots at native 1:1 pixel resolution with custom zoom toggle.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="doc-tip-box">
+                <span class="doc-tip-title">PRO TIP:</span>
+                <span>Open your library at any time by clicking <strong>My Media</strong> in the extension popup or pressing the gallery button in the Video Player Studio.</span>
+              </div>
+            </div>
+
+            <div class="doc-anim-col">
+              <div class="anim-vault-card">
+                <div class="anim-vault-topbar">
+                  <div class="anim-vault-pills">
+                    <span class="anim-filter-pill active">All Media (8)</span>
+                    <span class="anim-filter-pill">Videos (5)</span>
+                    <span class="anim-filter-pill">Screenshots (3)</span>
+                  </div>
+                  <span class="anim-storage-badge">🔒 42.8 MB Stored Offline</span>
+                </div>
+
+                <div class="anim-vault-grid">
+                  <div class="anim-vault-item video">
+                    <div class="anim-vault-thumb">
+                      <span class="play-indicator">▶ 00:45</span>
+                    </div>
+                    <strong>Q4 Dashboard Demo.webm</strong>
+                    <span>1080p 60fps • 8.4 MB</span>
+                  </div>
+                  <div class="anim-vault-item screenshot">
+                    <div class="anim-vault-thumb snap">
+                      <span class="snap-indicator">PNG</span>
+                    </div>
+                    <strong>Billing Settings Snip.png</strong>
+                    <span>1920 × 1080 • 420 KB</span>
+                  </div>
+                </div>
+              </div>
+              <span class="anim-caption">Live simulation: 100% offline IndexedDB vault with zero telemetry and zero cloud storage fees</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

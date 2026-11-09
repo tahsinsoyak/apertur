@@ -71,6 +71,35 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnModalDelete = document.getElementById('btnModalDelete');
   const modalCopyLabel = document.getElementById('modalCopyLabel');
 
+  // Export Presets Elements
+  const btnExportMenu = document.getElementById('btnExportMenu');
+  const exportPresetsDropdown = document.getElementById('exportPresetsDropdown');
+  const exportPresetItems = document.querySelectorAll('.export-preset-item');
+  const downloadBtnText = document.getElementById('downloadBtnText');
+
+  // Annotation Studio Elements
+  const btnModalAnnotate = document.getElementById('btnModalAnnotate');
+  const modalAnnotateLabel = document.getElementById('modalAnnotateLabel');
+  const annotationToolbar = document.getElementById('annotationToolbar');
+  const annotCanvas = document.getElementById('annotCanvas');
+  const annotToolButtons = document.querySelectorAll('.annot-tool-btn');
+  const annotColorButtons = document.querySelectorAll('.annot-color-btn');
+  const annotStrokeButtons = document.querySelectorAll('.annot-stroke-btn');
+  const btnAnnotUndo = document.getElementById('btnAnnotUndo');
+  const btnAnnotClear = document.getElementById('btnAnnotClear');
+  const btnAnnotSave = document.getElementById('btnAnnotSave');
+
+  let isAnnotateMode = false;
+  let currentAnnotTool = 'pen';
+  let currentAnnotColor = '#f59e0b';
+  let currentAnnotSize = 5;
+  let annotUndoStack = [];
+  let isDrawingAnnot = false;
+  let annotStartX = 0;
+  let annotStartY = 0;
+  let annotSnapshot = null;
+  let annotBaseImage = null;
+
   filterButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       filterButtons.forEach((b) => b.classList.remove('active'));
@@ -109,10 +138,270 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (imageViewerModal) imageViewerModal.classList.remove('hidden');
   }
 
+  function exitAnnotateMode() {
+    isAnnotateMode = false;
+    if (modalAnnotateLabel) modalAnnotateLabel.textContent = 'Annotate';
+    if (btnModalAnnotate) btnModalAnnotate.classList.remove('primary');
+    if (annotationToolbar) annotationToolbar.classList.add('hidden');
+    if (annotCanvas) annotCanvas.classList.add('hidden');
+    if (modalFullImage) modalFullImage.classList.remove('hidden');
+  }
+
   function closeImageModal() {
+    exitAnnotateMode();
     if (imageViewerModal) imageViewerModal.classList.add('hidden');
     modalCurrentItem = null;
     setModalZoom(false);
+  }
+
+  // --------------------------------------------------------------------------
+  // Annotation Studio Engine
+  // --------------------------------------------------------------------------
+  function getCanvasCoords(e) {
+    if (!annotCanvas) return { x: 0, y: 0 };
+    const rect = annotCanvas.getBoundingClientRect();
+    const scaleX = annotCanvas.width / (rect.width || 1);
+    const scaleY = annotCanvas.height / (rect.height || 1);
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
+    };
+  }
+
+  function drawArrow(ctx, fromX, fromY, toX, toY, color, width) {
+    const headlen = Math.max(14, width * 3.4);
+    const angle = Math.atan2(toY - fromY, toX - fromX);
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(toX, toY);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  async function toggleAnnotateMode() {
+    if (!modalCurrentItem) return;
+    isAnnotateMode = !isAnnotateMode;
+
+    if (isAnnotateMode) {
+      if (modalAnnotateLabel) modalAnnotateLabel.textContent = 'Done Editing';
+      if (btnModalAnnotate) btnModalAnnotate.classList.add('primary');
+      if (annotationToolbar) annotationToolbar.classList.remove('hidden');
+      if (modalFullImage) modalFullImage.classList.add('hidden');
+      if (annotCanvas) annotCanvas.classList.remove('hidden');
+
+      const src = modalCurrentItem.dataUrl || modalFullImage.src;
+      annotBaseImage = new Image();
+      annotBaseImage.crossOrigin = 'anonymous';
+      await new Promise((resolve) => {
+        annotBaseImage.onload = resolve;
+        annotBaseImage.src = src;
+      });
+
+      annotCanvas.width = annotBaseImage.naturalWidth || annotBaseImage.width;
+      annotCanvas.height = annotBaseImage.naturalHeight || annotBaseImage.height;
+      const ctx = annotCanvas.getContext('2d');
+      ctx.drawImage(annotBaseImage, 0, 0);
+
+      annotUndoStack = [ctx.getImageData(0, 0, annotCanvas.width, annotCanvas.height)];
+    } else {
+      exitAnnotateMode();
+    }
+  }
+
+  if (btnModalAnnotate) {
+    btnModalAnnotate.addEventListener('click', toggleAnnotateMode);
+  }
+
+  annotToolButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      annotToolButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentAnnotTool = btn.dataset.tool || 'pen';
+    });
+  });
+
+  annotColorButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      annotColorButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentAnnotColor = btn.dataset.color || '#f59e0b';
+    });
+  });
+
+  annotStrokeButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      annotStrokeButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentAnnotSize = Number(btn.dataset.size) || 5;
+    });
+  });
+
+  if (annotCanvas) {
+    annotCanvas.addEventListener('pointerdown', (e) => {
+      if (!isAnnotateMode) return;
+      const ctx = annotCanvas.getContext('2d');
+      const { x, y } = getCanvasCoords(e);
+      annotStartX = x;
+      annotStartY = y;
+      isDrawingAnnot = true;
+      annotSnapshot = ctx.getImageData(0, 0, annotCanvas.width, annotCanvas.height);
+
+      if (currentAnnotTool === 'pen') {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.strokeStyle = currentAnnotColor;
+        ctx.lineWidth = currentAnnotSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+      } else if (currentAnnotTool === 'highlight') {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.strokeStyle = currentAnnotColor;
+        ctx.lineWidth = Math.max(18, currentAnnotSize * 3.5);
+        ctx.lineCap = 'square';
+        ctx.lineJoin = 'round';
+        ctx.globalAlpha = 0.38;
+      } else if (currentAnnotTool === 'text') {
+        isDrawingAnnot = false;
+        const text = prompt('Enter text callout:');
+        if (text && text.trim()) {
+          const fontSize = Math.max(16, currentAnnotSize * 4.2);
+          ctx.save();
+          ctx.font = `bold ${fontSize}px Inter, -apple-system, sans-serif`;
+          const metrics = ctx.measureText(text);
+          const pad = 8;
+          const boxW = metrics.width + pad * 2;
+          const boxH = fontSize + pad * 2;
+
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(x - pad, y - fontSize, boxW, boxH, 6);
+          } else {
+            ctx.rect(x - pad, y - fontSize, boxW, boxH);
+          }
+          ctx.fill();
+
+          ctx.fillStyle = currentAnnotColor;
+          ctx.fillText(text, x, y + 2);
+          ctx.restore();
+
+          annotUndoStack.push(ctx.getImageData(0, 0, annotCanvas.width, annotCanvas.height));
+          if (annotUndoStack.length > 25) annotUndoStack.shift();
+        }
+      }
+    });
+
+    annotCanvas.addEventListener('pointermove', (e) => {
+      if (!isAnnotateMode || !isDrawingAnnot) return;
+      const ctx = annotCanvas.getContext('2d');
+      const { x, y } = getCanvasCoords(e);
+
+      if (currentAnnotTool === 'pen') {
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      } else if (currentAnnotTool === 'highlight') {
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      } else if (currentAnnotTool === 'arrow') {
+        ctx.putImageData(annotSnapshot, 0, 0);
+        drawArrow(ctx, annotStartX, annotStartY, x, y, currentAnnotColor, currentAnnotSize);
+      } else if (currentAnnotTool === 'rect') {
+        ctx.putImageData(annotSnapshot, 0, 0);
+        const rx = Math.min(annotStartX, x);
+        const ry = Math.min(annotStartY, y);
+        const rw = Math.abs(x - annotStartX);
+        const rh = Math.abs(y - annotStartY);
+
+        ctx.save();
+        ctx.strokeStyle = currentAnnotColor;
+        ctx.lineWidth = currentAnnotSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(rx, ry, rw, rh, 6);
+        } else {
+          ctx.rect(rx, ry, rw, rh);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+    });
+
+    function finishDrawing() {
+      if (!isAnnotateMode || !isDrawingAnnot) return;
+      isDrawingAnnot = false;
+      const ctx = annotCanvas.getContext('2d');
+      ctx.globalAlpha = 1.0;
+      annotUndoStack.push(ctx.getImageData(0, 0, annotCanvas.width, annotCanvas.height));
+      if (annotUndoStack.length > 25) annotUndoStack.shift();
+    }
+
+    annotCanvas.addEventListener('pointerup', finishDrawing);
+    annotCanvas.addEventListener('pointerleave', finishDrawing);
+  }
+
+  if (btnAnnotUndo) {
+    btnAnnotUndo.addEventListener('click', () => {
+      if (annotUndoStack.length > 1) {
+        annotUndoStack.pop();
+        const prev = annotUndoStack[annotUndoStack.length - 1];
+        const ctx = annotCanvas.getContext('2d');
+        ctx.putImageData(prev, 0, 0);
+      }
+    });
+  }
+
+  if (btnAnnotClear) {
+    btnAnnotClear.addEventListener('click', () => {
+      if (!annotBaseImage || !annotCanvas) return;
+      const ctx = annotCanvas.getContext('2d');
+      ctx.drawImage(annotBaseImage, 0, 0);
+      annotUndoStack = [ctx.getImageData(0, 0, annotCanvas.width, annotCanvas.height)];
+    });
+  }
+
+  if (btnAnnotSave) {
+    btnAnnotSave.addEventListener('click', async () => {
+      if (!modalCurrentItem || !annotCanvas) return;
+      const btnSpan = btnAnnotSave.querySelector('span');
+      if (btnSpan) btnSpan.textContent = 'Saving...';
+
+      try {
+        const dataUrl = annotCanvas.toDataURL('image/png');
+        modalCurrentItem.dataUrl = dataUrl;
+        if (modalFullImage) modalFullImage.src = dataUrl;
+
+        await window.RecorderDB.saveScreenshot(modalCurrentItem);
+        await renderGallery();
+
+        if (btnSpan) {
+          btnSpan.textContent = '✓ Saved to Library!';
+          setTimeout(() => { btnSpan.textContent = 'Save to Library'; }, 1600);
+        }
+      } catch (err) {
+        if (btnSpan) {
+          btnSpan.textContent = 'Save Failed';
+          setTimeout(() => { btnSpan.textContent = 'Save to Library'; }, 1600);
+        }
+      }
+    });
   }
 
   if (btnModalZoom) {
@@ -151,9 +440,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnModalCopy.addEventListener('click', async () => {
       if (!modalCurrentItem) return;
       try {
-        const src = modalCurrentItem.dataUrl || modalFullImage.src;
-        const res = await fetch(src);
-        const blob = await res.blob();
+        let blob = null;
+        if (isAnnotateMode && annotCanvas) {
+          blob = await new Promise(r => annotCanvas.toBlob(r, 'image/png'));
+        } else {
+          const src = modalCurrentItem.dataUrl || modalFullImage.src;
+          const res = await fetch(src);
+          blob = await res.blob();
+        }
         await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
         if (modalCopyLabel) modalCopyLabel.textContent = 'Copied!';
         setTimeout(() => { if (modalCopyLabel) modalCopyLabel.textContent = 'Copy Image'; }, 1500);
@@ -167,7 +461,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (btnModalDownload) {
     btnModalDownload.addEventListener('click', () => {
       if (!modalCurrentItem) return;
-      const src = modalCurrentItem.dataUrl || modalFullImage.src;
+      const src = (isAnnotateMode && annotCanvas) ? annotCanvas.toDataURL('image/png') : (modalCurrentItem.dataUrl || modalFullImage.src);
       const a = document.createElement('a');
       a.href = src;
       const stamp = new Date(modalCurrentItem.timestamp || Date.now()).toISOString().replace(/[:.]/g, '-').slice(0, 19);
@@ -622,6 +916,260 @@ document.addEventListener('DOMContentLoaded', async () => {
       .replace(/[:.]/g, '-')
       .slice(0, 19);
     return `apertur-${timestampStr}`;
+  }
+
+  // --------------------------------------------------------------------------
+  // Export Presets & Video Encoding Engine
+  // --------------------------------------------------------------------------
+  if (btnExportMenu && exportPresetsDropdown) {
+    btnExportMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      exportPresetsDropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!exportPresetsDropdown.classList.contains('hidden') &&
+          !e.target.closest('#exportPresetsDropdown') &&
+          !e.target.closest('#btnExportMenu')) {
+        exportPresetsDropdown.classList.add('hidden');
+      }
+    });
+
+    exportPresetItems.forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        exportPresetsDropdown.classList.add('hidden');
+        exportPresetItems.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const preset = btn.dataset.preset;
+        if (!currentRecording || !currentObjectUrl) return;
+
+        if (preset === 'master') {
+          downloadBlob(currentRecording.blob, currentRecording);
+        } else if (preset === 'web720') {
+          await exportWeb720Preset();
+        } else if (preset === 'audio') {
+          await exportAudioOnlyPreset();
+        } else if (preset === 'loop') {
+          await exportLoopPreset();
+        }
+      });
+    });
+  }
+
+  async function exportWeb720Preset() {
+    if (!videoPlayer || !currentRecording) return;
+    const origText = downloadBtnText ? downloadBtnText.textContent : 'Download Video';
+    if (downloadBtnText) downloadBtnText.textContent = 'Encoding 720p...';
+
+    try {
+      videoPlayer.pause();
+      const prevTime = videoPlayer.currentTime;
+      videoPlayer.currentTime = 0;
+      await new Promise(r => {
+        const onSeek = () => { videoPlayer.removeEventListener('seeked', onSeek); r(); };
+        videoPlayer.addEventListener('seeked', onSeek);
+        setTimeout(r, 200);
+      });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 1280;
+      canvas.height = 720;
+      const ctx = canvas.getContext('2d');
+
+      const stream = canvas.captureStream ? canvas.captureStream(30) : null;
+      if (!stream) {
+        throw new Error('Canvas capture stream not supported');
+      }
+
+      if (videoPlayer.captureStream) {
+        const vStream = videoPlayer.captureStream();
+        const aTracks = vStream.getAudioTracks();
+        if (aTracks.length > 0) stream.addTrack(aTracks[0]);
+      }
+
+      const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+        ? 'video/webm;codecs=vp9,opus'
+        : 'video/webm';
+      const chunks = [];
+      const rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 2500000 });
+
+      rec.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) chunks.push(e.data);
+      };
+
+      let animId = null;
+      function renderFrame() {
+        ctx.drawImage(videoPlayer, 0, 0, 1280, 720);
+        if (!videoPlayer.ended && !videoPlayer.paused) {
+          animId = requestAnimationFrame(renderFrame);
+        }
+      }
+
+      await new Promise((resolve, reject) => {
+        rec.onstop = () => {
+          if (animId) cancelAnimationFrame(animId);
+          const outBlob = new Blob(chunks, { type: mimeType });
+          const safeName = getSafeFilename(currentRecording);
+          const url = URL.createObjectURL(outBlob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${safeName}-web-720p.webm`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          resolve();
+        };
+        rec.onerror = reject;
+
+        rec.start(100);
+        videoPlayer.play().catch(reject);
+        renderFrame();
+
+        videoPlayer.onended = () => {
+          if (rec.state !== 'inactive') rec.stop();
+        };
+      });
+
+      videoPlayer.currentTime = prevTime;
+      if (downloadBtnText) downloadBtnText.textContent = '✓ 720p Exported!';
+      setTimeout(() => { if (downloadBtnText) downloadBtnText.textContent = origText; }, 1600);
+    } catch (err) {
+      console.warn('720p export fallback:', err);
+      if (downloadBtnText) downloadBtnText.textContent = origText;
+      downloadBlob(currentRecording.blob, currentRecording);
+    }
+  }
+
+  async function exportAudioOnlyPreset() {
+    if (!videoPlayer || !currentRecording) return;
+    const origText = downloadBtnText ? downloadBtnText.textContent : 'Download Video';
+    if (downloadBtnText) downloadBtnText.textContent = 'Extracting Audio...';
+
+    try {
+      videoPlayer.pause();
+      const prevTime = videoPlayer.currentTime;
+      videoPlayer.currentTime = 0;
+      await new Promise(r => {
+        const onSeek = () => { videoPlayer.removeEventListener('seeked', onSeek); r(); };
+        videoPlayer.addEventListener('seeked', onSeek);
+        setTimeout(r, 200);
+      });
+
+      const stream = videoPlayer.captureStream ? videoPlayer.captureStream() : videoPlayer.mozCaptureStream?.();
+      const audioTracks = stream ? stream.getAudioTracks() : [];
+
+      if (!stream || audioTracks.length === 0) {
+        alert('This recording does not have an audio track to extract.');
+        if (downloadBtnText) downloadBtnText.textContent = origText;
+        return;
+      }
+
+      const audioOnlyStream = new MediaStream(audioTracks);
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm';
+      const chunks = [];
+      const rec = new MediaRecorder(audioOnlyStream, { mimeType });
+
+      rec.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) chunks.push(e.data);
+      };
+
+      await new Promise((resolve, reject) => {
+        rec.onstop = () => {
+          const outBlob = new Blob(chunks, { type: mimeType });
+          const safeName = getSafeFilename(currentRecording);
+          const url = URL.createObjectURL(outBlob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${safeName}-audio.webm`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          resolve();
+        };
+        rec.onerror = reject;
+
+        rec.start(100);
+        videoPlayer.play().catch(reject);
+        videoPlayer.onended = () => {
+          if (rec.state !== 'inactive') rec.stop();
+        };
+      });
+
+      videoPlayer.currentTime = prevTime;
+      if (downloadBtnText) downloadBtnText.textContent = '✓ Audio Exported!';
+      setTimeout(() => { if (downloadBtnText) downloadBtnText.textContent = origText; }, 1600);
+    } catch (err) {
+      console.warn('Audio export error:', err);
+      if (downloadBtnText) downloadBtnText.textContent = origText;
+    }
+  }
+
+  async function exportLoopPreset() {
+    if (!videoPlayer || !currentRecording) return;
+    const origText = downloadBtnText ? downloadBtnText.textContent : 'Download Video';
+    if (downloadBtnText) downloadBtnText.textContent = 'Creating Loop...';
+
+    try {
+      videoPlayer.pause();
+      const prevTime = videoPlayer.currentTime;
+      videoPlayer.currentTime = 0;
+      await new Promise(r => {
+        const onSeek = () => { videoPlayer.removeEventListener('seeked', onSeek); r(); };
+        videoPlayer.addEventListener('seeked', onSeek);
+        setTimeout(r, 200);
+      });
+
+      const stream = videoPlayer.captureStream ? videoPlayer.captureStream() : videoPlayer.mozCaptureStream?.();
+      const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+        ? 'video/webm;codecs=vp9,opus'
+        : 'video/webm';
+      const chunks = [];
+      const rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 6000000 });
+
+      rec.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) chunks.push(e.data);
+      };
+
+      const loopLimit = Math.min(5, Number(videoPlayer.duration) || 5);
+
+      await new Promise((resolve, reject) => {
+        rec.onstop = () => {
+          const outBlob = new Blob(chunks, { type: mimeType });
+          const safeName = getSafeFilename(currentRecording);
+          const url = URL.createObjectURL(outBlob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${safeName}-preview-loop.webm`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          resolve();
+        };
+        rec.onerror = reject;
+
+        rec.start(100);
+        videoPlayer.play().catch(reject);
+
+        const checkLoop = setInterval(() => {
+          if (videoPlayer.currentTime >= loopLimit || videoPlayer.ended) {
+            clearInterval(checkLoop);
+            videoPlayer.pause();
+            if (rec.state !== 'inactive') rec.stop();
+          }
+        }, 80);
+      });
+
+      videoPlayer.currentTime = prevTime;
+      if (downloadBtnText) downloadBtnText.textContent = '✓ Loop Exported!';
+      setTimeout(() => { if (downloadBtnText) downloadBtnText.textContent = origText; }, 1600);
+    } catch (err) {
+      console.warn('Loop export error:', err);
+      if (downloadBtnText) downloadBtnText.textContent = origText;
+    }
   }
 
   // Download Action

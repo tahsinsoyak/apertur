@@ -22,6 +22,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const qualityCards = document.querySelectorAll('.quality-card');
   const checkTabAudio = document.getElementById('checkTabAudio');
   const checkMic = document.getElementById('checkMic');
+  const micConfigDrawer = document.getElementById('micConfigDrawer');
+  const selectMicDevice = document.getElementById('selectMicDevice');
+  const audioMeterFill = document.getElementById('audioMeterFill');
+  const audioMeterLabel = document.getElementById('audioMeterLabel');
+  const rangeMicGain = document.getElementById('rangeMicGain');
+  const valMicGain = document.getElementById('valMicGain');
+  const checkNoiseSuppression = document.getElementById('checkNoiseSuppression');
   const checkHalo = document.getElementById('checkHalo');
   const checkClickRipple = document.getElementById('checkClickRipple');
   const checkFloatingDock = document.getElementById('checkFloatingDock');
@@ -54,7 +61,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     'prefClickRipple',
     'prefFloatingDock',
     'prefCountdown',
-    'prefTheme'
+    'prefTheme',
+    'prefMicDevice',
+    'prefMicGain',
+    'prefNoiseSuppression'
   ]);
 
   const scopeGuideText = document.getElementById('scopeGuideText');
@@ -156,7 +166,171 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Toggles Persist
   checkTabAudio.addEventListener('change', () => chrome.storage.local.set({ prefTabAudio: checkTabAudio.checked }));
-  checkMic.addEventListener('change', () => chrome.storage.local.set({ prefMic: checkMic.checked }));
+
+  // --------------------------------------------------------------------------
+  // Advanced Microphone Setup & Live VU Level Meter
+  // --------------------------------------------------------------------------
+  let micMeterStream = null;
+  let micMeterAudioCtx = null;
+  let micMeterRaf = null;
+
+  if (saved.prefMicGain && rangeMicGain && valMicGain) {
+    rangeMicGain.value = saved.prefMicGain;
+    valMicGain.textContent = `${saved.prefMicGain}%`;
+  }
+  if (saved.prefNoiseSuppression !== undefined && checkNoiseSuppression) {
+    checkNoiseSuppression.checked = Boolean(saved.prefNoiseSuppression);
+  }
+
+  async function populateMicDevices() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const audioInputs = devices.filter(d => d.kind === 'audioinput');
+      if (selectMicDevice && audioInputs.length > 0) {
+        selectMicDevice.innerHTML = '';
+        audioInputs.forEach((dev, idx) => {
+          const opt = document.createElement('option');
+          opt.value = dev.deviceId || 'default';
+          opt.textContent = dev.label || `Microphone ${idx + 1}`;
+          selectMicDevice.appendChild(opt);
+        });
+        if (saved.prefMicDevice) {
+          selectMicDevice.value = saved.prefMicDevice;
+        }
+      }
+    } catch (_) {}
+  }
+
+  async function startMicMeter() {
+    stopMicMeter();
+    if (!checkMic.checked) return;
+
+    try {
+      const deviceConstraint = (selectMicDevice && selectMicDevice.value && selectMicDevice.value !== 'default')
+        ? { exact: selectMicDevice.value }
+        : undefined;
+
+      micMeterStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          deviceId: deviceConstraint,
+          noiseSuppression: checkNoiseSuppression ? checkNoiseSuppression.checked : true,
+          echoCancellation: true
+        }
+      });
+
+      // Update device dropdown if labels were empty before permissions
+      await populateMicDevices();
+
+      micMeterAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (micMeterAudioCtx.state === 'suspended') {
+        await micMeterAudioCtx.resume().catch(() => {});
+      }
+
+      const source = micMeterAudioCtx.createMediaStreamSource(micMeterStream);
+      const analyser = micMeterAudioCtx.createAnalyser();
+      analyser.fftSize = 64;
+      analyser.smoothingTimeConstant = 0.5;
+      source.connect(analyser);
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      function renderMeter() {
+        if (!micMeterAudioCtx || !analyser) return;
+        analyser.getByteFrequencyData(dataArray);
+
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += dataArray[i];
+        }
+        const avg = sum / dataArray.length;
+        const gainMult = rangeMicGain ? (Number(rangeMicGain.value) / 100) : 1;
+        const pct = Math.min(100, Math.round((avg / 128) * 100 * gainMult));
+
+        if (audioMeterFill) {
+          audioMeterFill.style.width = `${pct}%`;
+        }
+        if (audioMeterLabel) {
+          audioMeterLabel.textContent = pct > 6 ? '✓ Audio detected' : 'Speak to test';
+        }
+
+        micMeterRaf = requestAnimationFrame(renderMeter);
+      }
+
+      micMeterRaf = requestAnimationFrame(renderMeter);
+    } catch (err) {
+      if (audioMeterLabel) {
+        audioMeterLabel.textContent = 'Mic access needed';
+      }
+    }
+  }
+
+  function stopMicMeter() {
+    if (micMeterRaf) {
+      cancelAnimationFrame(micMeterRaf);
+      micMeterRaf = null;
+    }
+    if (audioMeterFill) {
+      audioMeterFill.style.width = '0%';
+    }
+    if (audioMeterLabel) {
+      audioMeterLabel.textContent = 'Speak to test';
+    }
+    if (micMeterAudioCtx) {
+      micMeterAudioCtx.close().catch(() => {});
+      micMeterAudioCtx = null;
+    }
+    if (micMeterStream) {
+      micMeterStream.getTracks().forEach(t => t.stop());
+      micMeterStream = null;
+    }
+  }
+
+  function syncMicDrawer() {
+    if (micConfigDrawer) {
+      micConfigDrawer.classList.toggle('hidden', !checkMic.checked);
+    }
+    if (checkMic.checked) {
+      populateMicDevices();
+      startMicMeter();
+    } else {
+      stopMicMeter();
+    }
+  }
+
+  checkMic.addEventListener('change', () => {
+    chrome.storage.local.set({ prefMic: checkMic.checked });
+    syncMicDrawer();
+  });
+
+  if (checkMic.checked) {
+    syncMicDrawer();
+  }
+
+  if (rangeMicGain && valMicGain) {
+    rangeMicGain.addEventListener('input', () => {
+      valMicGain.textContent = `${rangeMicGain.value}%`;
+      chrome.storage.local.set({ prefMicGain: rangeMicGain.value });
+    });
+  }
+
+  if (selectMicDevice) {
+    selectMicDevice.addEventListener('change', () => {
+      chrome.storage.local.set({ prefMicDevice: selectMicDevice.value });
+      if (checkMic.checked) startMicMeter();
+    });
+  }
+
+  if (checkNoiseSuppression) {
+    checkNoiseSuppression.addEventListener('change', () => {
+      chrome.storage.local.set({ prefNoiseSuppression: checkNoiseSuppression.checked });
+      if (checkMic.checked) startMicMeter();
+    });
+  }
+
+  window.addEventListener('unload', () => {
+    stopMicMeter();
+  });
   checkHalo.addEventListener('change', () => {
     checkClickRipple.checked = checkHalo.checked;
     chrome.storage.local.set({
@@ -549,6 +723,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       fps,
       includeTabAudio: checkTabAudio.checked,
       includeMic: checkMic.checked,
+      micDeviceId: (selectMicDevice && selectMicDevice.value !== 'default') ? selectMicDevice.value : null,
+      micGain: rangeMicGain ? (Number(rangeMicGain.value) / 100) : 1.0,
+      noiseSuppression: checkNoiseSuppression ? checkNoiseSuppression.checked : true,
       enableHalo: checkHalo.checked,
       enableClickRipple: checkClickRipple.checked,
       showFloatingDock: checkFloatingDock ? checkFloatingDock.checked : true,

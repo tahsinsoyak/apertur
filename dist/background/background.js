@@ -198,6 +198,9 @@ async function handleStartRecording(options = {}) {
     fps: options.fps || 60,
     includeTabAudio: Boolean(options.includeTabAudio),
     includeMic: Boolean(options.includeMic),
+    micDeviceId: options.micDeviceId || null,
+    micGain: options.micGain || 1.0,
+    noiseSuppression: options.noiseSuppression ?? true,
     enableCountdown: Boolean(options.enableCountdown)
   });
 

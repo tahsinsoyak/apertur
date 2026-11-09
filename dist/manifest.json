@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Apertur: 60 FPS Screen & Workflow Recorder",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Free 1080p 60 FPS screen & window recorder with cursor spotlights, video trimmer, 3s countdown, PNG screenshots & local storage.",
   "permissions": [
     "tabCapture",

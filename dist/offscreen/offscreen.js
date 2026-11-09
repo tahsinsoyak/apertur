@@ -120,10 +120,13 @@ async function startRecording(message) {
       fps = 60,
       includeTabAudio = true,
       includeMic = false,
+      micDeviceId = null,
+      micGain = 1.0,
+      noiseSuppression = true,
       enableCountdown = false
     } = message;
 
-    recordingOptions = { resolution, fps, includeTabAudio, includeMic, mediaSource, captureMode };
+    recordingOptions = { resolution, fps, includeTabAudio, includeMic, micDeviceId, micGain, noiseSuppression, mediaSource, captureMode };
 
     let width = 1920;
     let height = 1080;
@@ -164,13 +167,26 @@ async function startRecording(message) {
       hasAnyAudioSource = true;
     }
 
-    // 3. Optional Microphone mixing
+    // 3. Optional Microphone mixing with Gain and Device routing
     if (includeMic) {
       try {
-        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const micConstraints = {
+          audio: {
+            deviceId: (micDeviceId && micDeviceId !== 'default') ? { exact: micDeviceId } : undefined,
+            noiseSuppression: Boolean(noiseSuppression !== false),
+            echoCancellation: true,
+            autoGainControl: true
+          }
+        };
+        micStream = await navigator.mediaDevices.getUserMedia(micConstraints);
         if (micStream.getAudioTracks().length > 0) {
           const micSource = audioContext.createMediaStreamSource(micStream);
-          micSource.connect(audioDestination);
+          const micGainNode = audioContext.createGain();
+          const safeGain = Math.max(0.1, Math.min(3.0, Number(micGain) || 1.0));
+          micGainNode.gain.value = safeGain;
+
+          micSource.connect(micGainNode);
+          micGainNode.connect(audioDestination);
           hasAnyAudioSource = true;
         }
       } catch (err) {

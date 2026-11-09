@@ -1,6 +1,6 @@
 {
   "name": "apertur",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Free Open-Source 1080p 60 FPS Screen & Workflow Recorder for Chrome with cursor spotlight, click ripples, video trimming, and instant screenshots",
   "main": "background/background.js",
   "repository": {

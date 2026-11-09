@@ -160,4 +160,153 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
+  // 9. Documentation Hub Tabs Switcher
+  const docTabs = document.querySelectorAll('.doc-tab-btn');
+  const docPanels = document.querySelectorAll('.doc-card-panel');
+  docTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      docTabs.forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      const targetId = tab.dataset.docTarget;
+      docPanels.forEach((panel) => {
+        panel.classList.toggle('active', panel.id === targetId);
+      });
+    });
+  });
+
+  // 10. Module 1: Animated Browser URL Cycle
+  const animUrlDisplay = document.getElementById('animUrlDisplay');
+  const animDockTimer = document.getElementById('animDockTimer');
+  const urls = [
+    'https://app.saas.io/project',
+    'https://accounts.google.com/oauth/v2/auth',
+    'https://app.saas.io/dashboard'
+  ];
+  let urlIndex = 0;
+  if (animUrlDisplay) {
+    setInterval(() => {
+      urlIndex = (urlIndex + 1) % urls.length;
+      animUrlDisplay.style.opacity = '0';
+      setTimeout(() => {
+        animUrlDisplay.textContent = urls[urlIndex];
+        animUrlDisplay.style.opacity = '1';
+      }, 200);
+    }, 3200);
+  }
+
+  let dockSeconds = 34;
+  if (animDockTimer) {
+    setInterval(() => {
+      dockSeconds = (dockSeconds + 1) % 3600;
+      const m = Math.floor(dockSeconds / 60).toString().padStart(2, '0');
+      const s = (dockSeconds % 60).toString().padStart(2, '0');
+      animDockTimer.textContent = `${m}:${s}`;
+    }, 1000);
+  }
+
+  // 11. Module 2: Voice Simulation Trigger
+  const btnSimulateVoice = document.getElementById('btnSimulateVoice');
+  const animVuFill = document.getElementById('animVuFill');
+  const animAudioStatusLabel = document.getElementById('animAudioStatusLabel');
+  if (btnSimulateVoice && animVuFill) {
+    btnSimulateVoice.addEventListener('click', () => {
+      animVuFill.style.animation = 'none';
+      animVuFill.style.width = '92%';
+      if (animAudioStatusLabel) animAudioStatusLabel.textContent = 'Voice detected: Peak clarity (92%)';
+      setTimeout(() => {
+        animVuFill.style.animation = 'vuMeterDance 1.6s ease-in-out infinite alternate';
+        if (animAudioStatusLabel) animAudioStatusLabel.textContent = 'Live input: Speaking detected';
+      }, 1800);
+    });
+  }
+
+  // 12. Module 3: Annotation Tool Switcher Demo
+  const animToolChips = document.querySelectorAll('.anim-tool-chip');
+  animToolChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      animToolChips.forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+
+  // 13. Module 4: Export Presets Clicker
+  const animPresetBtns = document.querySelectorAll('.anim-preset-btn');
+  animPresetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      animPresetBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // 14. Mobile Navigation Drawer Controller
+  const btnNavToggle = document.getElementById('btnNavToggle');
+  const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+  const mobileNavBackdrop = document.getElementById('mobileNavBackdrop');
+
+  if (btnNavToggle && mobileNavDrawer) {
+    const toggleMobileNav = (forceState) => {
+      const isCurrentlyOpen = btnNavToggle.classList.contains('open');
+      const shouldOpen = typeof forceState === 'boolean' ? forceState : !isCurrentlyOpen;
+
+      if (shouldOpen) {
+        btnNavToggle.classList.add('open');
+        btnNavToggle.setAttribute('aria-expanded', 'true');
+        mobileNavDrawer.classList.add('open');
+        mobileNavDrawer.setAttribute('aria-hidden', 'false');
+        if (mobileNavBackdrop) {
+          mobileNavBackdrop.classList.add('open');
+          mobileNavBackdrop.setAttribute('aria-hidden', 'false');
+        }
+        document.body.style.overflow = 'hidden';
+      } else {
+        btnNavToggle.classList.remove('open');
+        btnNavToggle.setAttribute('aria-expanded', 'false');
+        mobileNavDrawer.classList.remove('open');
+        mobileNavDrawer.setAttribute('aria-hidden', 'true');
+        if (mobileNavBackdrop) {
+          mobileNavBackdrop.classList.remove('open');
+          mobileNavBackdrop.setAttribute('aria-hidden', 'true');
+        }
+        document.body.style.overflow = '';
+      }
+    };
+
+    btnNavToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMobileNav();
+    });
+
+    if (mobileNavBackdrop) {
+      mobileNavBackdrop.addEventListener('click', () => {
+        toggleMobileNav(false);
+      });
+    }
+
+    // Close when clicking any mobile link
+    const mobileLinks = mobileNavDrawer.querySelectorAll('a');
+    mobileLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        toggleMobileNav(false);
+      });
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (
+        mobileNavDrawer.classList.contains('open') &&
+        !mobileNavDrawer.contains(e.target) &&
+        !btnNavToggle.contains(e.target)
+      ) {
+        toggleMobileNav(false);
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileNavDrawer.classList.contains('open')) {
+        toggleMobileNav(false);
+      }
+    });
+  }
 });

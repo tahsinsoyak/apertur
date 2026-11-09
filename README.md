@@ -16,6 +16,8 @@
   <p>
     <a href="https://tahsinsoyak.github.io/apertur/"><strong>🌐 Live Interactive Demo &amp; Landing Page</strong></a>
     &nbsp;•&nbsp;
+    <a href="docs/USER_GUIDE.md"><strong>📖 Complete User Guide</strong></a>
+    &nbsp;•&nbsp;
     <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><strong>📦 Download Extension v2.0 (.zip)</strong></a>
     &nbsp;•&nbsp;
     <a href="https://tahsinsoyak.github.io/apertur/sponsor.html"><strong>💖 Sponsor &amp; Patreon</strong></a>
@@ -69,10 +71,13 @@ Most screen recorders force you to choose between **expensive cloud subscription
 
 - **🛡️ Redirect-Safe Window &amp; Screen Capture**: Survives multi-page logins, OAuth redirects, and full-app workflows. Your floating recording HUD and cursor spotlight automatically re-attach after every navigation.
 - **🎬 1080p 60 FPS VP9 Master Engine**: Hardware-accelerated WebM video encoding up to **12 Mbps** (`video/webm;codecs=vp9,opus`) paired with **192 kbps** studio-mixed system and microphone audio.
+- **🎙️ Pro Microphone Setup &amp; Live VU Level Meter**: Choose specific mic input devices, adjust boost gain (50% to 200%), and verify audio input with a real-time reactive volume meter.
 - **🎯 60Hz Cursor Spotlight &amp; Click Physics**: GPU-composited cursor halo and expanding click shockwave ripples in 5 studio color themes (`Amber`, `Blue`, `Purple`, `Red`, `Green`).
 - **⏱️ Optional 3-Second Countdown Overlay (3, 2, 1)**: Full-screen animated countdown right after selecting your window, screen, or tab so your mouse is positioned before recording begins.
 - **✂️ Built-In Video Trim Studio**: Interactive **Start** and **End** range sliders in the Video Player Studio let you preview a trimmed segment and save a clean trimmed `.webm` copy directly to your local library.
+- **📦 Multi-Format Export Presets**: 1-click export to **Master 1080p WebM**, **Web-Ready 720p (Compact)** for Slack/email, **Audio Only (WebM/Opus)**, or **5s Animated Loop WebM**.
 - **✏️ Click-to-Rename Video Titles**: Click any recording title or the pencil icon in the player to rename it inline. Custom titles persist in IndexedDB and name your downloaded files automatically.
+- **🎨 Screenshot Annotation Studio**: Mark up captures with **Freehand Pen**, **Directional Arrows**, **Rectangle Boxes**, **Highlighter Marker**, **Text Badges**, with full **Undo** and local library saving.
 - **📸 Lossless Screenshot Suite (3 Modes)**:
   • **Area Crop (<kbd>Alt+Shift+A</kbd>)**: Drag to crop any rectangle with live pixel dimension HUD and floating action toolbar (`Copy`, `Save PNG`, `Library`).
   • **Full Webpage Scrolling (<kbd>Alt+Shift+F</kbd>)**: Automatically scrolls and stitches the entire webpage into one crystal-clear PNG.
@@ -95,7 +100,7 @@ Most screen recorders force you to choose between **expensive cloud subscription
 ## 🚀 Installation & Quick Start
 
 ### Option A: Instant Release Download (No Terminal Required)
-1. Download **[`apertur-v2.0.0-chrome-extension.zip`](https://github.com/tahsinsoyak/apertur/releases/latest)** from the latest GitHub Release and extract the ZIP.
+1. Download **[`apertur-v2.1.0-chrome-extension.zip`](https://github.com/tahsinsoyak/apertur/releases/latest)** from the latest GitHub Release and extract the ZIP.
 2. Open Chrome (or Brave, Edge, Arc) and navigate to `chrome://extensions/`.
 3. Enable **Developer mode** using the toggle switch in the top-right corner.
 4. Click **Load unpacked** and select the extracted folder.
@@ -137,54 +142,6 @@ Then open `chrome://extensions/`, enable **Developer mode**, click **Load unpack
 - **Full Webpage Scrolling**: Progress bar HUD, automatic viewport stepping, and seamless canvas stitching.
 - **Media Library**: Filter by **All Media**, **Videos**, or **Screenshots**.
 - **100% Full-Resolution Inspection Modal**: Click any screenshot to open the viewer modal. Toggle between **Fit to Window** and **100% Full Size** to scroll through tall full-page captures at native crisp resolution.
-
----
-
-## 🏗️ Architecture & Repository Structure
-
-```text
-apertur/
-├── background/
-│   └── background.js      # MV3 Service Worker: stream acquisition, tab re-injection & screenshot dispatcher
-├── content/
-│   ├── content.js         # Cursor FX, Click Shockwaves, 3-2-1 Countdown, Area Snip & Full-Page Scroller
-│   └── content.css        # Hardware-accelerated CSS animations for halo, ripples, snip box & toast HUD
-├── icons/
-│   ├── icon.svg           # Master vector branding artwork
-│   └── icon*.png          # Multi-resolution extension icons (16px, 32px, 48px, 128px)
-├── .github/
-│   ├── FUNDING.yml        # GitHub Native Sponsorship button configuration (Patreon)
-│   └── SUPPORT.md         # Community support guidelines and issue reporting
-├── landing/
-│   ├── index.html         # SEO-optimized product landing page & interactive cursor playground
-│   ├── sponsor.html       # Dedicated community sponsorship, roadmap & Patreon tiers page
-│   ├── landing.css        # Daylight Studio design system & responsive showcase styles
-│   ├── landing.js         # Interactive 60Hz cursor physics & simulated HUD controller
-│   └── assets/            # High-resolution showcase screenshots for the landing page
-├── offscreen/
-│   ├── offscreen.html     # Manifest V3 Offscreen Document host
-│   └── offscreen.js       # WebAudio API dual-channel mixer + 12 Mbps VP9 MediaRecorder engine
-├── popup/
-│   ├── popup.html         # Zero-scroll Daylight Studio popup interface (376px × 578px)
-│   ├── popup.css          # Compact popup styling with segmented controls & switches
-│   └── popup.js           # Mode selector, screenshot dropdown, countdown/cursor toggles & telemetry
-├── preview/
-│   ├── preview.html       # Video Player Studio & Unified Media Library
-│   ├── preview.css        # Theater player, trim bar, responsive gallery cards & 100% zoom modal
-│   └── preview.js         # Inline title renaming, video trimming, frame PNG export & modal manager
-├── utils/
-│   └── db.js              # Promise-based IndexedDB storage engine (RecorderDB: videos & screenshots)
-├── store-assets/          # 1280x800 Chrome Web Store & GitHub showcase screenshots
-├── scripts/
-│   ├── capture-store-screenshots.js # Automated 1280x800 showcase screenshot generator
-│   ├── test-screenshots.js          # Static integrity assertion suite
-│   ├── verify-all.js                # Headless Chromium layout, dimensions & overflow verifier
-│   └── test-live-e2e.js             # Live browser E2E test (Area snip, full page, modal zoom, IndexedDB)
-├── build.js               # Zero-dependency production bundler -> generates dist/
-├── manifest.json          # Chrome Extension Manifest V3 configuration (v2.0.0)
-├── SPONSORS.md            # Comprehensive sponsorship guide, budget breakdown & Patreon tiers
-└── LICENSE                # MIT License
-```
 
 ---
 
