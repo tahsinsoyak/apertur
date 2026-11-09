@@ -1,6 +1,12 @@
 node_modules/
+package-lock.json.bak
 .DS_Store
 Thumbs.db
 *.log
+.env
+.env.*
 screenshots/
 *.zip
+release/
+test-results/
+playwright-report/

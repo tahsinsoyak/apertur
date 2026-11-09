@@ -63,4 +63,11 @@ rootSponsor = rootSponsor.replace(/src="assets\//g, 'src="landing/assets/');
 rootSponsor = rootSponsor.replace(/\.\.\/icons\//g, 'icons/');
 fs.writeFileSync(path.join(ROOT_DIR, 'sponsor.html'), rootSponsor, 'utf8');
 
+// 9. Generate privacy.html for both /docs and root (required URL for Chrome Web Store listing)
+const privacyOut = fs
+  .readFileSync(path.join(LANDING_DIR, 'privacy.html'), 'utf8')
+  .replace(/\.\.\/icons\//g, 'icons/');
+fs.writeFileSync(path.join(DOCS_DIR, 'privacy.html'), privacyOut, 'utf8');
+fs.writeFileSync(path.join(ROOT_DIR, 'privacy.html'), privacyOut, 'utf8');
+
 console.log('✓ Successfully synchronized GitHub Pages for both root (/) and /docs deployments!');

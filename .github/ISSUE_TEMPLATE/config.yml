@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions & ideas (Discussions)
+    url: https://github.com/tahsinsoyak/apertur/discussions
+    about: Ask questions and share workflows with the community.
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/tahsinsoyak/apertur/security/advisories/new
+    about: Please report security issues privately.
+  - name: 📖 User Guide
+    url: https://github.com/tahsinsoyak/apertur/blob/main/docs/USER_GUIDE.md
+    about: Step-by-step instructions and tips.

@@ -18,6 +18,8 @@
     &nbsp;•&nbsp;
     <a href="docs/USER_GUIDE.md"><strong>📖 Complete User Guide</strong></a>
     &nbsp;•&nbsp;
+    <a href="PRIVACY.md"><strong>🔒 Privacy Policy</strong></a>
+    &nbsp;•&nbsp;
     <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><strong>📦 Download Extension v2.1 (.zip)</strong></a>
     &nbsp;•&nbsp;
     <a href="https://tahsinsoyak.github.io/apertur/sponsor.html"><strong>💖 Sponsor &amp; Patreon</strong></a>
@@ -109,9 +111,48 @@ git clone https://github.com/tahsinsoyak/apertur.git
 cd apertur
 
 # 2. Build production package into dist/
-node build.js
+npm run build
+
+# 3. (Optional) Create Chrome Web Store production ZIP
+npm run package
 ```
 Then open `chrome://extensions/`, enable **Developer mode**, click **Load unpacked**, and select the generated **`dist/`** directory.
+
+---
+
+## 🔒 100% Private Architecture
+
+Apertur is designed with a strict zero-knowledge, local-only architecture:
+
+- **Local Storage Only**: All recordings and screenshots are saved directly inside your browser's local IndexedDB vault.
+- **Zero Cloud Uploads**: No video, audio, or screenshot frames are ever transmitted over the network.
+- **No Remote Code & No Trackers**: Zero third-party analytics, zero telemetry SDKs, and zero tracking pixels.
+- **On-Demand Injection**: Scripts are only injected when you actively record or trigger a screenshot, keeping regular browsing completely untouched.
+
+For details, read our complete **[Privacy Policy](PRIVACY.md)** (or view the [Live Privacy Policy](https://tahsinsoyak.github.io/apertur/privacy.html)).
+
+---
+
+## 🏬 Chrome Web Store Publishing
+
+Everything is pre-configured and ready for one-click submission to the Chrome Web Store:
+
+- **Manifest V3 Compliant**: Uses minimal required permissions (`tabCapture`, `offscreen`, `activeTab`, `storage`, `scripting`, `clipboardWrite`).
+- **Store-Ready Graphics**: 1280x800 showcase screenshots, 440x280 small promo tile, and 1400x560 marquee promo tile in [`store-assets/chrome-web-store/`](store-assets/chrome-web-store/).
+- **Step-by-Step Copy/Paste Guide**: See **[`store-assets/STORE_LISTING.md`](store-assets/STORE_LISTING.md)** for exact descriptions, category settings, and permission justifications ready to paste into the Google Developer Console.
+- **Automated Packager**: Run `npm run package` to compile and produce a validated ZIP in `release/`.
+
+---
+
+## 🤝 Contributing & Community
+
+Contributions are welcome! Please check our community guidelines:
+
+- **[Contributing Guide](CONTRIBUTING.md)**: How to set up local dev, make changes, and open PRs.
+- **[Code of Conduct](CODE_OF_CONDUCT.md)**: Our pledge to maintain a welcoming and inclusive community.
+- **[Security Policy](SECURITY.md)**: How to responsibly disclose any security concerns.
+- **[Changelog](CHANGELOG.md)**: Release history and version notes.
+- **[Discussions](https://github.com/tahsinsoyak/apertur/discussions)**: Community questions, feature ideas, and workflows.
 
 ## 🎥 Three Recording Modes
 

@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check JavaScript syntax
+        run: |
+          for f in background/*.js content/*.js offscreen/*.js popup/*.js preview/*.js utils/*.js scripts/*.js build.js; do
+            node --check "$f"
+          done
+
+      - name: Build & package extension
+        run: node scripts/package.js
+
+      - name: Check manifest has no static content scripts or unused permissions
+        run: |
+          node -e "
+            const m = require('./manifest.json');
+            const bad = ['tabs', 'desktopCapture', 'history', 'cookies', 'webRequest'].filter(p => (m.permissions || []).includes(p));
+            if (bad.length) { console.error('Unexpected permissions:', bad); process.exit(1); }
+            if (m.content_scripts) { console.error('Static content_scripts should not be re-added (inject on demand instead).'); process.exit(1); }
+            console.log('Manifest OK');
+          "
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apertur-chrome-web-store
+          path: release/*.zip

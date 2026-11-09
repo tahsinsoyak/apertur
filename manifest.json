@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Apertur: 60 FPS Screen & Workflow Recorder",
+  "short_name": "Apertur",
   "version": "2.1.0",
   "description": "Free 1080p 60 FPS screen & window recorder with cursor spotlights, video trimmer, 3s countdown, PNG screenshots & local storage.",
+  "homepage_url": "https://tahsinsoyak.github.io/apertur/",
+  "minimum_chrome_version": "116",
   "permissions": [
     "tabCapture",
-    "desktopCapture",
     "offscreen",
     "activeTab",
-    "tabs",
     "storage",
     "scripting",
     "clipboardWrite"
@@ -41,6 +42,7 @@
   },
   "action": {
     "default_popup": "popup/popup.html",
+    "default_title": "Apertur Screen Recorder",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -53,19 +55,5 @@
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "css": [
-        "content/content.css"
-      ],
-      "js": [
-        "content/content.js"
-      ],
-      "run_at": "document_end"
-    }
-  ]
+  }
 }

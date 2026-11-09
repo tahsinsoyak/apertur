@@ -20,7 +20,7 @@ If you encounter an issue or have an idea for a new feature:
 ## 💬 Community Questions & Discussions
 
 - **GitHub Discussions**: Visit [GitHub Discussions](https://github.com/tahsinsoyak/apertur/discussions) to ask questions, share workflows, or connect with other users.
-- **Documentation**: Explore the [Main README](file:///C:/Users/tahsinsoyak/Desktop/proje_github_clone/video-recording-ext/README.md) and the [Online Landing Page](https://tahsinsoyak.github.io/apertur/) for installation guides and keyboard shortcuts.
+- **Documentation**: Explore the [Main README](../README.md) and the [Online Landing Page](https://tahsinsoyak.github.io/apertur/) for installation guides and keyboard shortcuts.
 
 ---
 
@@ -31,5 +31,5 @@ Apertur is 100% free and open-source under the MIT license, with zero subscripti
 You can support ongoing development and maintenance by creator **Tahsin Soyak**:
 
 - **Patreon**: [patreon.com/tahsinsoyak](https://www.patreon.com/tahsinsoyak)
-- **Sponsorship Details**: See [SPONSORS.md](file:///C:/Users/tahsinsoyak/Desktop/proje_github_clone/video-recording-ext/SPONSORS.md) or visit the [Online Sponsor Page](https://tahsinsoyak.github.io/apertur/sponsor.html).
+- **Sponsorship Details**: See [SPONSORS.md](../SPONSORS.md) or visit the [Online Sponsor Page](https://tahsinsoyak.github.io/apertur/sponsor.html).
 - **GitHub Star**: Give Apertur a star on [GitHub](https://github.com/tahsinsoyak/apertur).

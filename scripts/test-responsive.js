@@ -1,10 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const playwrightPath = fs.existsSync('C:/Users/tahsinsoyak/Desktop/proje_github_clone/cost-per-use-extension/node_modules/playwright')
-  ? 'C:/Users/tahsinsoyak/Desktop/proje_github_clone/cost-per-use-extension/node_modules/playwright'
-  : 'playwright';
-const { chromium } = require(playwrightPath);
+const { chromium } = require('playwright');
 
 async function testResponsive() {
   const browser = await chromium.launch({ headless: true });

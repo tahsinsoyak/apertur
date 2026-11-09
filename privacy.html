@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy • Apertur Screen Recorder</title>
+  <meta name="description" content="Apertur privacy policy: no data collection, no analytics, no uploads. All recordings and screenshots stay on your device.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#e11d48">
+  <link rel="canonical" href="https://tahsinsoyak.github.io/apertur/privacy.html">
+  <link rel="icon" type="image/png" href="icons/icon32.png">
+  <style>
+    :root {
+      --ruby: #e11d48;
+      --ink: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --ok: #059669;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+    }
+    .bar {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .bar nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      margin-left: 18px;
+    }
+    .bar nav a:hover { color: var(--ruby); }
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1.15;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    .meta { color: var(--muted); font-size: 14px; margin: 0 0 28px; }
+    .hero {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.08), rgba(6, 182, 212, 0.08));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px 24px;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 32px;
+    }
+    h2 {
+      font-size: 22px;
+      margin: 36px 0 12px;
+      letter-spacing: -0.01em;
+    }
+    p, li { color: #1e293b; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 15px;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { background: #f1f5f9; font-weight: 700; }
+    tr:last-child td { border-bottom: none; }
+    .no { color: var(--ok); font-weight: 800; }
+    code {
+      background: #f1f5f9;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-size: 0.92em;
+    }
+    a { color: var(--ruby); }
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+      padding: 24px;
+    }
+    @media (max-width: 600px) {
+      .bar nav a { margin-left: 10px; }
+      th, td { padding: 10px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <a class="brand" href="index.html">
+        <img src="icons/icon32.png" alt="" width="24" height="24">
+        Apertur
+      </a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="https://github.com/tahsinsoyak/apertur" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Privacy Policy</h1>
+    <p class="meta">Effective date: November 10, 2026 • Applies to the Apertur Chrome extension and this website</p>
+
+    <div class="hero">Apertur is built around one simple rule: your recordings never leave your computer.</div>
+
+    <h2>Summary</h2>
+    <table>
+      <tr><th>Question</th><th>Answer</th></tr>
+      <tr><td>Does Apertur collect personal data?</td><td><span class="no">No.</span></td></tr>
+      <tr><td>Does Apertur upload recordings or screenshots?</td><td><span class="no">No.</span> Everything is stored locally in your browser.</td></tr>
+      <tr><td>Does Apertur use analytics, tracking, or ads?</td><td><span class="no">No.</span></td></tr>
+      <tr><td>Does Apertur sell or share data with third parties?</td><td><span class="no">No.</span> There is no data to sell or share.</td></tr>
+      <tr><td>Does Apertur require an account?</td><td><span class="no">No.</span></td></tr>
+    </table>
+
+    <h2>What the extension stores, and where</h2>
+    <p>All data is stored <strong>only on your device</strong>, inside your own Chrome profile:</p>
+    <table>
+      <tr><th>Data</th><th>Storage location</th><th>Purpose</th></tr>
+      <tr><td>Video recordings (WebM)</td><td>IndexedDB (local to the extension)</td><td>Preview, trim, rename, and download in the Media Library</td></tr>
+      <tr><td>Screenshots (PNG)</td><td>IndexedDB (local to the extension)</td><td>View, annotate, copy, and download</td></tr>
+      <tr><td>Preferences (resolution, FPS, cursor theme, toggles)</td><td><code>chrome.storage.local</code></td><td>Remember your settings between sessions</td></tr>
+      <tr><td>Temporary recording state</td><td><code>chrome.storage.local</code></td><td>Keep the recording timer and badge correct</td></tr>
+    </table>
+    <p>You can delete any recording or screenshot from the Media Library at any time. Uninstalling the extension permanently deletes all of the above.</p>
+
+    <h2>Microphone, screen, and tab audio</h2>
+    <ul>
+      <li>Screen, window, and tab capture only starts <strong>after you click Record</strong> and choose what to share in Chrome's own picker.</li>
+      <li>The microphone is only accessed if <strong>you enable "Include Microphone"</strong>. Audio is mixed into your local recording and is never transmitted.</li>
+      <li>Chrome shows its own "sharing" indicator for the full duration of any capture.</li>
+    </ul>
+
+    <h2>Website content and permissions</h2>
+    <p>Apertur requests access to web pages (<code>&lt;all_urls&gt;</code>) <strong>only</strong> to:</p>
+    <ul>
+      <li>draw the cursor spotlight, click ripples, and floating recording controls on the page you are recording, and</li>
+      <li>capture screenshots (visible area, selected area, or full scrolling page) when you ask for one.</li>
+    </ul>
+    <p>Apertur does <strong>not</strong> read, collect, store, or transmit the content of the web pages you visit, your browsing history, form inputs, passwords, or cookies.</p>
+
+    <h2>Network requests</h2>
+    <p>The extension makes <strong>no network requests</strong> to any server. It contains no remote code, analytics SDKs, crash reporters, or ad networks. Links to GitHub, Patreon, or the project website open only when you click them.</p>
+    <p>This website is a static site hosted on GitHub Pages. GitHub may process standard server logs (such as IP addresses) as described in the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub Privacy Statement</a>.</p>
+
+    <h2>Children's privacy</h2>
+    <p>Apertur does not knowingly collect any information from anyone, including children under 13.</p>
+
+    <h2>Chrome Web Store User Data Policy</h2>
+    <p>The use of information received from Chrome APIs adheres to the <a href="https://developer.chrome.com/docs/webstore/program-policies/user-data-faq" target="_blank" rel="noopener">Chrome Web Store User Data Policy</a>, including the Limited Use requirements. Because Apertur does not collect or transmit user data, no user data is used for advertising, sold, or transferred to third parties.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>If this policy ever changes, the updated version will be published on this page and in the GitHub repository with a new effective date. Any change that would involve collecting data would require a new, explicit opt-in.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about privacy? <a href="https://github.com/tahsinsoyak/apertur/issues" target="_blank" rel="noopener">Open an issue on GitHub</a> or email <a href="mailto:tahsinsoyakk@gmail.com">tahsinsoyakk@gmail.com</a>.</p>
+  </main>
+
+  <footer>
+    Apertur • Free &amp; open-source (MIT) • <a href="index.html">Home</a> • <a href="sponsor.html">Sponsor</a>
+  </footer>
+</body>
+</html>

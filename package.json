@@ -1,15 +1,22 @@
 {
   "name": "apertur",
   "version": "2.1.0",
+  "private": true,
   "description": "Free Open-Source 1080p 60 FPS Screen & Workflow Recorder for Chrome with cursor spotlight, click ripples, video trimming, and instant screenshots",
   "main": "background/background.js",
+  "homepage": "https://tahsinsoyak.github.io/apertur/",
   "repository": {
     "type": "git",
     "url": "https://github.com/tahsinsoyak/apertur.git"
   },
+  "bugs": {
+    "url": "https://github.com/tahsinsoyak/apertur/issues"
+  },
   "scripts": {
     "build": "node build.js",
     "build:pages": "node scripts/build-github-pages.js",
+    "package": "node scripts/package.js",
+    "store:assets": "node scripts/generate-store-assets.js",
     "test-server": "node test-server.js"
   },
   "keywords": [
@@ -22,5 +29,11 @@
     "apertur"
   ],
   "author": "Tahsin Soyak <tahsinsoyakk@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  }
 }
