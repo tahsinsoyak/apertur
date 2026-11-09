@@ -10,7 +10,7 @@
     &nbsp;
     <a href="https://www.patreon.com/tahsinsoyak"><img src="https://img.shields.io/badge/Patreon-Support%20Creator-FF424D?style=for-the-badge&logo=patreon&logoColor=white" alt="Support on Patreon" /></a>
     &nbsp;
-    <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><img src="https://img.shields.io/badge/Release-v2.0.0-8b5cf6?style=for-the-badge" alt="Latest Release" /></a>
+    <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><img src="https://img.shields.io/badge/Release-v2.1.0-8b5cf6?style=for-the-badge" alt="Latest Release" /></a>
   </p>
 
   <p>
@@ -18,7 +18,7 @@
     &nbsp;•&nbsp;
     <a href="docs/USER_GUIDE.md"><strong>📖 Complete User Guide</strong></a>
     &nbsp;•&nbsp;
-    <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><strong>📦 Download Extension v2.0 (.zip)</strong></a>
+    <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><strong>📦 Download Extension v2.1 (.zip)</strong></a>
     &nbsp;•&nbsp;
     <a href="https://tahsinsoyak.github.io/apertur/sponsor.html"><strong>💖 Sponsor &amp; Patreon</strong></a>
     &nbsp;•&nbsp;
