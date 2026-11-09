@@ -63,27 +63,24 @@
 
 ---
 
-## ✨ Why Apertur?
+## ✨ Features at a Glance
 
-Most screen recorders force you to choose between **expensive cloud subscriptions ($15 to $29/month)** that upload your private recordings to third-party servers, or **fragile browser tab extensions** that drop the recording or lose their control bar the moment a website redirects or opens an OAuth login page.
+Apertur is a 100% free, private alternative to cloud screen recorders like Loom. All encoding and storage run locally in your browser with zero monthly fees, zero watermarks, and no cloud surveillance.
 
-**Apertur** is engineered on **Chrome Manifest V3 Offscreen Documents** with a precision **Daylight Studio** interface:
+| Feature | Description |
+| :--- | :--- |
+| **🎬 1080p 60 FPS Engine** | Hardware-accelerated VP9 encoding up to 12 Mbps with 192 kbps dual-channel audio |
+| **🛡️ Redirect-Safe** | Window capture survives multi-page logins, OAuth redirects, and full workflows |
+| **🎯 Cursor Spotlight** | 60Hz cursor halo & expanding click shockwaves in 5 studio colors |
+| **🎙️ Pro Mic Setup** | Live audio VU level meter, input device selector, and 50%–200% boost gain slider |
+| **⏱️ 3-Second Countdown** | Optional 3, 2, 1 pre-roll overlay so your cursor is ready before recording starts |
+| **✂️ Built-in Video Trimmer** | Drag Start and End sliders to cut dead time and save trimmed clips instantly |
+| **📦 Export Presets** | 1-click export: 1080p Master, 720p Web-Ready, Audio-Only, or 5s Looping WebM |
+| **🎨 Annotation Studio** | Mark up screenshots with Pen, Arrows, Boxes, Highlighter, and Text badges |
+| **📸 3-Way Screenshots** | Area Crop (<kbd>Alt+Shift+A</kbd>), Full Webpage (<kbd>Alt+Shift+F</kbd>), and Visible Viewport (<kbd>Alt+Shift+V</kbd>) |
+| **🔒 100% Private Vault** | Offline IndexedDB storage with full-resolution zoom viewer and instant WebM downloads |
 
-- **🛡️ Redirect-Safe Window &amp; Screen Capture**: Survives multi-page logins, OAuth redirects, and full-app workflows. Your floating recording HUD and cursor spotlight automatically re-attach after every navigation.
-- **🎬 1080p 60 FPS VP9 Master Engine**: Hardware-accelerated WebM video encoding up to **12 Mbps** (`video/webm;codecs=vp9,opus`) paired with **192 kbps** studio-mixed system and microphone audio.
-- **🎙️ Pro Microphone Setup &amp; Live VU Level Meter**: Choose specific mic input devices, adjust boost gain (50% to 200%), and verify audio input with a real-time reactive volume meter.
-- **🎯 60Hz Cursor Spotlight &amp; Click Physics**: GPU-composited cursor halo and expanding click shockwave ripples in 5 studio color themes (`Amber`, `Blue`, `Purple`, `Red`, `Green`).
-- **⏱️ Optional 3-Second Countdown Overlay (3, 2, 1)**: Full-screen animated countdown right after selecting your window, screen, or tab so your mouse is positioned before recording begins.
-- **✂️ Built-In Video Trim Studio**: Interactive **Start** and **End** range sliders in the Video Player Studio let you preview a trimmed segment and save a clean trimmed `.webm` copy directly to your local library.
-- **📦 Multi-Format Export Presets**: 1-click export to **Master 1080p WebM**, **Web-Ready 720p (Compact)** for Slack/email, **Audio Only (WebM/Opus)**, or **5s Animated Loop WebM**.
-- **✏️ Click-to-Rename Video Titles**: Click any recording title or the pencil icon in the player to rename it inline. Custom titles persist in IndexedDB and name your downloaded files automatically.
-- **🎨 Screenshot Annotation Studio**: Mark up captures with **Freehand Pen**, **Directional Arrows**, **Rectangle Boxes**, **Highlighter Marker**, **Text Badges**, with full **Undo** and local library saving.
-- **📸 Lossless Screenshot Suite (3 Modes)**:
-  • **Area Crop (<kbd>Alt+Shift+A</kbd>)**: Drag to crop any rectangle with live pixel dimension HUD and floating action toolbar (`Copy`, `Save PNG`, `Library`).
-  • **Full Webpage Scrolling (<kbd>Alt+Shift+F</kbd>)**: Automatically scrolls and stitches the entire webpage into one crystal-clear PNG.
-  • **Visible Viewport (<kbd>Alt+Shift+V</kbd>)**: Instant 1-click snapshot of the current view.
-- **🗄️ 100% Private Media Vault with 100% Zoom Viewer**: Filter videos and screenshots with category pills, watch WebMs with hover previews, and inspect tall screenshots at native 100% full-resolution.
-- **🔒 100% Local &amp; Free**: Zero cloud uploads, zero telemetry, zero watermarks, and no 5-minute time caps. Everything stays on your machine inside IndexedDB (`RecorderDB`).
+📖 For step-by-step instructions and tips, see the **[Complete User Guide](docs/USER_GUIDE.md)** or **[60-Second Cheat Sheet](USAGE.md)**.
 
 ---
 
@@ -116,32 +113,13 @@ node build.js
 ```
 Then open `chrome://extensions/`, enable **Developer mode**, click **Load unpacked**, and select the generated **`dist/`** directory.
 
----
+## 🎥 Three Recording Modes
 
-## 🛠️ Complete Feature Breakdown
-
-### 1. Three Recording Modes
 | Mode | Best For | Survives Page Redirects? | Audio Support |
 | :--- | :--- | :--- | :--- |
 | **Browser Window (`Recommended`)** | Multi-page workflows, SaaS testing, OAuth logins | ✅ **Yes (100% Continuous)** | System/Tab Audio + Mic |
 | **Entire Screen** | Multi-window demos, IDE + terminal + browser workflows | ✅ **Yes (100% Continuous)** | System Audio + Mic |
 | **This Tab Only (`1-Click`)** | Quick single-page clips without a picker dialog | ⚠️ Stops if tab navigates | Tab Audio (Unmuted) + Mic |
-
-### 2. Live In-Page Floating HUD &amp; Cursor FX
-- **Draggable Floating Bar**: Shows recording status, `MM:SS` timer, **Snap** (PNG), **Snip** (Area crop), **Pause/Resume**, and **Finish**.
-- **5 Studio Highlight Colors**: Switch between `Amber (#f59e0b)`, `Blue (#06b6d4)`, `Purple (#8b5cf6)`, `Red (#e11d48)`, and `Green (#10b981)`.
-- **3-Second Countdown**: Optional 3, 2, 1 pre-roll overlay so you can position your cursor before recording starts.
-
-### 3. Video Player Studio &amp; Trimmer (`preview/preview.html`)
-- **Theater Player**: Fitted viewport layout with speed switcher (`1x`, `1.25x`, `1.5x`, `2x`).
-- **Precision Trimmer**: Drag **Start** and **End** range sliders (`0.1s` precision) to preview and save trimmed clips.
-- **Frame PNG Extractor**: Click **Frame PNG** to export the exact current video frame at native resolution.
-
-### 4. Lossless Screenshot Suite &amp; Media Vault
-- **Area Snipping**: Active pixel crosshairs and floating toolbar to Copy to clipboard, Download PNG, or Save to Library.
-- **Full Webpage Scrolling**: Progress bar HUD, automatic viewport stepping, and seamless canvas stitching.
-- **Media Library**: Filter by **All Media**, **Videos**, or **Screenshots**.
-- **100% Full-Resolution Inspection Modal**: Click any screenshot to open the viewer modal. Toggle between **Fit to Window** and **100% Full Size** to scroll through tall full-page captures at native crisp resolution.
 
 ---
 
