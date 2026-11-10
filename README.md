@@ -8,11 +8,13 @@
     &nbsp;
     <a href="manifest.json"><img src="https://img.shields.io/badge/Manifest-V3-0284c7?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Manifest V3" /></a>
     &nbsp;
-    <a href="https://chrome.google.com/webstore"><img src="https://img.shields.io/badge/Chrome_Web_Store-Pending_Review-f59e0b?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Chrome Web Store: Pending Review" /></a>
+    <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><img src="https://img.shields.io/badge/Release-v2.1.0-8b5cf6?style=for-the-badge" alt="Latest Release" /></a>
+    &nbsp;
+    <a href="https://github.com/tahsinsoyak/apertur/stargazers"><img src="https://img.shields.io/github/stars/tahsinsoyak/apertur?style=for-the-badge&logo=github&color=181717" alt="GitHub Stars" /></a>
+    &nbsp;
+    <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-10b981?style=for-the-badge" alt="PRs Welcome" /></a>
     &nbsp;
     <a href="https://www.patreon.com/tahsinsoyak"><img src="https://img.shields.io/badge/Patreon-Support%20Creator-FF424D?style=for-the-badge&logo=patreon&logoColor=white" alt="Support on Patreon" /></a>
-    &nbsp;
-    <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><img src="https://img.shields.io/badge/Release-v2.1.0-8b5cf6?style=for-the-badge" alt="Latest Release" /></a>
   </p>
 
   <p>
@@ -25,8 +27,6 @@
     <a href="https://github.com/tahsinsoyak/apertur/releases/latest"><strong>📦 Download Extension v2.1 (.zip)</strong></a>
     &nbsp;•&nbsp;
     <a href="https://tahsinsoyak.github.io/apertur/sponsor.html"><strong>💖 Sponsor &amp; Patreon</strong></a>
-    &nbsp;•&nbsp;
-    <a href="SPONSORS.md"><strong>🌟 Backer Tiers</strong></a>
     &nbsp;•&nbsp;
     <a href="https://github.com/tahsinsoyak/apertur/issues"><strong>🐛 Report Issue</strong></a>
   </p>
@@ -123,16 +123,13 @@ For details, read our complete **[Privacy Policy](PRIVACY.md)** (or view the [Li
 
 ## 🚀 Installation & Quick Start
 
-### Option A: Chrome Web Store (Recommended)
-> ⏳ **Status: Currently under review by Google.** Once approved, a 1-click installation link will be available here.
-
-### Option B: Instant Release Download (No Terminal Required)
+### Option A: Instant Release Download (No Terminal Required)
 1. Download **[`apertur-v2.1.0-chrome-extension.zip`](https://github.com/tahsinsoyak/apertur/releases/latest)** from the latest GitHub Release and extract the ZIP.
 2. Open Chrome (or Brave, Edge, Arc) and navigate to `chrome://extensions/`.
 3. Enable **Developer mode** using the toggle switch in the top-right corner.
 4. Click **Load unpacked** and select the extracted folder.
 
-### Option C: Build from Source
+### Option B: Build from Source
 ```bash
 # 1. Clone repository
 git clone https://github.com/tahsinsoyak/apertur.git
@@ -198,7 +195,7 @@ There are zero cloud subscriptions, zero paywalls, and zero watermarks. If Apert
 | 🚀 **Studio Backer** | **$10 / month** | Name listed in README & Website wall + Early access to feature builds |
 | 💎 **Visionary Sponsor** | **$25 / month** | Logo & backlink on README/Website + Priority feature/bug triage |
 
-Your contributions fund Chrome Web Store maintenance, WebCodecs and AV1 video research, webcam Picture-in-Picture overlays, and continuous open-source innovation.
+Your contributions fund continuous development, WebCodecs and AV1 video research, webcam Picture-in-Picture overlays, and independent open-source engineering.
 
 ---
 
